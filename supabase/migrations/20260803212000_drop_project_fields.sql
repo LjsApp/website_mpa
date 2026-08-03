@@ -1,0 +1,1 @@
+ALTER TABLE projects DROP COLUMN services, DROP COLUMN content, DROP COLUMN challenge, DROP COLUMN solution, DROP COLUMN result;

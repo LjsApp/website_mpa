@@ -1,0 +1,1 @@
+ALTER TABLE articles ALTER COLUMN content TYPE TEXT USING content::text; ALTER TABLE articles ALTER COLUMN content SET DEFAULT '';
