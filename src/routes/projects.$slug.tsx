@@ -24,7 +24,7 @@ export const Route = createFileRoute("/projects/$slug")({
     if (!project) return { meta: [{ title: `Proyek — ${params.slug}` }] };
     const siteUrl = import.meta.env.VITE_SITE_URL ?? "";
     const canonicalUrl = `${siteUrl}/projects/${project.slug}`;
-    const desc = project.excerpt ?? `Proyek ${project.title} oleh tim kami. ${project.category ?? ""}`;
+    const desc = (project as any).excerpt ?? `Proyek ${project.title} oleh tim kami. ${project.category ?? ""}`;
     return {
       meta: [
         { title: project.title },
@@ -51,8 +51,8 @@ function ProjectDetail() {
   const p = data.project!;
   const related = data.related;
   const gallery = asStringList(p.gallery);
-  const services = asStringList(p.services);
-  const content = asHtmlContent(p.content);
+  const services = asStringList((p as any).services);
+  const content = asHtmlContent((p as any).content);
 
   const meta: { label: string; value: string | null }[] = [
     { label: "Klien", value: p.client },
@@ -63,9 +63,9 @@ function ProjectDetail() {
     { label: "Status", value: p.status },
   ];
   const studyBlocks: { label: string; value: string | null }[] = [
-    { label: "Tantangan", value: p.challenge },
-    { label: "Solusi", value: p.solution },
-    { label: "Hasil", value: p.result },
+    { label: "Tantangan", value: (p as any).challenge ?? null },
+    { label: "Solusi", value: (p as any).solution ?? null },
+    { label: "Hasil", value: (p as any).result ?? null },
   ];
 
   return (

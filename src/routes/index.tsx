@@ -19,21 +19,22 @@ const homeQuery = queryOptions({
   queryFn: () => getHomeData(),
 });
 
-export const Route = createFileRoute("/")(({
+export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Beranda" },
       { name: "keywords", content: "distributor industrial, filter industri, conveyor, motor listrik, bearing, pompa, komponen teknik, engineering supply Indonesia" },
     ],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(homeQuery),
-  errorComponent: ({ error }) => (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  loader: ({ context }: any) => context.queryClient.ensureQueryData(homeQuery),
+  errorComponent: ({ error }: { error: Error }) => (
     <div className="min-h-screen flex items-center justify-center text-center px-6">
       <p className="text-muted-foreground">Gagal memuat konten: {error.message}</p>
     </div>
   ),
   component: Index,
-} as any));
+});
 
 function Index() {
   const { data } = useSuspenseQuery(homeQuery);

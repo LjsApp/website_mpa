@@ -21,6 +21,8 @@ import { Route as ProductsSlugRouteImport } from './routes/products.$slug'
 import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
 import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
 import { Route as ApiPublicSetupAdminRouteImport } from './routes/api/public/setup-admin'
+import { Route as ApiRobotsTxtRouteImport } from './routes/api/robots.txt'
+import { Route as ApiSitemapXmlRouteImport } from './routes/api/sitemap.xml'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -81,6 +83,16 @@ const ApiPublicSetupAdminRoute = ApiPublicSetupAdminRouteImport.update({
   path: '/api/public/setup-admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiRobotsTxtRoute = ApiRobotsTxtRouteImport.update({
+  id: '/api/robots/txt',
+  path: '/api/robots/txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSitemapXmlRoute = ApiSitemapXmlRouteImport.update({
+  id: '/api/sitemap/xml',
+  path: '/api/sitemap/xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -94,6 +106,8 @@ export interface FileRoutesByFullPath {
   '/blog/': typeof BlogIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/api/public/setup-admin': typeof ApiPublicSetupAdminRoute
+  '/api/robots/txt': typeof ApiRobotsTxtRoute
+  '/api/sitemap/xml': typeof ApiSitemapXmlRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -107,6 +121,8 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogIndexRoute
   '/projects': typeof ProjectsIndexRoute
   '/api/public/setup-admin': typeof ApiPublicSetupAdminRoute
+  '/api/robots/txt': typeof ApiRobotsTxtRoute
+  '/api/sitemap/xml': typeof ApiSitemapXmlRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -122,6 +138,8 @@ export interface FileRoutesById {
   '/blog/': typeof BlogIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/api/public/setup-admin': typeof ApiPublicSetupAdminRoute
+  '/api/robots/txt': typeof ApiRobotsTxtRoute
+  '/api/sitemap/xml': typeof ApiSitemapXmlRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -137,6 +155,8 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/projects/'
     | '/api/public/setup-admin'
+    | '/api/robots/txt'
+    | '/api/sitemap/xml'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -150,6 +170,8 @@ export interface FileRouteTypes {
     | '/blog'
     | '/projects'
     | '/api/public/setup-admin'
+    | '/api/robots/txt'
+    | '/api/sitemap/xml'
   id:
     | '__root__'
     | '/'
@@ -164,6 +186,8 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/projects/'
     | '/api/public/setup-admin'
+    | '/api/robots/txt'
+    | '/api/sitemap/xml'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -178,6 +202,8 @@ export interface RootRouteChildren {
   BlogIndexRoute: typeof BlogIndexRoute
   ProjectsIndexRoute: typeof ProjectsIndexRoute
   ApiPublicSetupAdminRoute: typeof ApiPublicSetupAdminRoute
+  ApiRobotsTxtRoute: typeof ApiRobotsTxtRoute
+  ApiSitemapXmlRoute: typeof ApiSitemapXmlRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -266,6 +292,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicSetupAdminRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/robots/txt': {
+      id: '/api/robots/txt'
+      path: '/api/robots/txt'
+      fullPath: '/api/robots/txt'
+      preLoaderRoute: typeof ApiRobotsTxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/sitemap/xml': {
+      id: '/api/sitemap/xml'
+      path: '/api/sitemap/xml'
+      fullPath: '/api/sitemap/xml'
+      preLoaderRoute: typeof ApiSitemapXmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -293,6 +333,8 @@ const rootRouteChildren: RootRouteChildren = {
   BlogIndexRoute: BlogIndexRoute,
   ProjectsIndexRoute: ProjectsIndexRoute,
   ApiPublicSetupAdminRoute: ApiPublicSetupAdminRoute,
+  ApiRobotsTxtRoute: ApiRobotsTxtRoute,
+  ApiSitemapXmlRoute: ApiSitemapXmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
