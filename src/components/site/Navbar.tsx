@@ -164,48 +164,48 @@ export function Navbar() {
             {/* Beranda */}
             {onHome ? (
               <button type="button" onClick={() => { scrollToSection("home"); setOpen(false); }}
-                className="w-full text-left text-sm text-primary-foreground/80 uppercase tracking-wider py-3 border-b border-primary-foreground/10 hover:text-primary-foreground transition-colors">
+                className={`w-full text-left text-sm uppercase tracking-wider py-3 border-b border-primary-foreground/10 transition-colors ${onHome && activeSection === "home" ? "text-primary-foreground font-semibold underline decoration-accent decoration-2 underline-offset-4" : "text-primary-foreground/80 hover:text-primary-foreground"}`}>
                 Beranda
               </button>
             ) : (
               <Link to="/" onClick={() => setOpen(false)}
-                className="w-full text-left text-sm text-primary-foreground/80 uppercase tracking-wider py-3 border-b border-primary-foreground/10 hover:text-primary-foreground transition-colors">
+                className="w-full text-left text-sm text-primary-foreground/80 hover:text-primary-foreground uppercase tracking-wider py-3 border-b border-primary-foreground/10 transition-colors">
                 Beranda
               </Link>
             )}
             {/* Tentang */}
             {onHome ? (
               <button type="button" onClick={() => { scrollToSection("about"); setOpen(false); }}
-                className="w-full text-left text-sm text-primary-foreground/80 uppercase tracking-wider py-3 border-b border-primary-foreground/10 hover:text-primary-foreground transition-colors">
+                className={`w-full text-left text-sm uppercase tracking-wider py-3 border-b border-primary-foreground/10 transition-colors ${onHome && activeSection === "about" ? "text-primary-foreground font-semibold underline decoration-accent decoration-2 underline-offset-4" : "text-primary-foreground/80 hover:text-primary-foreground"}`}>
                 Tentang
               </button>
             ) : (
               <Link to="/" onClick={() => { setOpen(false); setTimeout(() => { const el = document.getElementById("about"); if (el) el.scrollIntoView({ behavior: "smooth" }); }, 200); }}
-                className="w-full text-left text-sm text-primary-foreground/80 uppercase tracking-wider py-3 border-b border-primary-foreground/10 hover:text-primary-foreground transition-colors">
+                className="w-full text-left text-sm text-primary-foreground/80 hover:text-primary-foreground uppercase tracking-wider py-3 border-b border-primary-foreground/10 transition-colors">
                 Tentang
               </Link>
             )}
             <Link to="/catalog" onClick={() => setOpen(false)}
-              className={`w-full text-left text-sm uppercase tracking-wider py-3 border-b border-primary-foreground/10 transition-colors ${onHome && activeSection === "products" ? "text-primary-foreground font-semibold" : "text-primary-foreground/80 hover:text-primary-foreground"}`}>
+              className={`w-full text-left text-sm uppercase tracking-wider py-3 border-b border-primary-foreground/10 transition-colors ${onHome && activeSection === "products" ? "text-primary-foreground font-semibold underline decoration-accent decoration-2 underline-offset-4" : "text-primary-foreground/80 hover:text-primary-foreground"}`}>
               Katalog
             </Link>
             <Link to="/projects" onClick={() => setOpen(false)}
-              className={`w-full text-left text-sm uppercase tracking-wider py-3 border-b border-primary-foreground/10 transition-colors ${onHome && activeSection === "projects" ? "text-primary-foreground font-semibold" : "text-primary-foreground/80 hover:text-primary-foreground"}`}>
+              className={`w-full text-left text-sm uppercase tracking-wider py-3 border-b border-primary-foreground/10 transition-colors ${onHome && activeSection === "projects" ? "text-primary-foreground font-semibold underline decoration-accent decoration-2 underline-offset-4" : "text-primary-foreground/80 hover:text-primary-foreground"}`}>
               Proyek
             </Link>
             <Link to="/blog" onClick={() => setOpen(false)}
-              className="w-full text-left text-sm text-primary-foreground/80 uppercase tracking-wider py-3 border-b border-primary-foreground/10 hover:text-primary-foreground transition-colors">
+              className="w-full text-left text-sm text-primary-foreground/80 hover:text-primary-foreground uppercase tracking-wider py-3 border-b border-primary-foreground/10 transition-colors">
               Blog
             </Link>
             {/* Kontak */}
             {onHome ? (
               <button type="button" onClick={() => { scrollToSection("contact"); setOpen(false); }}
-                className="w-full text-left text-sm text-primary-foreground/80 uppercase tracking-wider py-3 border-b border-primary-foreground/10 hover:text-primary-foreground transition-colors">
+                className={`w-full text-left text-sm uppercase tracking-wider py-3 border-b border-primary-foreground/10 transition-colors ${onHome && activeSection === "contact" ? "text-primary-foreground font-semibold underline decoration-accent decoration-2 underline-offset-4" : "text-primary-foreground/80 hover:text-primary-foreground"}`}>
                 Kontak
               </button>
             ) : (
               <Link to="/" onClick={() => { setOpen(false); setTimeout(() => { const el = document.getElementById("contact"); if (el) el.scrollIntoView({ behavior: "smooth" }); }, 200); }}
-                className="w-full text-left text-sm text-primary-foreground/80 uppercase tracking-wider py-3 border-b border-primary-foreground/10 hover:text-primary-foreground transition-colors">
+                className="w-full text-left text-sm text-primary-foreground/80 hover:text-primary-foreground uppercase tracking-wider py-3 border-b border-primary-foreground/10 transition-colors">
                 Kontak
               </Link>
             )}
