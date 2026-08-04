@@ -128,13 +128,13 @@ export function Navbar() {
         <nav className="hidden md:flex items-center gap-7">
           {renderSectionLink({ hash: "home", label: "Beranda" })}
           {renderSectionLink({ hash: "about", label: "Tentang" })}
-          <Link to="/catalog" className="nav-link text-sm text-primary-foreground/75 hover:text-primary-foreground transition-colors uppercase tracking-wider" activeProps={{ className: "text-accent" }}>
+          <Link to="/catalog" className={`nav-link text-sm transition-colors uppercase tracking-wider ${onHome && activeSection === "products" ? "active text-primary-foreground font-semibold" : "text-primary-foreground/75 hover:text-primary-foreground"}`} activeProps={{ className: "text-accent font-semibold" }}>
             Katalog
           </Link>
-          <Link to="/projects" className="nav-link text-sm text-primary-foreground/75 hover:text-primary-foreground transition-colors uppercase tracking-wider" activeProps={{ className: "text-accent" }}>
+          <Link to="/projects" className={`nav-link text-sm transition-colors uppercase tracking-wider ${onHome && activeSection === "projects" ? "active text-primary-foreground font-semibold" : "text-primary-foreground/75 hover:text-primary-foreground"}`} activeProps={{ className: "text-accent font-semibold" }}>
             Proyek
           </Link>
-          <Link to="/blog" className="nav-link text-sm text-primary-foreground/75 hover:text-primary-foreground transition-colors uppercase tracking-wider" activeProps={{ className: "text-accent" }}>
+          <Link to="/blog" className="nav-link text-sm text-primary-foreground/75 hover:text-primary-foreground transition-colors uppercase tracking-wider" activeProps={{ className: "text-accent font-semibold" }}>
             Blog
           </Link>
           {renderSectionLink({ hash: "contact", label: "Kontak" })}
@@ -186,11 +186,11 @@ export function Navbar() {
               </Link>
             )}
             <Link to="/catalog" onClick={() => setOpen(false)}
-              className="w-full text-left text-sm text-primary-foreground/80 uppercase tracking-wider py-3 border-b border-primary-foreground/10 hover:text-primary-foreground transition-colors">
+              className={`w-full text-left text-sm uppercase tracking-wider py-3 border-b border-primary-foreground/10 transition-colors ${onHome && activeSection === "products" ? "text-primary-foreground font-semibold" : "text-primary-foreground/80 hover:text-primary-foreground"}`}>
               Katalog
             </Link>
             <Link to="/projects" onClick={() => setOpen(false)}
-              className="w-full text-left text-sm text-primary-foreground/80 uppercase tracking-wider py-3 border-b border-primary-foreground/10 hover:text-primary-foreground transition-colors">
+              className={`w-full text-left text-sm uppercase tracking-wider py-3 border-b border-primary-foreground/10 transition-colors ${onHome && activeSection === "projects" ? "text-primary-foreground font-semibold" : "text-primary-foreground/80 hover:text-primary-foreground"}`}>
               Proyek
             </Link>
             <Link to="/blog" onClick={() => setOpen(false)}
