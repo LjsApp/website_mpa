@@ -1,7 +1,7 @@
 import { LazyImage } from "@/components/ui/lazy-image";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { getProductBySlug } from "@/lib/public.functions";
@@ -118,6 +118,11 @@ function ProductDetail() {
   const applications = asStringList(product.applications);
   const gallery = Array.isArray((product as any).gallery) ? ((product as any).gallery as string[]) : [];
   const [activeImage, setActiveImage] = useState<string | null>(gallery[0] ?? null);
+
+  // Reset active image whenever the product changes (same component, different slug)
+  useEffect(() => {
+    setActiveImage(gallery[0] ?? null);
+  }, [slug]);
   // Use WA number from company management — fallback to phone if whatsapp field is empty
   const rawWa = ((company as any)?.whatsapp ?? (company as any)?.phone ?? "").replace(/[^0-9]/g, "");
   const waNumber = rawWa ? (rawWa.startsWith("0") ? `62${rawWa.slice(1)}` : rawWa) : "";
@@ -140,9 +145,14 @@ function ProductDetail() {
     <div className="min-h-screen bg-background text-foreground">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Navbar />
+
       <main className="pt-24">
         <section className="border-b border-border bg-card/30 py-6">
-          <div className="max-w-7xl mx-auto px-6">
+          <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-3">
+              <span className="bg-primary text-primary-foreground text-[10px] uppercase tracking-[0.2em] px-2 py-1 font-semibold">{product.category_label}</span>
+              <span className="text-xs uppercase tracking-widest text-muted-foreground">{product.brand}</span>
+            </div>
             <nav className="text-xs uppercase tracking-widest text-muted-foreground">
               <Link to="/" className="hover:text-primary">Beranda</Link>
               <span className="mx-2">/</span>
@@ -180,7 +190,6 @@ function ProductDetail() {
               )}
             </div>
             <div>
-              <div className="text-xs uppercase tracking-[0.3em] text-primary mb-2">{product.category_label}</div>
               <h1 className="font-display text-3xl md:text-4xl uppercase leading-tight mb-4 break-words">{product.name}</h1>
               <div className="flex items-center gap-3 mb-6">
                 <span className="border border-primary/40 text-primary px-3 py-1 text-xs uppercase tracking-widest">{product.brand}</span>
@@ -284,23 +293,28 @@ function ProductDetail() {
                 <div>
                   <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">Produk Terkait</div>
                   <h2 className="font-display text-3xl md:text-4xl uppercase leading-tight">
-                    Produk Lain Dari<br /><span className="text-gradient-orange">{product.category_label}</span>
+                    Produk Lain Dari <span className="text-gradient-orange">{product.category_label}</span>
                   </h2>
                 </div>
-                <Link to="/catalog" className="text-sm uppercase tracking-widest text-primary hover:underline">
-                  Lihat Semua →
+                <Link to="/catalog" className="text-sm uppercase tracking-widest text-primary link-slide">
+                  Lihat Semua Katalog <span className="arrow">→</span>
                 </Link>
               </div>
               <div className="grid md:grid-cols-3 gap-6">
                 {related.map((r) => (
-                  <Link key={r.id} to="/products/$slug" params={{ slug: r.slug }} className="industrial-card overflow-hidden group">
-                    <div className="aspect-[4/3] overflow-hidden bg-background">
+                  <Link key={r.id} to="/products/$slug" params={{ slug: r.slug }} className="industrial-card overflow-hidden group flex flex-col">
+                    <div className="aspect-[4/3] overflow-hidden bg-background relative">
                       {Array.isArray((r as any).gallery) && (r as any).gallery[0] && <LazyImage src={(r as any).gallery[0]} alt={r.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-700" />}
+                      <div className="absolute top-3 left-3 bg-background/85 backdrop-blur border border-border px-2 py-1 text-[10px] uppercase tracking-widest">
+                        {r.stock}
+                      </div>
                     </div>
-                    <div className="p-5">
-                      <div className="text-[10px] uppercase tracking-widest text-primary mb-1.5">{r.brand}</div>
-                      <div className="font-display text-base uppercase leading-tight mb-2 group-hover:text-primary transition">{r.name}</div>
-                      <p className="text-xs text-muted-foreground line-clamp-2">{r.description}</p>
+                    <div className="p-6 flex flex-col flex-1">
+                      <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-primary mb-3">
+                        <span>{r.category_label}</span><span className="text-muted-foreground">·</span><span className="text-muted-foreground">{r.brand}</span>
+                      </div>
+                      <h3 className="font-display text-xl uppercase mb-2 group-hover:text-primary transition">{r.name}</h3>
+                      <p className="text-sm text-muted-foreground line-clamp-2">{r.description}</p>
                     </div>
                   </Link>
                 ))}

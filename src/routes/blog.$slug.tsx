@@ -100,25 +100,23 @@ function ArticleDetail() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Navbar />
       <main className="pt-24">
-        {/* Breadcrumb */}
-        <div className="max-w-4xl mx-auto px-6 pt-6 text-xs uppercase tracking-widest text-muted-foreground">
-          <Link to="/" className="hover:text-primary">Beranda</Link>
-          <span className="mx-2">/</span>
-          <Link to="/blog" className="hover:text-primary">Blog</Link>
-          <span className="mx-2">/</span>
-          <span className="text-foreground">{article.category}</span>
+        {/* Breadcrumb bar */}
+        <div className="border-b border-border bg-card/30">
+          <div className="max-w-4xl mx-auto px-6 py-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+            <span className="bg-primary text-primary-foreground text-[10px] uppercase tracking-[0.2em] px-2 py-1 font-semibold">{article.category}</span>
+            <nav className="text-xs uppercase tracking-widest text-muted-foreground">
+              <Link to="/" className="hover:text-primary">Beranda</Link>
+              <span className="mx-2">/</span>
+              <Link to="/blog" className="hover:text-primary">Blog</Link>
+              <span className="mx-2">/</span>
+              <span className="text-foreground">{article.category}</span>
+            </nav>
+          </div>
         </div>
+
 
         {/* Article header */}
         <article className="max-w-4xl mx-auto px-6 py-10">
-          <div className="flex items-center gap-3 mb-5">
-            <span className="bg-primary text-primary-foreground text-[10px] uppercase tracking-[0.2em] px-2 py-1 font-semibold">
-              {article.category}
-            </span>
-            <span className="text-xs uppercase tracking-widest text-muted-foreground">
-              {formatDateID(article.published_at)}
-            </span>
-          </div>
           <h1 className="font-display text-3xl md:text-5xl uppercase leading-tight mb-6">
             {article.title}
           </h1>

@@ -105,22 +105,25 @@ function ProjectDetail() {
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <main className="pt-24">
-        {/* Breadcrumb */}
-        <div className="max-w-5xl mx-auto px-6 pt-6 text-xs uppercase tracking-widest text-muted-foreground">
-          <Link to="/" className="hover:text-primary">Beranda</Link>
-          <span className="mx-2">/</span>
-          <Link to="/projects" className="hover:text-primary">Proyek</Link>
-          <span className="mx-2">/</span>
-          <span className="text-foreground">{p.category}</span>
+
+        {/* Breadcrumb bar */}
+        <div className="border-b border-border bg-card/30">
+          <div className="max-w-5xl mx-auto px-6 py-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-3">
+              <span className="bg-primary text-primary-foreground text-[10px] uppercase tracking-[0.2em] px-2 py-1 font-semibold">{p.category}</span>
+              <span className="text-xs uppercase tracking-widest text-muted-foreground">{p.status}</span>
+            </div>
+            <nav className="text-xs uppercase tracking-widest text-muted-foreground">
+              <Link to="/" className="hover:text-primary">Beranda</Link>
+              <span className="mx-2">/</span>
+              <Link to="/projects" className="hover:text-primary">Proyek</Link>
+              <span className="mx-2">/</span>
+              <span className="text-foreground">{p.category}</span>
+            </nav>
+          </div>
         </div>
 
         <article className="max-w-5xl mx-auto px-6 py-10">
-          <div className="flex items-center gap-3 mb-5">
-            <span className="bg-primary text-primary-foreground text-[10px] uppercase tracking-[0.2em] px-2 py-1 font-semibold">
-              {p.category}
-            </span>
-            <span className="text-xs uppercase tracking-widest text-muted-foreground">{p.status}</span>
-          </div>
           <h1 className="font-display text-3xl md:text-5xl uppercase leading-tight mb-6 break-words">{p.title}</h1>
           {p.description && (
             <p className="text-lg text-muted-foreground leading-relaxed mb-8 whitespace-pre-line break-words">{p.description}</p>

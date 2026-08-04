@@ -65,22 +65,31 @@ function ProjectsPage() {
       <main className="pt-32 pb-24">
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-12">
-            <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">Portofolio</div>
-            <h1 className="font-display text-4xl md:text-5xl uppercase">Semua Proyek Kami</h1>
+            <div className="flex items-start justify-between gap-4 mb-2">
+              <div>
+                <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">Portofolio</div>
+                <h1 className="font-display text-4xl md:text-5xl uppercase">Semua Proyek Kami</h1>
+              </div>
+              <nav className="text-xs uppercase tracking-widest text-muted-foreground shrink-0 mt-1">
+                <Link to="/" className="hover:text-primary">Beranda</Link>
+                <span className="mx-2">/</span>
+                <span className="text-foreground">Proyek</span>
+              </nav>
+            </div>
             <p className="text-muted-foreground mt-3 max-w-2xl">Telusuri portofolio proyek industri yang telah kami selesaikan di berbagai sektor.</p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10 p-4 border border-border bg-card/50">
-            <Input placeholder="Cari proyek..." value={q} onChange={(e) => setQ(e.target.value)} className="col-span-2" />
-            <select value={cat} onChange={(e) => setCat(e.target.value)} className="bg-background border border-border px-3 text-sm h-9">
+          <div className="flex gap-3 mb-10 p-4 border border-border bg-card/50 overflow-x-auto">
+            <Input placeholder="Cari proyek..." value={q} onChange={(e) => setQ(e.target.value)} className="min-w-[160px] flex-1" />
+            <select value={cat} onChange={(e) => setCat(e.target.value)} className="bg-background border border-border px-3 text-sm h-9 shrink-0 min-w-[130px]">
               <option value="all">Semua Kategori</option>
               {categories.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
-            <select value={year} onChange={(e) => setYear(e.target.value)} className="bg-background border border-border px-3 text-sm h-9">
+            <select value={year} onChange={(e) => setYear(e.target.value)} className="bg-background border border-border px-3 text-sm h-9 shrink-0 min-w-[110px]">
               <option value="all">Semua Tahun</option>
               {years.map((y) => <option key={y} value={y}>{y}</option>)}
             </select>
-            <select value={status} onChange={(e) => setStatus(e.target.value)} className="bg-background border border-border px-3 text-sm h-9 col-span-2 md:col-span-1">
+            <select value={status} onChange={(e) => setStatus(e.target.value)} className="bg-background border border-border px-3 text-sm h-9 shrink-0 min-w-[120px]">
               <option value="all">Semua Status</option>
               <option value="Selesai">Selesai</option>
               <option value="Berjalan">Berjalan</option>

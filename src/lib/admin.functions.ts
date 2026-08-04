@@ -113,8 +113,10 @@ export const adminUpsert = createServerFn({ method: "POST" })
     delete row.created_at;
 
     // For products, category_label mirrors category (same value).
-    // Ensure it's always populated to satisfy NOT NULL constraint.
-    if (data.table === "products" && row.category && !row.category_label) {
+    // Ensure it's always synced.
+    if (data.table === "products") {
+      if (!row.brand) throw new Error("Brand wajib dipilih.");
+      if (!row.category) throw new Error("Kategori wajib dipilih.");
       row.category_label = row.category;
     }
 

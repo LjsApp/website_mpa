@@ -340,6 +340,7 @@ const productsConfig: CrudConfig = {
     {
       name: "brand",
       label: "Brand",
+      required: true,
       type: "db-select",
       optionsTable: "brands",
       optionValue: "name",

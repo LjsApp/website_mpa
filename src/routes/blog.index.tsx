@@ -81,34 +81,52 @@ function BlogPage() {
       <main className="pt-20">
         {/* Page header */}
         <section className="border-b border-border bg-card/30">
-          <div className="max-w-7xl mx-auto px-6 py-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-            <div>
-              <div className="text-xs uppercase tracking-[0.3em] text-primary mb-2">Pusat Wawasan</div>
-              <h1 className="font-display text-4xl md:text-5xl uppercase leading-none">
-                Blog & <span className="text-gradient-orange">Artikel</span>
-              </h1>
-              <p className="text-muted-foreground mt-3 max-w-xl">
-                Wawasan, panduan teknis, dan berita terbaru seputar industri, otomasi, energi,
-                dan manufaktur dari tim kami.
-              </p>
-            </div>
-            <div className="relative w-full md:w-80">
-              <input
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                placeholder="Cari artikel, topik, tag…"
-                className="w-full bg-background border border-border px-4 py-3 pr-10 text-sm focus:outline-none focus:border-primary"
-              />
-              <svg
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.3-4.3" />
-              </svg>
+          <div className="max-w-7xl mx-auto px-6 py-10">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+              <div>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <div className="text-xs uppercase tracking-[0.3em] text-primary mb-2">Pusat Wawasan</div>
+                    <h1 className="font-display text-4xl md:text-5xl uppercase leading-none">
+                      Blog & <span className="text-gradient-orange">Artikel</span>
+                    </h1>
+                  </div>
+                  <nav className="text-xs uppercase tracking-widest text-muted-foreground shrink-0 mt-1 md:hidden">
+                    <Link to="/" className="hover:text-primary">Beranda</Link>
+                    <span className="mx-2">/</span>
+                    <span className="text-foreground">Blog</span>
+                  </nav>
+                </div>
+                <p className="text-muted-foreground mt-3 max-w-xl">
+                  Wawasan, panduan teknis, dan berita terbaru seputar industri, otomasi, energi,
+                  dan manufaktur dari tim kami.
+                </p>
+              </div>
+              <div className="flex flex-col items-end gap-3">
+                <nav className="text-xs uppercase tracking-widest text-muted-foreground hidden md:block">
+                  <Link to="/" className="hover:text-primary">Beranda</Link>
+                  <span className="mx-2">/</span>
+                  <span className="text-foreground">Blog</span>
+                </nav>
+                <div className="relative w-full md:w-80">
+                  <input
+                    value={q}
+                    onChange={(e) => setQ(e.target.value)}
+                    placeholder="Cari artikel, topik, tag…"
+                    className="w-full bg-background border border-border px-4 py-3 pr-10 text-sm focus:outline-none focus:border-primary"
+                  />
+                  <svg
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.3-4.3" />
+                  </svg>
+                </div>
+              </div>
             </div>
           </div>
           {/* Category bar */}
