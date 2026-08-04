@@ -9,9 +9,12 @@ type AnimateOptions = {
  * Attach to a container ref. All children with [data-animate] will
  * reveal themselves when they enter the viewport.
  * Also supports [data-animate-stagger] on a container to stagger children.
+ *
+ * once=true: element stays visible after first reveal (prevents flash on navigation)
+ * once=false: element hides again when leaving viewport (repeating animation)
  */
 export function useScrollAnimate(options: AnimateOptions = {}) {
-  const { threshold = 0.12, once = false } = options;
+  const { threshold = 0.12, once = true } = options;
   const ref = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -44,7 +47,7 @@ export function useScrollAnimate(options: AnimateOptions = {}) {
 
             if (once) observer.unobserve(el);
           } else if (!once) {
-            // Remove classes if leaving viewport so it animates again next time
+            // Remove classes only if repeating mode is on
             if (el.dataset.animateStagger !== undefined) {
               const children = Array.from(el.children) as HTMLElement[];
               children.forEach((child) => child.classList.remove("is-visible"));
