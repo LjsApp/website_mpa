@@ -65,20 +65,24 @@ export function Hero({ company }: { company?: CompanyRow | null }) {
       
       {/* Floating Ambient Particles */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {[...Array(6)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute bg-primary/20 rounded-full animate-float"
-            style={{
-              width: Math.random() * 8 + 4 + 'px',
-              height: Math.random() * 8 + 4 + 'px',
-              left: Math.random() * 100 + '%',
-              top: Math.random() * 100 + '%',
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${Math.random() * 4 + 4}s`,
-            }}
-          />
-        ))}
+        {[...Array(6)].map((_, i) => {
+          // Use deterministic values based on index to prevent SSR hydration mismatch
+          const seed = i + 1;
+          return (
+            <div
+              key={i}
+              className="absolute bg-primary/20 rounded-full animate-float"
+              style={{
+                width: ((seed * 17) % 8) + 4 + 'px',
+                height: ((seed * 23) % 8) + 4 + 'px',
+                left: ((seed * 31) % 100) + '%',
+                top: ((seed * 47) % 100) + '%',
+                animationDelay: `${(seed * 13) % 5}s`,
+                animationDuration: `${((seed * 19) % 4) + 4}s`,
+              }}
+            />
+          );
+        })}
       </div>
 
       <div className="absolute inset-0 bg-gradient-to-br from-background via-background/95 to-background/70" />

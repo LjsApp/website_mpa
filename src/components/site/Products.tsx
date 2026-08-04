@@ -12,7 +12,7 @@ export function Products({ products = [] }: { products?: ProductRow[] }) {
     if (seen.has(p.category)) return false;
     seen.add(p.category);
     return true;
-  }).slice(0, 4); // max 4 categories shown
+  }).slice(0, 3); // max 3 categories shown
 
   if (featured.length === 0) return null;
 
@@ -30,7 +30,7 @@ export function Products({ products = [] }: { products?: ProductRow[] }) {
             Lihat Semua Katalog →
           </Link>
         </div>
-        <div className="grid md:grid-cols-2 gap-6" data-animate-stagger>
+        <div className="grid md:grid-cols-3 gap-6" data-animate-stagger>
           {featured.map((p) => (
             <div key={p.id} className="h-full">
               <Link
@@ -44,10 +44,12 @@ export function Products({ products = [] }: { products?: ProductRow[] }) {
                     {p.stock}
                   </div>
                 </div>
-                <div className="p-5 flex flex-col flex-1">
-                  <div className="text-[10px] uppercase tracking-widest text-primary mb-1.5">{p.category_label} · {p.brand}</div>
-                  <div className="font-display text-base uppercase leading-tight mb-2 group-hover:text-primary transition">{p.name}</div>
-                  <p className="text-xs text-muted-foreground line-clamp-2">{p.description}</p>
+                <div className="p-6 flex flex-col flex-1">
+                  <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-primary mb-3">
+                    <span>{p.category_label}</span><span className="text-muted-foreground">·</span><span className="text-muted-foreground">{p.brand}</span>
+                  </div>
+                  <h3 className="font-display text-xl uppercase mb-2 group-hover:text-primary transition">{p.name}</h3>
+                  <p className="text-sm text-muted-foreground line-clamp-2">{p.description}</p>
                 </div>
               </Link>
             </div>
