@@ -1,3 +1,5 @@
+import { useScrollAnimate } from "@/hooks/use-scroll-animate";
+
 const items = [
   { i: "01", t: "Keahlian Teknis", d: "Tim engineering berpengalaman dengan pemahaman industri mendalam." },
   { i: "02", t: "Pengadaan Cepat", d: "Sistem sourcing efisien dengan jaringan supplier yang kuat." },
@@ -8,16 +10,18 @@ const items = [
 ];
 
 export function WhyUs() {
+  const containerRef = useScrollAnimate();
+
   return (
-    <section className="py-28 section-ember border-y border-border">
+    <section className="py-28 section-ember border-y border-border" ref={containerRef as any}>
       <div className="max-w-7xl mx-auto px-6">
-        <div className="max-w-2xl mb-14">
+        <div className="max-w-2xl mb-14" data-animate="fade-up">
           <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">Mengapa Kami</div>
           <h2 className="font-display text-4xl md:text-5xl uppercase leading-tight">
             Dibangun Untuk<br /><span className="text-gradient-orange">Performa Industri</span>
           </h2>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5" data-animate-stagger>
           {items.map((it) => (
             <div key={it.i} className="industrial-card p-7 group">
               <div className="flex items-start justify-between mb-5">

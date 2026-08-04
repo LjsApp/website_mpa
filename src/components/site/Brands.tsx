@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import type { BrandRow } from "@/lib/site-types";
 import { LogoGridCarousel } from "@/components/site/LogoGridCarousel";
+import { useScrollAnimate } from "@/hooks/use-scroll-animate";
+import { useCounter, parseStat } from "@/hooks/use-counter";
 
 export const BRAND_CATEGORIES = [
   "Automation",
@@ -13,8 +15,26 @@ export const BRAND_CATEGORIES = [
   "Pneumatics",
 ] as const;
 
+function BrandStatItem({ rawValue, label }: { rawValue: string; label: string }) {
+  const parsed = parseStat(rawValue);
+  // Just trigger directly since this is simple
+  const count = useCounter(parsed.value, 1500, true);
+  const displayValue = parsed.value > 0 ? `${count}${parsed.suffix}` : rawValue;
+
+  return (
+    <div className="text-center">
+      <div className="font-display text-3xl md:text-5xl text-primary">{displayValue}</div>
+      <div className="text-[11px] md:text-xs uppercase tracking-[0.18em] text-muted-foreground mt-2">
+        {label}
+      </div>
+    </div>
+  );
+}
+
 export function Brands({ brands = [] }: { brands?: BrandRow[] }) {
   const [active, setActive] = useState("Semua");
+  const containerRef = useScrollAnimate();
+
   if (brands.length === 0) return null;
 
   const used = BRAND_CATEGORIES.filter((c) => brands.some((b) => b.category === c));
@@ -27,9 +47,9 @@ export function Brands({ brands = [] }: { brands?: BrandRow[] }) {
   ];
 
   return (
-    <section className="py-28 md:py-36 bg-white">
+    <section className="py-28 md:py-36 bg-white" ref={containerRef as any}>
       <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center max-w-2xl mx-auto mb-14">
+        <div className="text-center max-w-2xl mx-auto mb-14" data-animate="fade-up">
           <div className="text-xs uppercase tracking-[0.3em] text-primary mb-4">Dukungan Brand</div>
           <h2 className="font-display text-4xl md:text-5xl uppercase leading-tight">
             Brand Industri Resmi & Terpercaya
@@ -40,19 +60,16 @@ export function Brands({ brands = [] }: { brands?: BrandRow[] }) {
           </p>
         </div>
 
-        <div className="grid grid-cols-3 gap-6 max-w-3xl mx-auto mb-14">
+        <div className="grid grid-cols-3 gap-6 max-w-3xl mx-auto mb-14" data-animate-stagger>
           {stats.map((s) => (
-            <div key={s.label} className="text-center">
-              <div className="font-display text-3xl md:text-5xl text-primary">{s.value}</div>
-              <div className="text-[11px] md:text-xs uppercase tracking-[0.18em] text-muted-foreground mt-2">
-                {s.label}
-              </div>
+            <div key={s.label} className="animate-child">
+              <BrandStatItem rawValue={s.value} label={s.label} />
             </div>
           ))}
         </div>
 
         {used.length > 0 && (
-          <div className="flex flex-wrap justify-center gap-2 mb-12">
+          <div className="flex flex-wrap justify-center gap-2 mb-12" data-animate="fade-up">
             {["Semua", ...used].map((c) => (
               <button
                 key={c}
@@ -69,9 +86,11 @@ export function Brands({ brands = [] }: { brands?: BrandRow[] }) {
           </div>
         )}
 
-        <LogoGridCarousel key={active} items={filtered} rows={2} variant="light" />
+        <div data-animate="fade-up">
+          <LogoGridCarousel key={active} items={filtered} rows={2} variant="light" />
+        </div>
 
-        <div className="mt-16 text-center">
+        <div className="mt-16 text-center" data-animate="fade-up">
           <h3 className="font-display text-2xl md:text-3xl uppercase">
             Tidak menemukan brand yang Anda cari?
           </h3>

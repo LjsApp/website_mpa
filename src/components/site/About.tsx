@@ -1,6 +1,8 @@
+import { useState, useEffect } from "react";
 import aboutImg from "@/assets/about-factory.jpg";
 import { asTimeline, type CompanyRow } from "@/lib/site-types";
 import { LazyImage } from "@/components/ui/lazy-image";
+import { useScrollAnimate } from "@/hooks/use-scroll-animate";
 
 export function About({ company }: { company?: CompanyRow | null }) {
   const timeline = asTimeline(company?.timeline);
@@ -10,12 +12,25 @@ export function About({ company }: { company?: CompanyRow | null }) {
     ? `${Math.max(1, new Date().getFullYear() - Number(firstYear))}+`
     : null;
 
+  const containerRef = useScrollAnimate();
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <section id="about" className="py-28">
+    <section id="about" className="py-28" ref={containerRef as any}>
       <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
-        <div className="relative">
-          <div className="aspect-square overflow-hidden border border-border">
-            <LazyImage src={aboutImg} alt="Ruang kontrol industri" width={1024} height={1024} className="w-full h-full object-cover" />
+        <div className="relative" data-animate="fade-right">
+          <div className="aspect-square overflow-hidden border border-border relative">
+             <div className="absolute inset-0" style={{ transform: `translateY(${(scrollY - 600) * 0.15}px) scale(1.15)` }}>
+                <LazyImage src={aboutImg} alt="Ruang kontrol industri" width={1024} height={1024} className="w-full h-full object-cover" />
+             </div>
           </div>
           {years && (
             <div className="absolute -bottom-6 -right-6 bg-primary text-primary-foreground p-6 max-w-[220px] hidden md:block">
@@ -24,7 +39,7 @@ export function About({ company }: { company?: CompanyRow | null }) {
             </div>
           )}
         </div>
-        <div>
+        <div data-animate="fade-left">
           <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">Tentang {company?.name ?? "Kami"}</div>
           <h2 className="font-display text-4xl md:text-5xl uppercase leading-tight">
             Engineering Yang<br /><span className="text-gradient-orange">Dapat Diandalkan</span>
@@ -32,7 +47,7 @@ export function About({ company }: { company?: CompanyRow | null }) {
           {about && <p className="text-muted-foreground mt-5 leading-relaxed whitespace-pre-line">{about}</p>}
 
           {(company?.vision || company?.mission) && (
-            <div className="grid sm:grid-cols-2 gap-4 mt-8">
+            <div className="grid sm:grid-cols-2 gap-4 mt-8" data-animate-stagger>
               {company?.vision && (
                 <div className="border border-border p-5">
                   <div className="text-xs uppercase tracking-widest text-primary mb-1">Visi</div>
@@ -49,7 +64,7 @@ export function About({ company }: { company?: CompanyRow | null }) {
           )}
 
           {timeline.length > 0 && (
-            <div className="mt-10 space-y-4">
+            <div className="mt-10 space-y-4" data-animate-stagger>
               {timeline.map((t) => (
                 <div key={t.year + t.title} className="flex gap-5 border-l-2 border-primary/40 pl-5 py-1">
                   <div className="font-display text-2xl text-primary w-20 shrink-0">{t.year}</div>

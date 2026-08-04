@@ -1,3 +1,5 @@
+import { useScrollAnimate } from "@/hooks/use-scroll-animate";
+
 const steps = [
   { n: "01", t: "Konsultasi", d: "Memahami kebutuhan operasional Anda." },
   { n: "02", t: "Analisis Kebutuhan", d: "Lingkup teknis & spesifikasi." },
@@ -8,14 +10,16 @@ const steps = [
 ];
 
 export function Workflow() {
+  const containerRef = useScrollAnimate();
+
   return (
-    <section className="py-28 bg-primary border-y border-primary/20 relative overflow-hidden">
+    <section className="py-28 bg-primary border-y border-primary/20 relative overflow-hidden" ref={containerRef as any}>
       {/* Subtle texture overlay */}
       <div className="absolute inset-0 opacity-10" style={{
         backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.15) 39px, rgba(255,255,255,0.15) 40px), repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.15) 39px, rgba(255,255,255,0.15) 40px)"
       }} />
       <div className="max-w-7xl mx-auto px-6 relative">
-        <div className="max-w-2xl mb-14">
+        <div className="max-w-2xl mb-14" data-animate="fade-up">
           <div className="text-xs uppercase tracking-[0.3em] text-primary-foreground/60 mb-3">Alur Kerja</div>
           <h2 className="font-display text-4xl md:text-5xl uppercase leading-tight text-primary-foreground">
             Dari Permintaan<br /><span className="text-primary-foreground/80">Hingga Operasi</span>
@@ -23,7 +27,7 @@ export function Workflow() {
         </div>
         <div className="relative">
           <div className="hidden lg:block absolute top-8 left-0 right-0 h-px bg-primary-foreground/20" />
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6" data-animate-stagger>
             {steps.map((s) => (
               <div key={s.n} className="relative group">
                 <div className="w-16 h-16 bg-primary-foreground/10 border border-primary-foreground/40 group-hover:bg-primary-foreground/20 group-hover:border-primary-foreground transition-all duration-300 flex items-center justify-center font-display text-xl text-primary-foreground mb-4 relative z-10">
