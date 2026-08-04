@@ -70,7 +70,18 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
+import { getCompany } from "@/lib/public.functions";
+import { queryOptions } from "@tanstack/react-query";
+
+const companyQuery = queryOptions({
+  queryKey: ["company-info"],
+  queryFn: () => getCompany(),
+});
+
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData(companyQuery);
+  },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
