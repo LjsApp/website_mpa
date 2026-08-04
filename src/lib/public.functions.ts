@@ -60,15 +60,23 @@ export const getProductBySlug = createServerFn({ method: "GET" })
       .eq("slug", data.slug)
       .maybeSingle();
     if (error) throw new Error(error.message);
-    if (!product) return { product: null, related: [] };
-    const { data: related } = await supabaseAdmin
-      .from("products")
-      .select("*")
-      .eq("category", product.category)
-      .neq("id", product.id)
-      .order("sort_order", { ascending: true })
-      .limit(3);
-    return { product, related: related ?? [] };
+    if (!product) return { product: null, related: [], company: null };
+    const [relatedResult, companyResult] = await Promise.all([
+      supabaseAdmin
+        .from("products")
+        .select("*")
+        .eq("category", product.category)
+        .neq("id", product.id)
+        .order("sort_order", { ascending: true })
+        .limit(3),
+      supabaseAdmin
+        .from("company_info")
+        .select("name, phone, email, whatsapp")
+        .order("updated_at", { ascending: false })
+        .limit(1)
+        .maybeSingle(),
+    ]);
+    return { product, related: relatedResult.data ?? [], company: companyResult.data ?? null };
   });
 
 /* ============================ ARTICLES ============================ */

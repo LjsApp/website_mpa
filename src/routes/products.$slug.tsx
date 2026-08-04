@@ -76,12 +76,17 @@ function ProductDetail() {
   const { data } = useSuspenseQuery(productQuery(slug));
   const product = data.product!;
   const related = data.related;
+  const company = data.company;
   const specs = asSpecs(product.specs);
   const features = asStringList(product.features);
   const applications = asStringList(product.applications);
   const gallery = Array.isArray((product as any).gallery) ? ((product as any).gallery as string[]) : [];
   const [activeImage, setActiveImage] = useState<string | null>(gallery[0] ?? null);
+  // Use WA number from company management — fallback to phone if whatsapp field is empty
+  const rawWa = ((company as any)?.whatsapp ?? (company as any)?.phone ?? "").replace(/[^0-9]/g, "");
+  const waNumber = rawWa ? (rawWa.startsWith("0") ? `62${rawWa.slice(1)}` : rawWa) : "";
   const waText = encodeURIComponent(`Halo, saya tertarik dengan produk ${product.name} (${product.brand}). Mohon info lebih lanjut.`);
+  const waHref = waNumber ? `https://wa.me/${waNumber}?text=${waText}` : "#";
   const siteUrl = import.meta.env.VITE_SITE_URL ?? "";
 
   const jsonLd = {
@@ -165,12 +170,20 @@ function ProductDetail() {
               )}
 
               <div className="flex flex-wrap gap-3">
-                <a href={`https://wa.me/6281200000000?text=${waText}`} className="bg-primary text-primary-foreground px-7 py-3.5 font-semibold uppercase tracking-wider text-sm hover:brightness-110 transition glow-orange inline-flex items-center gap-2">
-                  Minta Penawaran
+                <a
+                  href={waHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-primary text-primary-foreground px-7 py-3.5 font-semibold uppercase tracking-wider text-sm hover:brightness-110 transition glow-orange inline-flex items-center gap-2"
+                >
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.988 1.993C6.443 1.993 1.933 6.503 1.933 12.048c0 1.853.502 3.586 1.373 5.073L1.5 22.5l5.521-1.78a10.066 10.066 0 0 0 4.967 1.321c5.544 0 10.055-4.51 10.055-10.055S17.532 1.993 11.988 1.993zm0 18.367a8.305 8.305 0 0 1-4.23-1.155l-.303-.18-3.278 1.059 1.084-3.169-.198-.316a8.317 8.317 0 0 1-1.282-4.451c0-4.602 3.745-8.347 8.347-8.347s8.347 3.745 8.347 8.347-3.745 8.212-8.487 8.212z"/></svg>
+                  Minta Penawaran via WA
                 </a>
-                <a href="mailto:info@morganpowerindo.com" className="border border-border px-7 py-3.5 font-semibold uppercase tracking-wider text-sm hover:bg-card transition">
-                  Email Sales
-                </a>
+                {company?.email && (
+                  <a href={`mailto:${company.email}`} className="border border-border px-7 py-3.5 font-semibold uppercase tracking-wider text-sm hover:bg-card transition">
+                    Email Sales
+                  </a>
+                )}
               </div>
             </div>
           </div>
@@ -213,7 +226,13 @@ function ProductDetail() {
               <div className="mt-8 industrial-card p-6">
                 <div className="text-xs uppercase tracking-widest text-primary mb-2">Butuh Konsultasi?</div>
                 <p className="text-sm text-muted-foreground mb-4">Tim engineer kami siap membantu pemilihan produk yang tepat untuk aplikasi Anda.</p>
-                <a href={`https://wa.me/6281200000000?text=${waText}`} className="text-sm uppercase tracking-widest text-primary hover:underline">
+                <a
+                  href={waHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sm uppercase tracking-widest text-primary hover:underline"
+                >
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.988 1.993C6.443 1.993 1.933 6.503 1.933 12.048c0 1.853.502 3.586 1.373 5.073L1.5 22.5l5.521-1.78a10.066 10.066 0 0 0 4.967 1.321c5.544 0 10.055-4.51 10.055-10.055S17.532 1.993 11.988 1.993zm0 18.367a8.305 8.305 0 0 1-4.23-1.155l-.303-.18-3.278 1.059 1.084-3.169-.198-.316a8.317 8.317 0 0 1-1.282-4.451c0-4.602 3.745-8.347 8.347-8.347s8.347 3.745 8.347 8.347-3.745 8.212-8.487 8.212z"/></svg>
                   Hubungi via WhatsApp →
                 </a>
               </div>
