@@ -1,5 +1,6 @@
 import heroImg from "@/assets/hero-industrial.jpg";
 import { asStats, type CompanyRow } from "@/lib/site-types";
+import { LazyImage } from "@/components/ui/lazy-image";
 
 const badges = ["Mitra Terpercaya", "Pengadaan Cepat", "Layanan Nasional", "Dukungan Teknis"];
 const fallbackStats = [
@@ -60,7 +61,7 @@ export function Hero({ company }: { company?: CompanyRow | null }) {
         <div className="relative">
           <div className="absolute -inset-4 bg-primary/20 blur-3xl rounded-full" />
           <div className="relative aspect-[4/5] overflow-hidden border border-border">
-            <img src={heroImg} alt="Operasi engineering industri" width={1536} height={1024} className="w-full h-full object-cover object-[75%_center]" />
+            <LazyImage src={heroImg} alt="Operasi engineering industri" width={1536} height={1024} className="w-full h-full object-cover object-[75%_center]" eager />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
 
           </div>

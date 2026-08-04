@@ -76,10 +76,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Industrial Supply & Engineering Solutions" },
-      { name: "description", content: "Reliable mechanical, electrical, and industrial support solutions for manufacturing, energy, and processing industries across Indonesia." },
-      { property: "og:description", content: "Trusted industrial partner for manufacturing, energy, and processing industries across Indonesia." },
+      { name: "description", content: "Distributor resmi produk industrial: filter, conveyor, motor, pompa, bearing, dan komponen teknik untuk industri manufaktur dan energi di Indonesia." },
+      { name: "robots", content: "index, follow" },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
+      { property: "og:locale", content: "id_ID" },
+      { property: "og:description", content: "Distributor resmi produk industrial untuk manufaktur dan energi di Indonesia." },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -102,7 +104,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="id">
       <head>
         <HeadContent />
       </head>

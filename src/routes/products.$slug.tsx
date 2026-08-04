@@ -18,10 +18,33 @@ export const Route = createFileRoute("/products/$slug")({
   loader: async ({ context, params }) => {
     const data = await context.queryClient.ensureQueryData(productQuery(params.slug));
     if (!data?.product) throw notFound();
+    return data;
   },
-  head: () => ({
-    meta: [{ title: "Produk" }],
-  }),
+  head: ({ loaderData }) => {
+    const product = loaderData?.product;
+    if (!product) return { meta: [{ title: "Produk" }] };
+    const siteUrl = import.meta.env.VITE_SITE_URL ?? "";
+    const canonicalUrl = `${siteUrl}/products/${product.slug}`;
+    const desc = product.description
+      ? product.description.slice(0, 160)
+      : `${product.name} — ${product.category_label ?? product.category}. Produk industrial berkualitas.`;
+    return {
+      meta: [
+        { title: product.name },
+        { name: "description", content: desc },
+        { name: "keywords", content: `${product.name}, ${product.brand ?? ""}, ${product.category_label ?? product.category}, industrial supply` },
+        { property: "og:title", content: product.name },
+        { property: "og:description", content: desc },
+        { property: "og:type", content: "product" },
+        ...(product.image_url ? [{ property: "og:image", content: product.image_url }] : []),
+        ...(siteUrl ? [{ property: "og:url", content: canonicalUrl }] : []),
+        { name: "twitter:title", content: product.name },
+        { name: "twitter:description", content: desc },
+        ...(product.image_url ? [{ name: "twitter:image", content: product.image_url }] : []),
+      ],
+      links: siteUrl ? [{ rel: "canonical", href: canonicalUrl }] : [],
+    };
+  },
   notFoundComponent: () => (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
@@ -59,9 +82,22 @@ function ProductDetail() {
   const gallery = Array.isArray((product as any).gallery) ? ((product as any).gallery as string[]) : [];
   const [activeImage, setActiveImage] = useState<string | null>(gallery[0] ?? null);
   const waText = encodeURIComponent(`Halo, saya tertarik dengan produk ${product.name} (${product.brand}). Mohon info lebih lanjut.`);
+  const siteUrl = import.meta.env.VITE_SITE_URL ?? "";
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": product.name,
+    "description": product.description ?? undefined,
+    "brand": product.brand ? { "@type": "Brand", "name": product.brand } : undefined,
+    "category": product.category_label ?? product.category,
+    "image": product.image_url ?? undefined,
+    ...(siteUrl ? { "url": `${siteUrl}/products/${product.slug}` } : {}),
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Navbar />
       <main className="pt-24">
         <section className="border-b border-border bg-card/30 py-6">
@@ -96,7 +132,7 @@ function ProductDetail() {
                         activeImage === img ? "border-primary opacity-100" : "border-border opacity-60 hover:opacity-100 hover:border-primary/60"
                       }`}
                     >
-                      <img src={img} alt={`${product.name} thumbnail ${i + 1}`} className="w-full h-full object-cover" />
+                      <LazyImage src={img} alt={`${product.name} thumbnail ${i + 1}`} className="w-full h-full object-cover" />
                     </div>
                   ))}
                 </div>

@@ -17,8 +17,28 @@ export const Route = createFileRoute("/projects/$slug")({
   loader: async ({ context, params }) => {
     const data = await context.queryClient.ensureQueryData(projectQuery(params.slug));
     if (!data?.project) throw notFound();
+    return data;
   },
-  head: ({ params }) => ({ meta: [{ title: `Proyek — ${params.slug}` }] }),
+  head: ({ loaderData, params }) => {
+    const project = loaderData?.project;
+    if (!project) return { meta: [{ title: `Proyek — ${params.slug}` }] };
+    const siteUrl = import.meta.env.VITE_SITE_URL ?? "";
+    const canonicalUrl = `${siteUrl}/projects/${project.slug}`;
+    const desc = project.excerpt ?? `Proyek ${project.title} oleh tim kami. ${project.category ?? ""}`;
+    return {
+      meta: [
+        { title: project.title },
+        { name: "description", content: desc.slice(0, 160) },
+        { name: "keywords", content: `${project.title}, proyek industri, ${project.category ?? ""}, engineering` },
+        { property: "og:title", content: project.title },
+        { property: "og:description", content: desc.slice(0, 160) },
+        { property: "og:type", content: "article" },
+        ...(project.image_url ? [{ property: "og:image", content: project.image_url }] : []),
+        ...(siteUrl ? [{ property: "og:url", content: canonicalUrl }] : []),
+      ],
+      links: siteUrl ? [{ rel: "canonical", href: canonicalUrl }] : [],
+    };
+  },
   notFoundComponent: () => (
     <div className="min-h-screen flex items-center justify-center"><Link to="/projects" className="text-primary">← Kembali ke daftar proyek</Link></div>
   ),

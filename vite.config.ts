@@ -13,4 +13,7 @@ export default defineConfig({
       projects: ["./tsconfig.json"],
     }),
   ],
+  build: {
+    minify: "esbuild",
+  },
 });

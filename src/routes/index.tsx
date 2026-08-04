@@ -19,8 +19,13 @@ const homeQuery = queryOptions({
   queryFn: () => getHomeData(),
 });
 
-export const Route = createFileRoute("/")({
-  head: () => ({ meta: [{ title: "Beranda" }] }),
+export const Route = createFileRoute("/")(({
+  head: () => ({
+    meta: [
+      { title: "Beranda" },
+      { name: "keywords", content: "distributor industrial, filter industri, conveyor, motor listrik, bearing, pompa, komponen teknik, engineering supply Indonesia" },
+    ],
+  }),
   loader: ({ context }) => context.queryClient.ensureQueryData(homeQuery),
   errorComponent: ({ error }) => (
     <div className="min-h-screen flex items-center justify-center text-center px-6">
@@ -28,12 +33,37 @@ export const Route = createFileRoute("/")({
     </div>
   ),
   component: Index,
-});
+} as any));
 
 function Index() {
   const { data } = useSuspenseQuery(homeQuery);
+  const c = data.company;
+  const siteUrl = import.meta.env.VITE_SITE_URL ?? "";
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": c?.name ?? "",
+    "description": c?.about ?? "",
+    "url": siteUrl || undefined,
+    "logo": c?.logo_url ?? undefined,
+    "email": c?.email ?? undefined,
+    "telephone": c?.phone ?? undefined,
+    "address": c?.address ? {
+      "@type": "PostalAddress",
+      "streetAddress": c.address,
+    } : undefined,
+    "sameAs": [
+      c?.linkedin_url,
+      c?.instagram_url,
+      c?.facebook_url,
+      c?.youtube_url,
+    ].filter(Boolean),
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Navbar />
       <main>
         <Hero company={data.company} />

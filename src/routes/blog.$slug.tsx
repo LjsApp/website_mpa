@@ -17,10 +17,32 @@ export const Route = createFileRoute("/blog/$slug")({
   loader: async ({ context, params }) => {
     const data = await context.queryClient.ensureQueryData(articleQuery(params.slug));
     if (!data?.article) throw notFound();
+    return data;
   },
-  head: () => ({
-    meta: [{ title: "Artikel" }],
-  }),
+  head: ({ loaderData }) => {
+    const article = loaderData?.article;
+    if (!article) return { meta: [{ title: "Artikel" }] };
+    const siteUrl = import.meta.env.VITE_SITE_URL ?? "";
+    const canonicalUrl = `${siteUrl}/blog/${article.slug}`;
+    return {
+      meta: [
+        { title: article.title },
+        { name: "description", content: article.excerpt ?? article.title },
+        { name: "keywords", content: `${article.category}, artikel industri, teknik, engineering` },
+        { property: "og:title", content: article.title },
+        { property: "og:description", content: article.excerpt ?? article.title },
+        { property: "og:type", content: "article" },
+        ...(article.image_url ? [{ property: "og:image", content: article.image_url }] : []),
+        ...(siteUrl ? [{ property: "og:url", content: canonicalUrl }] : []),
+        { property: "article:published_time", content: article.published_at ?? "" },
+        { property: "article:section", content: article.category ?? "" },
+        { name: "twitter:title", content: article.title },
+        { name: "twitter:description", content: article.excerpt ?? article.title },
+        ...(article.image_url ? [{ name: "twitter:image", content: article.image_url }] : []),
+      ],
+      links: siteUrl ? [{ rel: "canonical", href: canonicalUrl }] : [],
+    };
+  },
   notFoundComponent: () => (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
@@ -55,8 +77,27 @@ function ArticleDetail() {
   const { company } = useCompanyState();
   const socials = socialLinks(company);
 
+  const siteUrl = import.meta.env.VITE_SITE_URL ?? "";
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": article.title,
+    "description": article.excerpt ?? article.title,
+    "image": article.image_url ?? undefined,
+    "datePublished": article.published_at ?? undefined,
+    "author": { "@type": "Organization", "name": company?.name ?? "Tim" },
+    "publisher": {
+      "@type": "Organization",
+      "name": company?.name ?? "",
+      "logo": company?.logo_url ? { "@type": "ImageObject", "url": company.logo_url } : undefined,
+    },
+    ...(siteUrl ? { "url": `${siteUrl}/blog/${article.slug}` } : {}),
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Navbar />
       <main className="pt-24">
         {/* Breadcrumb */}

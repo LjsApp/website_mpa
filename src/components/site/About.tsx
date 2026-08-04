@@ -1,5 +1,6 @@
 import aboutImg from "@/assets/about-factory.jpg";
 import { asTimeline, type CompanyRow } from "@/lib/site-types";
+import { LazyImage } from "@/components/ui/lazy-image";
 
 export function About({ company }: { company?: CompanyRow | null }) {
   const timeline = asTimeline(company?.timeline);
@@ -14,7 +15,7 @@ export function About({ company }: { company?: CompanyRow | null }) {
       <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
         <div className="relative">
           <div className="aspect-square overflow-hidden border border-border">
-            <img src={aboutImg} alt="Ruang kontrol industri" loading="lazy" width={1024} height={1024} className="w-full h-full object-cover" />
+            <LazyImage src={aboutImg} alt="Ruang kontrol industri" width={1024} height={1024} className="w-full h-full object-cover" />
           </div>
           {years && (
             <div className="absolute -bottom-6 -right-6 bg-primary text-primary-foreground p-6 max-w-[220px] hidden md:block">
