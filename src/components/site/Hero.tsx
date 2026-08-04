@@ -44,24 +44,12 @@ export function Hero({ company }: { company?: CompanyRow | null }) {
   const dbStats = asStats(company?.stats);
   const stats = dbStats.length > 0 ? dbStats.slice(0, 4) : fallbackStats;
   const containerRef = useScrollAnimate();
-  const [scrollY, setScrollY] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const typeText = useTypewriter(["Terintegrasi", "Terbaik", "Inovatif", "Profesional"], 120, 2500);
 
   return (
     <section id="home" className="relative min-h-screen flex items-center pt-24 pb-16 overflow-hidden" ref={containerRef as any}>
-      <div 
-        className="absolute inset-0 grid-bg opacity-30" 
-        style={{ transform: `translateY(${scrollY * 0.15}px)` }}
-      />
+      <div className="absolute inset-0 grid-bg opacity-30" />
       
       {/* Floating Ambient Particles */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -93,10 +81,7 @@ export function Hero({ company }: { company?: CompanyRow | null }) {
             <span className="w-2 h-2 bg-primary animate-pulse" />
             Supply Industri & Engineering
           </div>
-          <h1 
-            className="font-display text-5xl md:text-6xl lg:text-7xl leading-[1.05] uppercase font-bold"
-            style={{ transform: `translateY(${scrollY * 0.05}px)` }}
-          >
+          <h1 className="font-display text-5xl md:text-6xl lg:text-7xl leading-[1.05] uppercase font-bold">
             Solusi Industrial<br />
             <span className="text-gradient-orange">Supply & Engineering</span><br />
             <span className="min-w-[300px] inline-block">{typeText}<span className="animate-pulse">_</span></span>
@@ -134,9 +119,7 @@ export function Hero({ company }: { company?: CompanyRow | null }) {
         <div className="relative" data-animate="scale-in">
           <div className="absolute -inset-4 bg-primary/20 blur-3xl rounded-full" />
           <div className="relative aspect-[4/5] overflow-hidden border border-border">
-            <div className="absolute inset-0" style={{ transform: `translateY(${scrollY * 0.3}px) scale(1.2)` }}>
-              <LazyImage src={heroImg} alt="Operasi engineering industri" width={1536} height={1024} className="w-full h-full object-cover object-[75%_center]" eager />
-            </div>
+            <LazyImage src={heroImg} alt="Operasi engineering industri" width={1536} height={1024} className="w-full h-full object-cover object-[75%_center]" eager />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
           </div>
         </div>

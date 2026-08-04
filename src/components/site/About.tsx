@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import aboutImg from "@/assets/about-factory.jpg";
 import { asTimeline, type CompanyRow } from "@/lib/site-types";
 import { LazyImage } from "@/components/ui/lazy-image";
@@ -13,24 +12,13 @@ export function About({ company }: { company?: CompanyRow | null }) {
     : null;
 
   const containerRef = useScrollAnimate();
-  const [scrollY, setScrollY] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   return (
     <section id="about" className="py-28" ref={containerRef as any}>
       <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
         <div className="relative" data-animate="fade-right">
-          <div className="aspect-square overflow-hidden border border-border relative">
-             <div className="absolute inset-0" style={{ transform: `translateY(${(scrollY - 600) * 0.15}px) scale(1.15)` }}>
-                <LazyImage src={aboutImg} alt="Ruang kontrol industri" width={1024} height={1024} className="w-full h-full object-cover" />
-             </div>
+          <div className="aspect-square overflow-hidden border border-border">
+            <LazyImage src={aboutImg} alt="Ruang kontrol industri" width={1024} height={1024} className="w-full h-full object-cover" />
           </div>
           {years && (
             <div className="absolute -bottom-6 -right-6 bg-primary text-primary-foreground p-6 max-w-[220px] hidden md:block">

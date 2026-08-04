@@ -270,3 +270,29 @@
   color: var(--color-muted-foreground);
 }
 .prose-content strong { font-weight: 700; }
+
+/* Slide-underline hover animation for section links */
+.link-slide {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  text-decoration: none !important;
+}
+.link-slide::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: currentColor;
+  transition: width 0.3s ease;
+}
+.link-slide:hover::after { width: 100%; }
+.link-slide .arrow {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+.link-slide:hover .arrow { transform: translateX(4px); }
+

@@ -26,8 +26,8 @@ export function Products({ products = [] }: { products?: ProductRow[] }) {
               Rangkaian Produk<br /><span className="text-gradient-orange">Industri Lengkap</span>
             </h2>
           </div>
-          <Link to="/catalog" className="text-sm uppercase tracking-widest text-primary hover:underline">
-            Lihat Semua Katalog →
+          <Link to="/catalog" className="text-sm uppercase tracking-widest text-primary link-slide">
+            Lihat Semua Katalog <span className="arrow">→</span>
           </Link>
         </div>
         <div className="grid md:grid-cols-3 gap-6" data-animate-stagger>

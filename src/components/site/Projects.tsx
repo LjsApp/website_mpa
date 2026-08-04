@@ -14,8 +14,8 @@ export function Projects({ projects = [] }: { projects?: ProjectRow[] }) {
               Proyek Terbaru<br /><span className="text-gradient-orange">Berhasil Diselesaikan</span>
             </h2>
           </div>
-          <Link to="/projects" className="text-sm uppercase tracking-widest text-primary hover:underline">
-            Lihat Semua Proyek →
+          <Link to="/projects" className="text-sm uppercase tracking-widest text-primary link-slide">
+            Lihat Semua Proyek <span className="arrow">→</span>
           </Link>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
