@@ -27,7 +27,7 @@ export function WhyUs() {
               <div className="flex items-start justify-between mb-5">
                 <div className="font-display text-5xl text-primary/30 group-hover:text-primary transition-colors">{it.i}</div>
                 <div className="w-10 h-10 border border-border flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition">
-                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                  <svg className="w-5 h-5 group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                 </div>
               </div>
               <h3 className="font-display text-xl uppercase mb-2">{it.t}</h3>
