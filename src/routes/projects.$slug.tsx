@@ -46,7 +46,6 @@ function ProjectDetailSkeleton() {
 
 export const Route = createFileRoute("/projects/$slug")({
   pendingComponent: ProjectDetailSkeleton,
-  pendingMs: 0,
   loader: async ({ context, params }) => {
     const data = await context.queryClient.ensureQueryData(projectQuery(params.slug));
     if (!data?.project) throw notFound();

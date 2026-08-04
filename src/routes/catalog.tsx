@@ -221,10 +221,7 @@ function CatalogPage() {
                       <div className="p-5 flex flex-col flex-1">
                         <div className="text-[10px] uppercase tracking-widest text-primary mb-1.5">{p.category_label} · {p.brand}</div>
                         <div className="font-display text-base uppercase leading-tight mb-2 group-hover:text-primary transition">{p.name}</div>
-                        <p className="text-xs text-muted-foreground line-clamp-2 mb-4 flex-1">{p.description}</p>
-                        <span className="text-xs uppercase tracking-widest text-primary border-t border-border pt-3 inline-flex items-center justify-between">
-                          Lihat Detail <span aria-hidden>→</span>
-                        </span>
+                        <p className="text-xs text-muted-foreground line-clamp-2">{p.description}</p>
                       </div>
                     </Link>
                   ))}

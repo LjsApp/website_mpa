@@ -50,7 +50,6 @@ function ProductDetailSkeleton() {
 
 export const Route = createFileRoute("/products/$slug")({
   pendingComponent: ProductDetailSkeleton,
-  pendingMs: 0,
   loader: async ({ context, params }) => {
     const data = await context.queryClient.ensureQueryData(productQuery(params.slug));
     if (!data?.product) throw notFound();

@@ -32,22 +32,24 @@ export function Products({ products = [] }: { products?: ProductRow[] }) {
         </div>
         <div className="grid md:grid-cols-2 gap-6" data-animate-stagger>
           {featured.map((p) => (
-            <div key={p.id} className="industrial-card overflow-hidden group">
-              <div className="aspect-[16/10] overflow-hidden bg-background">
-                {Array.isArray((p as any).gallery) && (p as any).gallery[0] && <LazyImage src={(p as any).gallery[0]} alt={p.name} width={800} height={500} className="w-full h-full object-cover group-hover:scale-105 transition duration-700" />}
-              </div>
-              <div className="p-6">
-                <div className="text-xs uppercase tracking-widest text-primary mb-2">{p.category_label}</div>
-                <h3 className="font-display text-2xl uppercase mb-2">{p.name}</h3>
-                <p className="text-sm text-muted-foreground mb-4">{(p as any).short_desc}</p>
-                <div className="flex items-center justify-between border-t border-border pt-4">
-                  <span className="text-xs text-muted-foreground">Brand: {p.brand}</span>
-                  <Link to="/products/$slug" params={{ slug: p.slug }} className="text-xs uppercase tracking-widest text-primary hover:underline">
-                    Lihat Detail →
-                  </Link>
+            <Link
+              key={p.id}
+              to="/products/$slug"
+              params={{ slug: p.slug }}
+              className="industrial-card overflow-hidden group flex flex-col"
+            >
+              <div className="aspect-[4/3] overflow-hidden bg-background relative">
+                {Array.isArray((p as any).gallery) && (p as any).gallery[0] && <LazyImage src={(p as any).gallery[0]} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-700" />}
+                <div className="absolute top-3 left-3 bg-background/85 backdrop-blur border border-border px-2 py-1 text-[10px] uppercase tracking-widest">
+                  {p.stock}
                 </div>
               </div>
-            </div>
+              <div className="p-5 flex flex-col flex-1">
+                <div className="text-[10px] uppercase tracking-widest text-primary mb-1.5">{p.category_label} · {p.brand}</div>
+                <div className="font-display text-base uppercase leading-tight mb-2 group-hover:text-primary transition">{p.name}</div>
+                <p className="text-xs text-muted-foreground line-clamp-2">{p.description}</p>
+              </div>
+            </Link>
           ))}
         </div>
       </div>
