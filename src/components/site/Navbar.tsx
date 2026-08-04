@@ -136,33 +136,68 @@ export function Navbar() {
       </div>
       {open && (
         <div className="md:hidden border-t border-primary-foreground/15 bg-primary/95 backdrop-blur-md animate-fade-up">
-          <div className="px-6 py-4 flex flex-col gap-3">
-            {renderSectionLink({ hash: "home", label: "Beranda" }, () => setOpen(false))}
-            {renderSectionLink({ hash: "about", label: "Tentang" }, () => setOpen(false))}
-            <Link to="/catalog" onClick={() => setOpen(false)} className="text-sm text-primary-foreground/80 uppercase tracking-wider py-2">
-              Katalog
-            </Link>
-            <Link to="/projects" onClick={() => setOpen(false)} className="text-sm text-primary-foreground/80 uppercase tracking-wider py-2">
-              Proyek
-            </Link>
-            <Link to="/blog" onClick={() => setOpen(false)} className="text-sm text-primary-foreground/80 uppercase tracking-wider py-2">
-              Blog
-            </Link>
-            {renderSectionLink({ hash: "contact", label: "Kontak" }, () => setOpen(false))}
-            
+          <div className="px-6 py-4 flex flex-col">
+            {/* Beranda */}
             {onHome ? (
-              <button
-                type="button"
-                onClick={() => { scrollToSection("contact"); setOpen(false); }}
-                className="bg-accent text-accent-foreground px-5 py-3 text-center text-sm font-semibold uppercase"
-              >
-                Minta Penawaran
+              <button type="button" onClick={() => { scrollToSection("home"); setOpen(false); }}
+                className="w-full text-left text-sm text-primary-foreground/80 uppercase tracking-wider py-3 border-b border-primary-foreground/10 hover:text-primary-foreground transition-colors">
+                Beranda
               </button>
             ) : (
-              <Link to="/" onClick={() => { setOpen(false); setTimeout(() => scrollToSection("contact"), 200); }} className="bg-accent text-accent-foreground px-5 py-3 text-center text-sm font-semibold uppercase">
-                Minta Penawaran
+              <Link to="/" onClick={() => setOpen(false)}
+                className="w-full text-left text-sm text-primary-foreground/80 uppercase tracking-wider py-3 border-b border-primary-foreground/10 hover:text-primary-foreground transition-colors">
+                Beranda
               </Link>
             )}
+            {/* Tentang */}
+            {onHome ? (
+              <button type="button" onClick={() => { scrollToSection("about"); setOpen(false); }}
+                className="w-full text-left text-sm text-primary-foreground/80 uppercase tracking-wider py-3 border-b border-primary-foreground/10 hover:text-primary-foreground transition-colors">
+                Tentang
+              </button>
+            ) : (
+              <Link to="/" onClick={() => { setOpen(false); setTimeout(() => { const el = document.getElementById("about"); if (el) el.scrollIntoView({ behavior: "smooth" }); }, 200); }}
+                className="w-full text-left text-sm text-primary-foreground/80 uppercase tracking-wider py-3 border-b border-primary-foreground/10 hover:text-primary-foreground transition-colors">
+                Tentang
+              </Link>
+            )}
+            <Link to="/catalog" onClick={() => setOpen(false)}
+              className="w-full text-left text-sm text-primary-foreground/80 uppercase tracking-wider py-3 border-b border-primary-foreground/10 hover:text-primary-foreground transition-colors">
+              Katalog
+            </Link>
+            <Link to="/projects" onClick={() => setOpen(false)}
+              className="w-full text-left text-sm text-primary-foreground/80 uppercase tracking-wider py-3 border-b border-primary-foreground/10 hover:text-primary-foreground transition-colors">
+              Proyek
+            </Link>
+            <Link to="/blog" onClick={() => setOpen(false)}
+              className="w-full text-left text-sm text-primary-foreground/80 uppercase tracking-wider py-3 border-b border-primary-foreground/10 hover:text-primary-foreground transition-colors">
+              Blog
+            </Link>
+            {/* Kontak */}
+            {onHome ? (
+              <button type="button" onClick={() => { scrollToSection("contact"); setOpen(false); }}
+                className="w-full text-left text-sm text-primary-foreground/80 uppercase tracking-wider py-3 border-b border-primary-foreground/10 hover:text-primary-foreground transition-colors">
+                Kontak
+              </button>
+            ) : (
+              <Link to="/" onClick={() => { setOpen(false); setTimeout(() => { const el = document.getElementById("contact"); if (el) el.scrollIntoView({ behavior: "smooth" }); }, 200); }}
+                className="w-full text-left text-sm text-primary-foreground/80 uppercase tracking-wider py-3 border-b border-primary-foreground/10 hover:text-primary-foreground transition-colors">
+                Kontak
+              </Link>
+            )}
+            <div className="pt-4">
+              {onHome ? (
+                <button type="button" onClick={() => { scrollToSection("contact"); setOpen(false); }}
+                  className="w-full bg-accent text-accent-foreground px-5 py-3 text-center text-sm font-semibold uppercase tracking-wider">
+                  Minta Penawaran
+                </button>
+              ) : (
+                <Link to="/" onClick={() => { setOpen(false); setTimeout(() => scrollToSection("contact"), 200); }}
+                  className="block w-full bg-accent text-accent-foreground px-5 py-3 text-center text-sm font-semibold uppercase tracking-wider">
+                  Minta Penawaran
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       )}
