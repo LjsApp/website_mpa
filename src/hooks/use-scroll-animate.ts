@@ -2,24 +2,47 @@ import { useEffect, useRef } from "react";
 
 type AnimateOptions = {
   threshold?: number;
-  once?: boolean;
 };
 
+function showEl(el: HTMLElement) {
+  if (el.dataset.animateStagger !== undefined) {
+    const children = Array.from(el.children) as HTMLElement[];
+    children.forEach((child, i) => {
+      child.classList.add("animate-child");
+      setTimeout(() => child.classList.add("is-visible"), i * 100);
+    });
+  }
+  el.classList.add("is-visible");
+}
+
+function hideEl(el: HTMLElement) {
+  if (el.dataset.animateStagger !== undefined) {
+    const children = Array.from(el.children) as HTMLElement[];
+    children.forEach((child) => child.classList.remove("is-visible"));
+  }
+  el.classList.remove("is-visible");
+}
+
 /**
- * Attach to a container ref. All children with [data-animate] will
- * reveal themselves when they enter the viewport.
- * Also supports [data-animate-stagger] on a container to stagger children.
- *
- * once=true: element stays visible after first reveal (prevents flash on navigation)
- * once=false: element hides again when leaving viewport (repeating animation)
+ * Smart directional scroll animation:
+ * - Elements animate in when scrolled INTO view from below (scroll down)
+ * - Elements re-animate when scrolled back into view from below
+ * - Elements that have been seen (leave viewport above) STAY visible → prevents navigation flash
  */
 export function useScrollAnimate(options: AnimateOptions = {}) {
-  const { threshold = 0.12, once = true } = options;
+  const { threshold = 0.12 } = options;
   const ref = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return;
+    if (prefersReduced) {
+      // Show all elements immediately if reduced motion is preferred
+      const all = ref.current
+        ? Array.from(ref.current.querySelectorAll<HTMLElement>("[data-animate], [data-animate-stagger]"))
+        : [];
+      all.forEach((el) => showEl(el));
+      return;
+    }
 
     const targets = ref.current
       ? Array.from(ref.current.querySelectorAll<HTMLElement>("[data-animate], [data-animate-stagger]"))
@@ -31,28 +54,20 @@ export function useScrollAnimate(options: AnimateOptions = {}) {
       (entries) => {
         entries.forEach((entry) => {
           const el = entry.target as HTMLElement;
+          const rect = entry.boundingClientRect;
 
           if (entry.isIntersecting) {
-            if (el.dataset.animateStagger !== undefined) {
-              // Stagger all direct children
-              const children = Array.from(el.children) as HTMLElement[];
-              children.forEach((child, i) => {
-                setTimeout(() => child.classList.add("is-visible"), i * 100);
-                child.classList.add("animate-child");
-              });
-              el.classList.add("is-visible");
-            } else {
-              el.classList.add("is-visible");
+            // Element entering viewport → show with animation
+            showEl(el);
+          } else {
+            // Element leaving viewport
+            // Only hide if it's BELOW viewport (user hasn't scrolled there yet, or scrolled back up past it)
+            // Keep visible if it's ABOVE viewport (already been seen → prevent flash on navigation)
+            const isBelow = rect.top > 0;
+            if (isBelow) {
+              hideEl(el);
             }
-
-            if (once) observer.unobserve(el);
-          } else if (!once) {
-            // Remove classes only if repeating mode is on
-            if (el.dataset.animateStagger !== undefined) {
-              const children = Array.from(el.children) as HTMLElement[];
-              children.forEach((child) => child.classList.remove("is-visible"));
-            }
-            el.classList.remove("is-visible");
+            // If above viewport (rect.bottom < 0): element stays visible (already seen)
           }
         });
       },
@@ -61,7 +76,7 @@ export function useScrollAnimate(options: AnimateOptions = {}) {
 
     targets.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, [threshold, once]);
+  }, [threshold]);
 
   return ref;
 }
