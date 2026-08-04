@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 type LazyImageProps = React.ImgHTMLAttributes<HTMLImageElement> & {
@@ -13,6 +13,14 @@ type LazyImageProps = React.ImgHTMLAttributes<HTMLImageElement> & {
 export function LazyImage({ src, alt, className, wrapperClassName, eager, ...rest }: LazyImageProps) {
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    if (imgRef.current?.complete && imgRef.current.naturalHeight > 0) {
+      setLoaded(true);
+    }
+  }, [src]);
+
   if (!src || failed) {
     return <div className={cn("bg-muted/40", wrapperClassName ?? "w-full h-full")} aria-hidden />;
   }
@@ -21,6 +29,7 @@ export function LazyImage({ src, alt, className, wrapperClassName, eager, ...res
       {!loaded && <div className="absolute inset-0 animate-pulse bg-muted/60" aria-hidden />}
       <img
         {...rest}
+        ref={imgRef}
         src={src}
         alt={alt}
         loading={eager ? "eager" : "lazy"}
