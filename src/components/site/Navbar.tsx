@@ -11,6 +11,7 @@ const sectionLinks = [
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
   const router = useRouter();
   const onHome = router.state.location.pathname === "/";
   const headerRef = useRef<HTMLElement | null>(null);
@@ -25,6 +26,27 @@ export function Navbar() {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    if (!onHome) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Find intersecting section, prioritize sections that take up more of the screen
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    // Observe all sections with IDs
+    const sections = document.querySelectorAll("section[id]");
+    sections.forEach((s) => observer.observe(s));
+    
+    return () => observer.disconnect();
+  }, [onHome]);
 
   useEffect(() => {
     if (!open) return;
@@ -45,13 +67,14 @@ export function Navbar() {
     }
   };
 
-  const renderSectionLink = (l: { hash: string; label: string }, onClick?: () => void) =>
-    onHome ? (
+  const renderSectionLink = (l: { hash: string; label: string }, onClick?: () => void) => {
+    const isActive = activeSection === l.hash;
+    return onHome ? (
       <button
         key={l.hash}
         type="button"
         onClick={() => scrollToSection(l.hash, onClick)}
-        className="nav-link text-sm text-primary-foreground/75 hover:text-primary-foreground transition-colors uppercase tracking-wider"
+        className={`nav-link text-sm text-primary-foreground/75 hover:text-primary-foreground transition-colors uppercase tracking-wider ${isActive ? "active text-primary-foreground font-semibold" : ""}`}
       >
         {l.label}
       </button>
@@ -72,6 +95,7 @@ export function Navbar() {
         {l.label}
       </Link>
     );
+  };
 
 
   return (

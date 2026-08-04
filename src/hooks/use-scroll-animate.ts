@@ -11,7 +11,7 @@ type AnimateOptions = {
  * Also supports [data-animate-stagger] on a container to stagger children.
  */
 export function useScrollAnimate(options: AnimateOptions = {}) {
-  const { threshold = 0.12, once = true } = options;
+  const { threshold = 0.12, once = false } = options;
   const ref = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -27,22 +27,30 @@ export function useScrollAnimate(options: AnimateOptions = {}) {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
           const el = entry.target as HTMLElement;
 
-          if (el.dataset.animateStagger !== undefined) {
-            // Stagger all direct children
-            const children = Array.from(el.children) as HTMLElement[];
-            children.forEach((child, i) => {
-              setTimeout(() => child.classList.add("is-visible"), i * 100);
-              child.classList.add("animate-child");
-            });
-            el.classList.add("is-visible");
-          } else {
-            el.classList.add("is-visible");
-          }
+          if (entry.isIntersecting) {
+            if (el.dataset.animateStagger !== undefined) {
+              // Stagger all direct children
+              const children = Array.from(el.children) as HTMLElement[];
+              children.forEach((child, i) => {
+                setTimeout(() => child.classList.add("is-visible"), i * 100);
+                child.classList.add("animate-child");
+              });
+              el.classList.add("is-visible");
+            } else {
+              el.classList.add("is-visible");
+            }
 
-          if (once) observer.unobserve(el);
+            if (once) observer.unobserve(el);
+          } else if (!once) {
+            // Remove classes if leaving viewport so it animates again next time
+            if (el.dataset.animateStagger !== undefined) {
+              const children = Array.from(el.children) as HTMLElement[];
+              children.forEach((child) => child.classList.remove("is-visible"));
+            }
+            el.classList.remove("is-visible");
+          }
         });
       },
       { threshold }
