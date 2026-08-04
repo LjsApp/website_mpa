@@ -13,7 +13,40 @@ const projectQuery = (slug: string) =>
     queryFn: () => getProjectBySlug({ data: { slug } }),
   });
 
+function ProjectDetailSkeleton() {
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <Navbar />
+      <main className="pt-24">
+        {/* Hero skeleton */}
+        <section className="relative h-[40vh] md:h-[55vh] bg-muted animate-pulse" />
+        {/* Content skeleton */}
+        <section className="py-16">
+          <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-3 gap-10">
+            <div className="lg:col-span-2 space-y-4">
+              <div className="h-4 w-32 bg-muted animate-pulse rounded" />
+              <div className="h-8 w-3/4 bg-muted animate-pulse rounded" />
+              <div className="h-4 w-full bg-muted animate-pulse rounded" />
+              <div className="h-4 w-full bg-muted animate-pulse rounded" />
+              <div className="h-4 w-5/6 bg-muted animate-pulse rounded" />
+            </div>
+            <div className="space-y-4">
+              <div className="h-6 w-24 bg-muted animate-pulse rounded" />
+              <div className="h-4 w-full bg-muted animate-pulse rounded" />
+              <div className="h-4 w-full bg-muted animate-pulse rounded" />
+              <div className="h-4 w-2/3 bg-muted animate-pulse rounded" />
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
 export const Route = createFileRoute("/projects/$slug")({
+  pendingComponent: ProjectDetailSkeleton,
+  pendingMs: 0,
   loader: async ({ context, params }) => {
     const data = await context.queryClient.ensureQueryData(projectQuery(params.slug));
     if (!data?.project) throw notFound();

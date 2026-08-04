@@ -14,7 +14,43 @@ const productQuery = (slug: string) =>
     queryFn: () => getProductBySlug({ data: { slug } }),
   });
 
+function ProductDetailSkeleton() {
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <Navbar />
+      <main className="pt-24">
+        {/* Breadcrumb skeleton */}
+        <section className="border-b border-border bg-card/30 py-6">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="h-3 w-48 bg-muted animate-pulse rounded" />
+          </div>
+        </section>
+        {/* Main content skeleton */}
+        <section className="py-12 lg:py-16">
+          <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-10">
+            <div className="aspect-square bg-muted animate-pulse rounded" />
+            <div className="space-y-4">
+              <div className="h-3 w-24 bg-muted animate-pulse rounded" />
+              <div className="h-8 w-3/4 bg-muted animate-pulse rounded" />
+              <div className="h-4 w-full bg-muted animate-pulse rounded" />
+              <div className="h-4 w-5/6 bg-muted animate-pulse rounded" />
+              <div className="h-4 w-4/6 bg-muted animate-pulse rounded" />
+              <div className="flex gap-3 pt-4">
+                <div className="h-12 w-44 bg-muted animate-pulse rounded" />
+                <div className="h-12 w-36 bg-muted animate-pulse rounded" />
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
 export const Route = createFileRoute("/products/$slug")({
+  pendingComponent: ProductDetailSkeleton,
+  pendingMs: 0,
   loader: async ({ context, params }) => {
     const data = await context.queryClient.ensureQueryData(productQuery(params.slug));
     if (!data?.product) throw notFound();
