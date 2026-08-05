@@ -19,16 +19,18 @@ export function formatSize(bytes?: number) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-const MAX_TOTAL = 2 * 1024 * 1024; // 2MB total semua dokumen
-
+// Default max size is 2MB if not specified
 /** Upload multiple downloadable documents (max 1MB each) with drag-and-drop. */
 export function DocumentListEditor({
   value,
   onChange,
+  maxSizeMB = 2,
 }: {
   value: unknown;
   onChange: (v: DocItem[]) => void;
+  maxSizeMB?: number;
 }) {
+  const MAX_TOTAL = maxSizeMB * 1024 * 1024;
   const items = asDocs(value);
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -46,7 +48,7 @@ export function DocumentListEditor({
       const used = (existingTotal / (1024 * 1024)).toFixed(2);
       const newMB = (newTotal / (1024 * 1024)).toFixed(2);
       toast.error(
-        `Total dokumen akan menjadi ${((grandTotal) / (1024 * 1024)).toFixed(2)}MB, melebihi batas 2MB. (Sudah ada: ${used}MB, baru: ${newMB}MB)`
+        `Total dokumen akan menjadi ${((grandTotal) / (1024 * 1024)).toFixed(2)}MB, melebihi batas ${maxSizeMB}MB. (Sudah ada: ${used}MB, baru: ${newMB}MB)`
       );
       return;
     }
@@ -172,7 +174,7 @@ export function DocumentListEditor({
         )}
       </div>
       <p className="text-[11px] text-muted-foreground">
-        Total seluruh dokumen maksimal <strong>2MB</strong>. Format: PDF, DOC, XLS, PPT, ZIP, dll.
+        Total seluruh dokumen maksimal <strong>{maxSizeMB}MB</strong>. Format: PDF, DOC, XLS, PPT, ZIP, dll.
       </p>
     </div>
   );

@@ -257,8 +257,8 @@ function CompanyForm() {
         </div>
         <div className="space-y-1">
           <Label>Dokumen Perusahaan (Company Profile dll)</Label>
-          <DocumentListEditor value={form.documents} onChange={(v) => setForm({ ...form, documents: v })} />
-          <p className="text-xs text-muted-foreground">Batas total 2MB. Tampil di halaman beranda (Tentang).</p>
+          <DocumentListEditor value={form.documents} onChange={(v) => setForm({ ...form, documents: v })} maxSizeMB={5} />
+          <p className="text-xs text-muted-foreground">Batas total 5MB. Tampil di halaman beranda (Tentang).</p>
         </div>
         <div className="space-y-1">
           <Label>Linimasa Perusahaan</Label>
