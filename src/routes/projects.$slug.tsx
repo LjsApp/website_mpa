@@ -90,7 +90,7 @@ function ProjectDetail() {
   const meta: { label: string; value: string | null }[] = [
     { label: "Klien", value: p.client },
     { label: "Lokasi", value: p.location },
-    { label: "Tahun", value: p.year },
+    { label: "Tanggal", value: (p as any).project_date ? new Date((p as any).project_date).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) : null },
     { label: "Durasi", value: p.duration },
     { label: "Kategori", value: p.category },
     { label: "Status", value: p.status },
@@ -203,14 +203,14 @@ function ProjectDetail() {
 
         {related.length > 0 && (
           <section className="bg-card/30 border-t border-border py-16">
-            <div className="max-w-7xl mx-auto px-6">
-              <div className="flex items-end justify-between mb-8">
+            <div className="max-w-5xl mx-auto px-6">
+              <div className="flex flex-wrap items-end justify-between mb-10 gap-4">
                 <div>
                   <div className="text-xs uppercase tracking-[0.3em] text-primary mb-2">Proyek Terkait</div>
-                  <h2 className="font-display text-2xl md:text-3xl uppercase">Lebih banyak dari {p.category}</h2>
+                  <h2 className="font-display text-2xl md:text-3xl uppercase">Lebih Banyak Dari <span className="text-gradient-orange">{p.category}</span></h2>
                 </div>
-                <Link to="/projects" className="text-xs uppercase tracking-widest text-primary hover:underline">
-                  Semua Proyek →
+                <Link to="/projects" className="text-sm uppercase tracking-widest text-primary link-slide">
+                  Lihat Semua Proyek <span className="arrow">→</span>
                 </Link>
               </div>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -219,24 +219,31 @@ function ProjectDetail() {
                     key={r.id}
                     to="/projects/$slug"
                     params={{ slug: r.slug }}
-                    className="group flex flex-col border border-border bg-background hover:border-primary transition"
+                    className="industrial-card overflow-hidden group"
                   >
-                    <div className="aspect-[16/10] overflow-hidden">
-                      {r.image_url && (
+                    <div className="aspect-[4/3] overflow-hidden bg-muted">
+                      {Array.isArray((r as any).gallery) && (r as any).gallery[0] && (
                         <LazyImage
-                          src={r.image_url}
+                          src={(r as any).gallery[0]}
                           alt={r.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
                         />
                       )}
                     </div>
-                    <div className="p-5">
-                      <div className="text-[11px] uppercase tracking-widest text-muted-foreground mb-2">
-                        {r.category} · {r.year}
+                    <div className="p-6">
+                      <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-primary mb-3">
+                        <span>{r.category}</span><span className="text-muted-foreground">·</span><span className="text-muted-foreground">{(r as any).project_date?.slice(0, 4)}</span>
                       </div>
-                      <h4 className="font-display text-base uppercase leading-tight group-hover:text-primary transition line-clamp-2">
-                        {r.title}
-                      </h4>
+                      <h3 className="font-display text-xl uppercase mb-2 group-hover:text-primary transition">{r.title}</h3>
+                      {r.location && (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+                          <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                          {r.location}
+                        </div>
+                      )}
+                      <div className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-primary border border-primary/40 px-3 py-1.5">
+                        <span className="w-1.5 h-1.5 bg-primary" /> {r.status}
+                      </div>
                     </div>
                   </Link>
                 ))}

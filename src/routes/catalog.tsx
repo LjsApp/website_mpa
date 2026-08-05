@@ -171,10 +171,15 @@ function CatalogPage() {
               <div>
                 <div className="text-xs uppercase tracking-widest text-primary mb-3">Ketersediaan</div>
                 <div className="space-y-1.5">
-                  {["all", "Ready Stock", "Indent", "Pre-Order"].map((s) => (
-                    <label key={s} className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
-                      <input type="radio" name="stock" checked={stock === s} onChange={() => setStock(s)} className="accent-primary" />
-                      {s === "all" ? "Semua" : s}
+                  {[
+                    { value: "all", label: "Semua" },
+                    { value: "Ready", label: "Ready Stock" },
+                    { value: "Indent", label: "Indent" },
+                    { value: "Pre-Order", label: "Pre-Order" },
+                  ].map((s) => (
+                    <label key={s.value} className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
+                      <input type="radio" name="stock" checked={stock === s.value} onChange={() => setStock(s.value)} className="accent-primary" />
+                      {s.label}
                     </label>
                   ))}
                 </div>

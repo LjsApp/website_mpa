@@ -26,7 +26,7 @@ export function Projects({ projects = [] }: { projects?: ProjectRow[] }) {
               </div>
               <div className="p-6">
                 <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-primary mb-3">
-                  <span>{p.category}</span><span className="text-muted-foreground">·</span><span className="text-muted-foreground">{p.year}</span>
+                  <span>{p.category}</span><span className="text-muted-foreground">·</span><span className="text-muted-foreground">{(p as any).project_date?.slice(0, 4)}</span>
                 </div>
                 <h3 className="font-display text-xl uppercase mb-2">{p.title}</h3>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">

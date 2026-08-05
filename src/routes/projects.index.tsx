@@ -49,11 +49,11 @@ function ProjectsPage() {
     () => (categoryRows as { name: string }[]).map((c) => c.name),
     [categoryRows],
   );
-  const years = useMemo(() => Array.from(new Set(projects.map((p) => p.year).filter(Boolean))) as string[], [projects]);
+  const years = useMemo(() => Array.from(new Set(projects.map((p) => (p as any).project_date?.slice(0, 4)).filter(Boolean))) as string[], [projects]);
 
   const filtered = projects.filter((p) => {
     if (cat !== "all" && p.category !== cat) return false;
-    if (year !== "all" && p.year !== year) return false;
+    if (year !== "all" && (p as any).project_date?.slice(0, 4) !== year) return false;
     if (status !== "all" && p.status !== status) return false;
     if (q && !p.title.toLowerCase().includes(q.toLowerCase()) && !(p.location ?? "").toLowerCase().includes(q.toLowerCase())) return false;
     return true;
@@ -79,17 +79,17 @@ function ProjectsPage() {
             <p className="text-muted-foreground mt-3 max-w-2xl">Telusuri portofolio proyek industri yang telah kami selesaikan di berbagai sektor.</p>
           </div>
 
-          <div className="flex gap-3 mb-10 p-4 border border-border bg-card/50 overflow-x-auto">
-            <Input placeholder="Cari proyek..." value={q} onChange={(e) => setQ(e.target.value)} className="min-w-[160px] flex-1" />
-            <select value={cat} onChange={(e) => setCat(e.target.value)} className="bg-background border border-border px-3 text-sm h-9 shrink-0 min-w-[130px]">
+          <div className="flex flex-col md:flex-row gap-3 mb-10 p-4 border border-border bg-card/50">
+            <Input placeholder="Cari proyek..." value={q} onChange={(e) => setQ(e.target.value)} className="md:flex-1" />
+            <select value={cat} onChange={(e) => setCat(e.target.value)} className="w-full md:w-auto bg-background border border-border px-3 text-sm h-9">
               <option value="all">Semua Kategori</option>
               {categories.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
-            <select value={year} onChange={(e) => setYear(e.target.value)} className="bg-background border border-border px-3 text-sm h-9 shrink-0 min-w-[110px]">
+            <select value={year} onChange={(e) => setYear(e.target.value)} className="w-full md:w-auto bg-background border border-border px-3 text-sm h-9">
               <option value="all">Semua Tahun</option>
               {years.map((y) => <option key={y} value={y}>{y}</option>)}
             </select>
-            <select value={status} onChange={(e) => setStatus(e.target.value)} className="bg-background border border-border px-3 text-sm h-9 shrink-0 min-w-[120px]">
+            <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full md:w-auto bg-background border border-border px-3 text-sm h-9">
               <option value="all">Semua Status</option>
               <option value="Selesai">Selesai</option>
               <option value="Berjalan">Berjalan</option>
@@ -107,7 +107,7 @@ function ProjectsPage() {
                   </div>
                   <div className="p-6">
                     <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-primary mb-3">
-                      <span>{p.category}</span><span className="text-muted-foreground">·</span><span className="text-muted-foreground">{p.year}</span>
+                        <span>{p.category}</span><span className="text-muted-foreground">·</span><span className="text-muted-foreground">{(p as any).project_date?.slice(0, 4)}</span>
                     </div>
                     <h3 className="font-display text-xl uppercase mb-2">{p.title}</h3>
                     <div className="text-sm text-muted-foreground">{p.location}</div>

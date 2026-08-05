@@ -1,7 +1,10 @@
-drop policy if exists "admin upload media" on storage.objects;
-drop policy if exists "admin update media" on storage.objects;
-drop policy if exists "admin delete media" on storage.objects;
+-- ============================================================
+-- Jalankan di Supabase Dashboard → SQL Editor
+-- Tambah kolom project_date & hapus kolom year dari tabel projects
+-- ============================================================
 
-CREATE POLICY "admin upload media" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'media' AND public.has_role(auth.uid(), 'admin'::public.app_role));
-CREATE POLICY "admin update media" ON storage.objects FOR UPDATE TO authenticated USING (bucket_id = 'media' AND public.has_role(auth.uid(), 'admin'::public.app_role));
-CREATE POLICY "admin delete media" ON storage.objects FOR DELETE TO authenticated USING (bucket_id = 'media' AND public.has_role(auth.uid(), 'admin'::public.app_role));
+-- 1. Tambah kolom tanggal proyek (jika belum ada)
+ALTER TABLE public.projects ADD COLUMN IF NOT EXISTS project_date date;
+
+-- 2. Hapus kolom year (digantikan project_date)
+ALTER TABLE public.projects DROP COLUMN IF EXISTS year;
