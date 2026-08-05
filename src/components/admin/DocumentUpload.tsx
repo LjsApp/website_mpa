@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { createClient } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/supabase/client";
 
 export type DocItem = { name: string; url: string; size?: number };
 
@@ -19,7 +19,7 @@ export function formatSize(bytes?: number) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-const MAX_PER_FILE = 1 * 1024 * 1024; // 1MB per file
+const MAX_TOTAL = 2 * 1024 * 1024; // 2MB total semua dokumen
 
 /** Upload multiple downloadable documents (max 1MB each) with drag-and-drop. */
 export function DocumentListEditor({
@@ -33,15 +33,21 @@ export function DocumentListEditor({
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
-  const supabase = createClient();
 
   const handleFiles = async (files: FileList) => {
     const fileArr = Array.from(files);
 
-    // Validate sizes
-    const oversized = fileArr.find((f) => f.size > MAX_PER_FILE);
-    if (oversized) {
-      toast.error(`"${oversized.name}" melebihi batas 1MB per file`);
+    // Hitung total ukuran: dokumen yang sudah ada + file baru
+    const existingTotal = items.reduce((acc, d) => acc + (d.size || 0), 0);
+    const newTotal = fileArr.reduce((acc, f) => acc + f.size, 0);
+    const grandTotal = existingTotal + newTotal;
+
+    if (grandTotal > MAX_TOTAL) {
+      const used = (existingTotal / (1024 * 1024)).toFixed(2);
+      const newMB = (newTotal / (1024 * 1024)).toFixed(2);
+      toast.error(
+        `Total dokumen akan menjadi ${((grandTotal) / (1024 * 1024)).toFixed(2)}MB, melebihi batas 2MB. (Sudah ada: ${used}MB, baru: ${newMB}MB)`
+      );
       return;
     }
 
@@ -166,7 +172,7 @@ export function DocumentListEditor({
         )}
       </div>
       <p className="text-[11px] text-muted-foreground">
-        Maksimal <strong>1MB</strong> per file. Format: PDF, DOC, XLS, PPT, ZIP, dll.
+        Total seluruh dokumen maksimal <strong>2MB</strong>. Format: PDF, DOC, XLS, PPT, ZIP, dll.
       </p>
     </div>
   );
