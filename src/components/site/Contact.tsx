@@ -20,11 +20,11 @@ export function Contact({ company }: { company?: CompanyRow | null }) {
           <p className="text-muted-foreground mt-5">
             Diskusikan proyek Anda dengan kami. Tim engineering siap memberikan konsultasi dan penawaran terbaik.
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <a href={`mailto:${email}`} className="bg-primary text-primary-foreground px-7 py-3.5 font-semibold uppercase tracking-wider text-sm hover:brightness-110 transition glow-orange">
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <a href={`mailto:${email}`} className="bg-primary text-primary-foreground px-8 py-4 font-semibold uppercase tracking-wider text-sm hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/20 transition-all duration-300 glow-orange">
               Hubungi Kami
             </a>
-            <a href={`https://wa.me/${wa}`} className="border border-border px-7 py-3.5 font-semibold uppercase tracking-wider text-sm hover:bg-card transition">
+            <a href={`https://wa.me/${wa}`} className="border border-border px-8 py-4 font-semibold uppercase tracking-wider text-sm hover:-translate-y-1 hover:border-primary hover:text-primary hover:bg-card hover:shadow-lg transition-all duration-300">
               WhatsApp
             </a>
           </div>
