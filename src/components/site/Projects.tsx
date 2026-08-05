@@ -11,7 +11,7 @@ export function Projects({ projects = [] }: { projects?: ProjectRow[] }) {
           <div className="max-w-2xl">
             <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">Pengalaman Proyek</div>
             <h2 className="font-display text-4xl md:text-5xl uppercase leading-tight">
-              Proyek Terbaru<br /><span className="text-gradient-orange">Berhasil Diselesaikan</span>
+              Proyek Terbaru<br /><span className="text-gradient-orange">Berjalan/ Selesai</span>
             </h2>
           </div>
           <Link to="/projects" className="text-sm uppercase tracking-widest text-primary link-slide">
@@ -30,7 +30,7 @@ export function Projects({ projects = [] }: { projects?: ProjectRow[] }) {
                 </div>
                 <h3 className="font-display text-xl uppercase mb-2">{p.title}</h3>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
                   {p.location}
                 </div>
                 <div className="mt-4 inline-flex items-center gap-2 text-xs uppercase tracking-widest text-primary border border-primary/40 px-3 py-1.5">

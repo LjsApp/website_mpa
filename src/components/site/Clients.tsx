@@ -5,7 +5,7 @@ export function Clients({ clients = [] }: { clients?: ClientRow[] }) {
   if (clients.length === 0) return null;
 
   const stats = [
-    { value: "500+", label: "Perusahaan" },
+    { value: "50+", label: "Perusahaan" },
     { value: "25+", label: "Industri" },
     { value: "10+", label: "Tahun Pengalaman" },
   ];
@@ -16,10 +16,10 @@ export function Clients({ clients = [] }: { clients?: ClientRow[] }) {
         <div className="text-center max-w-2xl mx-auto mb-14">
           <div className="text-xs uppercase tracking-[0.3em] text-accent mb-4">Klien Kami</div>
           <h2 className="font-display text-4xl md:text-5xl uppercase leading-tight">
-            Dipercaya Oleh Industri Terkemuka
+            Dipercaya Oleh Industri
           </h2>
           <p className="text-primary-foreground/70 mt-5 leading-relaxed">
-            Lebih dari 500+ perusahaan dari berbagai sektor industri telah mempercayakan kebutuhan
+            Lebih dari 50+ perusahaan dari berbagai sektor industri telah mempercayakan kebutuhan
             mereka kepada kami.
           </p>
         </div>

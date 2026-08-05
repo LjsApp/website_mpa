@@ -172,7 +172,7 @@ function ArticleDetail() {
           )}
 
           <div
-            className="prose-content space-y-5 text-[17px] leading-[1.85] text-foreground/90"
+            className="prose-content space-y-5 text-[17px] leading-[1.85] text-foreground/90 text-justify"
             dangerouslySetInnerHTML={{ __html: content }}
           />
 
@@ -200,8 +200,8 @@ function ArticleDetail() {
                   <div className="text-xs uppercase tracking-[0.3em] text-primary mb-2">Artikel Terkait</div>
                   <h2 className="font-display text-2xl md:text-3xl uppercase">Lebih banyak dari {article.category}</h2>
                 </div>
-                <Link to="/blog" className="text-xs uppercase tracking-widest text-primary hover:underline">
-                  Semua Artikel →
+                <Link to="/blog" className="text-sm uppercase tracking-widest text-primary link-slide">
+                  Lihat Semua Artikel <span className="arrow">→</span>
                 </Link>
               </div>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -223,7 +223,7 @@ function ArticleDetail() {
                     </div>
                     <div className="p-5">
                       <div className="text-[11px] uppercase tracking-widest text-muted-foreground mb-2">
-                        {formatDateID(a.published_at)} · {a.read_minutes} min
+                        {formatDateID(a.published_at)}
                       </div>
                       <h4 className="font-display text-base uppercase leading-tight group-hover:text-primary transition line-clamp-2">
                         {a.title}

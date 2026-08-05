@@ -56,7 +56,7 @@ export function Brands({ brands = [] }: { brands?: BrandRow[] }) {
           </h2>
           <p className="text-muted-foreground mt-5 leading-relaxed">
             Kami menyediakan produk original dari brand global yang telah dipercaya oleh berbagai
-            industri di seluruh dunia.
+            industri .
           </p>
         </div>
 
@@ -74,11 +74,10 @@ export function Brands({ brands = [] }: { brands?: BrandRow[] }) {
               <button
                 key={c}
                 onClick={() => setActive(c)}
-                className={`h-10 px-5 rounded-full text-sm transition-all duration-[250ms] ${
-                  active === c
+                className={`h-10 px-5 rounded-full text-sm transition-all duration-[250ms] ${active === c
                     ? "bg-primary text-primary-foreground shadow-sm"
                     : "bg-white border border-border text-muted-foreground hover:border-primary hover:text-primary"
-                }`}
+                  }`}
               >
                 {c}
               </button>
