@@ -2,6 +2,7 @@ import aboutImg from "@/assets/about-factory.jpg";
 import { asTimeline, type CompanyRow } from "@/lib/site-types";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { useScrollAnimate } from "@/hooks/use-scroll-animate";
+import { DocumentDownloads } from "@/components/site/DocumentDownloads";
 
 export function About({ company }: { company?: CompanyRow | null }) {
   const timeline = asTimeline(company?.timeline);
@@ -62,6 +63,12 @@ export function About({ company }: { company?: CompanyRow | null }) {
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+
+          {(company as any)?.documents?.length > 0 && (
+            <div className="mt-10" data-animate-stagger>
+              <DocumentDownloads value={(company as any).documents} title="Dokumen Perusahaan" />
             </div>
           )}
         </div>

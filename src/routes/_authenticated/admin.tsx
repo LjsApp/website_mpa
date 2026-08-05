@@ -15,6 +15,7 @@ import { adminList, adminUpsert } from "@/lib/admin.functions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { ObjectListEditor, ImageListEditor } from "@/components/admin/field-editors";
+import { DocumentListEditor } from "@/components/admin/DocumentUpload";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 
@@ -183,6 +184,7 @@ function CompanyForm() {
     const payload: Record<string, any> = { ...form, id: row.id };
     if (!Array.isArray(payload.timeline)) payload.timeline = [];
     if (!Array.isArray(payload.iso_images)) payload.iso_images = [];
+    if (!Array.isArray(payload.documents)) payload.documents = [];
     mut.mutate(payload);
   };
 
@@ -252,6 +254,11 @@ function CompanyForm() {
           <Label>Foto Sertifikat ISO</Label>
           <ImageListEditor value={form.iso_images} onChange={(v) => setForm({ ...form, iso_images: v })} />
           <p className="text-xs text-muted-foreground">Tampil pada bagian footer website.</p>
+        </div>
+        <div className="space-y-1">
+          <Label>Dokumen Perusahaan (Company Profile dll)</Label>
+          <DocumentListEditor value={form.documents} onChange={(v) => setForm({ ...form, documents: v })} />
+          <p className="text-xs text-muted-foreground">Batas total 2MB. Tampil di halaman beranda (Tentang).</p>
         </div>
         <div className="space-y-1">
           <Label>Linimasa Perusahaan</Label>
