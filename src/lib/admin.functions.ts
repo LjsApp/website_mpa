@@ -50,7 +50,7 @@ export const adminList = createServerFn({ method: "POST" })
   .inputValidator((d: { table: TableName }) => z.object({ table: tableSchema }).parse(d))
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
-    const sb = context.supabase as any;
+    const sb = supabaseAdmin as any;
     const tablesWithSort = new Set([
       "projects",
       "products",
@@ -111,7 +111,7 @@ export const adminUpsert = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
-    const sb = context.supabase as any;
+    const sb = supabaseAdmin as any;
     const row = { ...data.row };
     delete row.created_at;
 
@@ -154,7 +154,7 @@ export const adminDelete = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
-    const sb = context.supabase as any;
+    const sb = supabaseAdmin as any;
     const { error } = await sb.from(data.table).delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     invalidateAll();
@@ -165,7 +165,7 @@ export const adminStats = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     await assertAdmin(context);
-    const sb = context.supabase as any;
+    const sb = supabaseAdmin as any;
     const tables: TableName[] = ["projects", "products", "articles", "brands", "clients"];
     const results = await Promise.all(
       tables.map(async (t) => {
