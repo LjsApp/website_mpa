@@ -262,9 +262,9 @@ export const subscribeNewsletter = createServerFn({ method: "POST" })
     z.object({ email: z.string().email("Email tidak valid") }).parse(d)
   )
   .handler(async ({ data }) => {
-    // Upsert email directly
-    const sb = supabaseAdmin as any;
-    const { error } = await sb.from("newsletter_subscribers").upsert({ email: data.email, status: 'active' }, { onConflict: "email" });
+    const { error } = await supabaseAdmin
+      .from("newsletter_subscribers")
+      .upsert({ email: data.email, status: "active" }, { onConflict: "email" });
     if (error) throw new Error(error.message);
     return { success: true };
   });
@@ -274,8 +274,11 @@ export const trackPageView = createServerFn({ method: "POST" })
     z.object({ path: z.string(), user_agent: z.string().optional() }).parse(d)
   )
   .handler(async ({ data }) => {
-    // Fire and forget, don't wait or throw on error to prevent blocking navigation
-    const sb = supabaseAdmin as any;
-    await sb.from("page_views").insert({ path: data.path, user_agent: data.user_agent }).catch(() => {});
+    // Fire and forget - jangan throw agar tidak memblok navigasi
+    await supabaseAdmin
+      .from("page_views")
+      .insert({ path: data.path, user_agent: data.user_agent ?? null })
+      .then(() => {})
+      .catch(() => {});
     return { success: true };
   });

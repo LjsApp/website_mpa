@@ -429,6 +429,54 @@ export type Database = {
         }
         Relationships: []
       }
+      newsletter_subscribers: {
+        Row: {
+          id: string
+          email: string
+          status: string
+          subscribed_at: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          email: string
+          status?: string
+          subscribed_at?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          email?: string
+          status?: string
+          subscribed_at?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      page_views: {
+        Row: {
+          id: string
+          path: string
+          user_agent: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          path: string
+          user_agent?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          path?: string
+          user_agent?: string | null
+          created_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
