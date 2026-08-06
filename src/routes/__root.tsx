@@ -8,6 +8,7 @@ import {
   HeadContent,
   Scripts,
   ScrollRestoration,
+  useRouterState,
 } from "@tanstack/react-router";
 import { useEffect, useLayoutEffect } from "react";
 import { useCompanyState } from "@/hooks/use-company";
@@ -114,6 +115,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
+import { BackToTop } from "@/components/ui/back-to-top";
+
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="id">
@@ -123,6 +126,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
       <body>
         <ScrollRestoration />
         {children}
+        <BackToTop />
         <Scripts />
       </body>
     </html>
@@ -132,6 +136,16 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function InnerRootComponent() {
   const { company } = useCompanyState();
   const matches = useMatches();
+  const isLoading = useRouterState({ select: (s) => s.isLoading });
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  useLayoutEffect(() => {
+    // Memaksa halaman kembali ke paling atas sesaat sebelum komponen baru atau skeleton muncul,
+    // agar mencegah halaman tertahan di scroll lama saat navigasi.
+    if (isLoading) {
+      window.scrollTo(0, 0);
+    }
+  }, [isLoading, pathname]);
 
   useLayoutEffect(() => {
     if (company?.name) {
