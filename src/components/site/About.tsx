@@ -59,7 +59,7 @@ export function About({ company }: { company?: CompanyRow | null }) {
                   <div className="font-display text-2xl text-primary w-20 shrink-0">{t.year}</div>
                   <div>
                     <div className="font-semibold uppercase tracking-wider text-sm">{t.title}</div>
-                    <div className="text-sm text-muted-foreground">{t.desc}</div>
+                    <div className="text-sm text-muted-foreground text-justify">{t.desc}</div>
                   </div>
                 </div>
               ))}
