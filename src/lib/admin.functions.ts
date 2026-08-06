@@ -14,9 +14,11 @@ const TABLES = [
   "product_categories",
   "project_categories",
   "article_categories",
+  "newsletter_subscribers",
+  "page_views",
 ] as const;
 type TableName = (typeof TABLES)[number];
-const tableSchema = z.enum(TABLES);
+const tableSchema = z.enum(TABLES as any);
 
 async function assertAdmin(ctx: { supabase: any; userId: string }) {
   const { data, error } = await (ctx.supabase as any).rpc("has_role", {
@@ -171,4 +173,50 @@ export const adminStats = createServerFn({ method: "GET" })
       }),
     );
     return Object.fromEntries(results) as Record<TableName, number>;
+  });
+
+export const getAnalyticsData = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context);
+    const sb = context.supabase as any;
+    
+    // Hitung tanggal 30 hari yang lalu
+    const date30DaysAgo = new Date();
+    date30DaysAgo.setDate(date30DaysAgo.getDate() - 30);
+    const isoDate = date30DaysAgo.toISOString();
+
+    const { data, error } = await sb
+      .from("page_views")
+      .select("created_at")
+      .gte("created_at", isoDate)
+      .order("created_at", { ascending: true });
+      
+    if (error) throw new Error(error.message);
+    
+    // Group by date
+    const viewsByDate: Record<string, number> = {};
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().split("T")[0];
+      viewsByDate[dateStr] = 0;
+    }
+
+    if (data) {
+      data.forEach((row: any) => {
+        const dateStr = new Date(row.created_at).toISOString().split("T")[0];
+        if (viewsByDate[dateStr] !== undefined) {
+          viewsByDate[dateStr]++;
+        }
+      });
+    }
+
+    // Format for Recharts
+    const chartData = Object.keys(viewsByDate).map(date => ({
+      date,
+      views: viewsByDate[date]
+    }));
+
+    return chartData;
   });

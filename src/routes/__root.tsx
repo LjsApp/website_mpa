@@ -13,6 +13,8 @@ import {
 import { Analytics } from "@vercel/analytics/react";
 import { useEffect, useLayoutEffect } from "react";
 import { useCompanyState } from "@/hooks/use-company";
+import { useServerFn } from "@tanstack/react-start";
+import { trackPageView } from "@/lib/public.functions";
 
 import appCss from "../styles.css?url";
 
@@ -139,6 +141,15 @@ function InnerRootComponent() {
   const matches = useMatches();
   const isLoading = useRouterState({ select: (s) => s.isLoading });
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const trackFn = useServerFn(trackPageView);
+
+  useEffect(() => {
+    // Abaikan rute admin dan login untuk statistik pengunjung murni
+    if (!pathname.startsWith("/admin") && !pathname.startsWith("/login")) {
+      const userAgent = navigator.userAgent;
+      trackFn({ data: { path: pathname, user_agent: userAgent } }).catch(() => {});
+    }
+  }, [pathname, trackFn]);
 
   useLayoutEffect(() => {
     // Memaksa halaman kembali ke paling atas sesaat sebelum komponen baru atau skeleton muncul,

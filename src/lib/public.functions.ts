@@ -254,3 +254,26 @@ export const setupSuperAdmin = createServerFn({ method: "POST" })
 
     return { success: true, email };
   });
+
+/* ============================ ANALYTICS & NEWSLETTER ============================ */
+
+export const subscribeNewsletter = createServerFn({ method: "POST" })
+  .inputValidator((d: { email: string }) =>
+    z.object({ email: z.string().email("Email tidak valid") }).parse(d)
+  )
+  .handler(async ({ data }) => {
+    // Upsert email directly
+    const { error } = await supabaseAdmin.from("newsletter_subscribers").upsert({ email: data.email, status: 'active' }, { onConflict: "email" });
+    if (error) throw new Error(error.message);
+    return { success: true };
+  });
+
+export const trackPageView = createServerFn({ method: "POST" })
+  .inputValidator((d: { path: string; user_agent?: string }) =>
+    z.object({ path: z.string(), user_agent: z.string().optional() }).parse(d)
+  )
+  .handler(async ({ data }) => {
+    // Fire and forget, don't wait or throw on error to prevent blocking navigation
+    await supabaseAdmin.from("page_views").insert({ path: data.path, user_agent: data.user_agent }).catch(() => {});
+    return { success: true };
+  });

@@ -1,11 +1,19 @@
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import type { CompanyRow } from "@/lib/site-types";
 import { useCompanyState, isoImages, socialLinks } from "@/hooks/use-company";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { useQuery } from "@tanstack/react-query";
 import { listProductCategories } from "@/lib/public.functions";
+import { useServerFn } from "@tanstack/react-start";
+import { subscribeNewsletter } from "@/lib/public.functions";
+
 export function Footer({ company: initial }: { company?: CompanyRow | null }) {
   const { company, isLoading } = useCompanyState(initial);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const subscribeFn = useServerFn(subscribeNewsletter);
+
   const email = company?.email ?? "";
   const phone = company?.phone ?? "";
   const address = company?.address ?? "";
@@ -29,27 +37,43 @@ export function Footer({ company: initial }: { company?: CompanyRow | null }) {
             <h3 className="font-display text-2xl mb-2">Berlangganan Newsletter</h3>
             <p className="text-sm text-primary-foreground/70">Dapatkan informasi terbaru mengenai produk, penawaran khusus, dan wawasan industri langsung ke kotak masuk Anda.</p>
           </div>
-          <form 
-            className="flex w-full md:w-auto gap-2" 
-            onSubmit={(e) => { 
-              e.preventDefault(); 
-              const form = e.target as HTMLFormElement;
-              import("sonner").then(({ toast }) => {
-                toast.success("Terima kasih telah berlangganan newsletter kami!");
-                form.reset();
-              });
-            }}
-          >
-            <input 
-              type="email" 
-              placeholder="Alamat Email Anda" 
-              required 
-              className="bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground px-4 py-3 min-w-[250px] placeholder:text-primary-foreground/40 focus:outline-none focus:border-accent" 
-            />
-            <button type="submit" className="bg-accent text-accent-foreground px-6 py-3 font-semibold uppercase tracking-wider text-sm hover:brightness-110 transition">
-              Daftar
-            </button>
-          </form>
+          {isSubscribed ? (
+            <div className="flex items-center gap-3 bg-primary-foreground/10 text-primary-foreground px-6 py-4 animate-in fade-in zoom-in duration-300">
+              <svg className="w-6 h-6 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span className="font-semibold tracking-wide">Terima kasih telah berlangganan!</span>
+            </div>
+          ) : (
+            <form 
+              className="flex w-full md:w-auto gap-2" 
+              onSubmit={async (e) => { 
+                e.preventDefault(); 
+                const form = e.target as HTMLFormElement;
+                const emailInput = form.querySelector("input[type=email]") as HTMLInputElement;
+                if (!emailInput.value) return;
+                
+                try {
+                  setIsSubmitting(true);
+                  await subscribeFn({ data: { email: emailInput.value } });
+                  setIsSubscribed(true);
+                } catch (err: any) {
+                  import("sonner").then(({ toast }) => toast.error(err.message || "Terjadi kesalahan."));
+                } finally {
+                  setIsSubmitting(false);
+                }
+              }}
+            >
+              <input 
+                type="email" 
+                placeholder="Alamat Email Anda" 
+                required 
+                disabled={isSubmitting}
+                className="bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground px-4 py-3 min-w-[250px] placeholder:text-primary-foreground/40 focus:outline-none focus:border-accent disabled:opacity-50" 
+              />
+              <button type="submit" disabled={isSubmitting} className="bg-accent text-accent-foreground px-6 py-3 font-semibold uppercase tracking-wider text-sm hover:brightness-110 transition disabled:opacity-50">
+                {isSubmitting ? "..." : "Daftar"}
+              </button>
+            </form>
+          )}
         </div>
       </div>
       <div className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-2 lg:grid-cols-4 gap-10">

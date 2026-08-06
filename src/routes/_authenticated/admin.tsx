@@ -18,6 +18,8 @@ import { ObjectListEditor, ImageListEditor } from "@/components/admin/field-edit
 import { DocumentListEditor } from "@/components/admin/DocumentUpload";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { getAnalyticsData } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "Admin Panel" }] }),
@@ -44,7 +46,8 @@ type Tab =
   | "brands"
   | "clients"
   | "testimonials"
-  | "company";
+  | "company"
+  | "subscribers";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "dashboard", label: "Dashboard" },
@@ -54,6 +57,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "brands", label: "Brand" },
   { id: "clients", label: "Klien" },
   { id: "testimonials", label: "Testimoni" },
+  { id: "subscribers", label: "Pelanggan" },
   { id: "company", label: "Perusahaan" },
 ];
 
@@ -116,6 +120,7 @@ function AdminPage() {
           {tab === "brands" && <CrudManager config={brandsConfig} />}
           {tab === "clients" && <CrudManager config={clientsConfig} />}
           {tab === "testimonials" && <CrudManager config={testimonialsConfig} />}
+          {tab === "subscribers" && <CrudManager config={subscribersConfig} />}
           {tab === "company" && <CompanyForm />}
         </main>
       </div>
@@ -125,7 +130,11 @@ function AdminPage() {
 
 function Dashboard() {
   const statsFn = useServerFn(adminStats);
-  const { data, isLoading } = useQuery({ queryKey: ["admin-stats"], queryFn: () => statsFn() });
+  const analyticsFn = useServerFn(getAnalyticsData);
+  
+  const { data: stats, isLoading: statsLoading } = useQuery({ queryKey: ["admin-stats"], queryFn: () => statsFn() });
+  const { data: chartData, isLoading: chartLoading } = useQuery({ queryKey: ["admin-analytics"], queryFn: () => analyticsFn() });
+  
   const items = [
     { k: "projects", label: "Proyek" },
     { k: "products", label: "Produk" },
@@ -133,22 +142,50 @@ function Dashboard() {
     { k: "brands", label: "Brand" },
     { k: "clients", label: "Klien" },
   ] as const;
+
   return (
-    <div>
-      <h2 className="text-2xl font-display uppercase mb-6">Dashboard</h2>
-      {isLoading ? (
-        <div className="text-muted-foreground">Memuat...</div>
-      ) : (
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          {items.map((i) => (
-            <div key={i.k} className="border border-border p-5 bg-card">
-              <div className="text-xs uppercase tracking-widest text-muted-foreground">{i.label}</div>
-              <div className="font-display text-4xl text-primary mt-2">{data?.[i.k] ?? 0}</div>
-            </div>
-          ))}
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-2xl font-display uppercase mb-6">Ringkasan Data</h2>
+        {statsLoading ? (
+          <div className="text-muted-foreground">Memuat...</div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            {items.map((i) => (
+              <div key={i.k} className="border border-border p-5 bg-card">
+                <div className="text-xs uppercase tracking-widest text-muted-foreground">{i.label}</div>
+                <div className="font-display text-4xl text-primary mt-2">{stats?.[i.k] ?? 0}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div>
+        <h2 className="text-2xl font-display uppercase mb-6">Statistik Kunjungan (30 Hari)</h2>
+        <div className="border border-border p-5 bg-card h-[400px]">
+          {chartLoading ? (
+            <div className="text-muted-foreground flex items-center justify-center h-full">Memuat Grafik...</div>
+          ) : chartData && chartData.length > 0 ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+                <XAxis dataKey="date" stroke="#888" fontSize={12} tickFormatter={(val) => val.split("-").slice(1).join("/")} />
+                <YAxis stroke="#888" fontSize={12} allowDecimals={false} />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: "#1a1a1a", borderColor: "#333", color: "#fff" }}
+                  itemStyle={{ color: "#E85D04" }}
+                />
+                <Line type="monotone" dataKey="views" name="Kunjungan" stroke="#E85D04" strokeWidth={3} dot={{ r: 3, fill: "#E85D04" }} activeDot={{ r: 6 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="text-muted-foreground flex items-center justify-center h-full">Belum ada data kunjungan.</div>
+          )}
         </div>
-      )}
-      <div className="mt-10 p-6 border border-border bg-card/50">
+      </div>
+      
+      <div className="p-6 border border-border bg-card/50">
         <h3 className="font-display uppercase text-lg mb-2">Selamat datang di admin panel</h3>
         <p className="text-sm text-muted-foreground">
           Gunakan menu di samping untuk mengelola konten website. Semua perubahan akan langsung tersimpan dan tampil di halaman publik.
@@ -444,6 +481,22 @@ const testimonialsConfig: CrudConfig = {
     { name: "name", label: "Nama", required: true },
     { name: "role", label: "Jabatan / Perusahaan" },
     { name: "quote", label: "Kutipan Testimoni", type: "textarea", required: true },
+  ],
+};
+
+const subscribersConfig: CrudConfig = {
+  table: "newsletter_subscribers",
+  title: "Manajemen Pelanggan (Newsletter)",
+  primaryField: "email",
+  columns: [
+    { name: "email", label: "Email" },
+    { name: "status", label: "Status" },
+    { name: "subscribed_at", label: "Tanggal Daftar" },
+  ],
+  defaults: { status: "active" },
+  fields: [
+    { name: "email", label: "Alamat Email", required: true },
+    { name: "status", label: "Status", type: "select", options: ["active", "unsubscribed"] },
   ],
 };
 
