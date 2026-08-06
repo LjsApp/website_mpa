@@ -289,14 +289,14 @@ function ProductDetail() {
         {related.length > 0 && (
           <section className="py-16">
             <div className="max-w-7xl mx-auto px-6">
-              <div className="flex flex-wrap items-end justify-between mb-10 gap-4">
+              <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
                 <div>
                   <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">Produk Terkait</div>
                   <h2 className="font-display text-3xl md:text-4xl uppercase leading-tight">
                     Produk Lain Dari <span className="text-gradient-orange">{product.category_label}</span>
                   </h2>
                 </div>
-                <Link to="/catalog" className="text-sm uppercase tracking-widest text-primary link-slide">
+                <Link to="/catalog" className="text-sm uppercase tracking-widest text-primary link-slide inline-block mt-2 md:mt-0">
                   Lihat Semua Katalog <span className="arrow">→</span>
                 </Link>
               </div>

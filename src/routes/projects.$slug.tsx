@@ -204,12 +204,12 @@ function ProjectDetail() {
         {related.length > 0 && (
           <section className="bg-card/30 border-t border-border py-16">
             <div className="max-w-5xl mx-auto px-6">
-              <div className="flex flex-wrap items-end justify-between mb-10 gap-4">
+              <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
                 <div>
                   <div className="text-xs uppercase tracking-[0.3em] text-primary mb-2">Proyek Terkait</div>
                   <h2 className="font-display text-2xl md:text-3xl uppercase">Lebih Banyak Dari <span className="text-gradient-orange">{p.category}</span></h2>
                 </div>
-                <Link to="/projects" className="text-sm uppercase tracking-widest text-primary link-slide">
+                <Link to="/projects" className="text-sm uppercase tracking-widest text-primary link-slide inline-block mt-2 md:mt-0">
                   Lihat Semua Proyek <span className="arrow">→</span>
                 </Link>
               </div>

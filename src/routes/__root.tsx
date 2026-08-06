@@ -7,6 +7,7 @@ import {
   useMatches,
   HeadContent,
   Scripts,
+  ScrollRestoration,
 } from "@tanstack/react-router";
 import { useEffect, useLayoutEffect } from "react";
 import { useCompanyState } from "@/hooks/use-company";
@@ -120,6 +121,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        <ScrollRestoration />
         {children}
         <Scripts />
       </body>

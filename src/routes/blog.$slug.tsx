@@ -197,12 +197,12 @@ function ArticleDetail() {
         {related.length > 0 && (
           <section className="bg-card/30 border-t border-border py-16">
             <div className="max-w-7xl mx-auto px-6">
-              <div className="flex items-end justify-between mb-8">
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
                 <div>
                   <div className="text-xs uppercase tracking-[0.3em] text-primary mb-2">Artikel Terkait</div>
                   <h2 className="font-display text-2xl md:text-3xl uppercase">Lebih banyak dari {article.category}</h2>
                 </div>
-                <Link to="/blog" className="text-sm uppercase tracking-widest text-primary link-slide">
+                <Link to="/blog" className="text-sm uppercase tracking-widest text-primary link-slide inline-block mt-2 md:mt-0">
                   Lihat Semua Artikel <span className="arrow">→</span>
                 </Link>
               </div>
