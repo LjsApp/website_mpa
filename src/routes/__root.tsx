@@ -126,7 +126,6 @@ function RootShell({ children }: { children: React.ReactNode }) {
       <body>
         <ScrollRestoration />
         {children}
-        <BackToTop />
         <Scripts />
       </body>
     </html>
@@ -178,7 +177,12 @@ function InnerRootComponent() {
     }
   }, [company?.logo_url]);
 
-  return <Outlet />;
+  return (
+    <>
+      <Outlet />
+      <BackToTop />
+    </>
+  );
 }
 
 function RootComponent() {
