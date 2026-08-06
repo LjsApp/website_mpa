@@ -197,7 +197,7 @@ function ProductDetail() {
                   <span className="text-xs uppercase tracking-widest text-muted-foreground">SKU: {(product as any).sku}</span>
                 )}
               </div>
-              <p className="text-muted-foreground leading-relaxed mb-8 break-words whitespace-pre-line text-justify">{product.description}</p>
+              <p className="text-muted-foreground leading-relaxed mb-8 break-words whitespace-pre-line text-justify hyphens-auto">{product.description}</p>
 
 
               {features.length > 0 && (

@@ -69,7 +69,7 @@ export function Testimonials({ items = [] }: { items?: TestimonialRow[] }) {
           {visibleItems.map((t) => (
             <div key={t.id} className="industrial-card p-7 flex flex-col">
               <svg className="w-10 h-10 text-primary mb-5" viewBox="0 0 24 24" fill="currentColor"><path d="M7 7h4v10H3V13c0-3.3 1.7-5.7 4-6zm10 0h4v10h-8V13c0-3.3 1.7-5.7 4-6z"/></svg>
-              <p className="text-muted-foreground leading-relaxed flex-1 text-justify">"{t.quote}"</p>
+              <p className="text-muted-foreground leading-relaxed flex-1 text-justify hyphens-auto">"{t.quote}"</p>
               <div className="mt-6 pt-5 border-t border-border">
                 <div className="font-semibold">{t.name}</div>
                 {t.role && <div className="text-xs text-muted-foreground uppercase tracking-wider mt-0.5">{t.role}</div>}

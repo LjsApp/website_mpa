@@ -174,7 +174,7 @@ function ArticleDetail() {
           )}
 
           <div
-            className="prose-content space-y-5 text-[17px] leading-[1.85] text-foreground/90 text-justify"
+            className="prose-content space-y-5 text-[17px] leading-[1.85] text-foreground/90 text-justify hyphens-auto"
             dangerouslySetInnerHTML={{ __html: content }}
           />
 
