@@ -4,10 +4,12 @@ import { useCompanyState } from "@/hooks/use-company";
 
 export function BackToTop() {
   const [isVisible, setIsVisible] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { company } = useCompanyState();
   const wa = (company?.whatsapp ?? "").replace(/[^0-9]/g, "");
 
   useEffect(() => {
+    setMounted(true);
     const toggleVisibility = () => {
       if (window.scrollY > 500) {
         setIsVisible(true);
@@ -26,6 +28,8 @@ export function BackToTop() {
       behavior: "smooth",
     });
   };
+
+  if (!mounted) return null;
 
   return (
     <div className="fixed bottom-6 right-6 z-50 pointer-events-none flex flex-col items-end">
