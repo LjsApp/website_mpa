@@ -10,6 +10,7 @@ import {
   ScrollRestoration,
   useRouterState,
 } from "@tanstack/react-router";
+import { Analytics } from "@vercel/analytics/react";
 import { useEffect, useLayoutEffect } from "react";
 import { useCompanyState } from "@/hooks/use-company";
 
@@ -127,6 +128,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
         <ScrollRestoration />
         {children}
         <Scripts />
+        <Analytics />
       </body>
     </html>
   );

@@ -23,6 +23,35 @@ export function Footer({ company: initial }: { company?: CompanyRow | null }) {
 
   return (
     <footer className="bg-primary text-primary-foreground">
+      <div className="border-b border-primary-foreground/15">
+        <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="max-w-md">
+            <h3 className="font-display text-2xl mb-2">Berlangganan Newsletter</h3>
+            <p className="text-sm text-primary-foreground/70">Dapatkan informasi terbaru mengenai produk, penawaran khusus, dan wawasan industri langsung ke kotak masuk Anda.</p>
+          </div>
+          <form 
+            className="flex w-full md:w-auto gap-2" 
+            onSubmit={(e) => { 
+              e.preventDefault(); 
+              const form = e.target as HTMLFormElement;
+              import("sonner").then(({ toast }) => {
+                toast.success("Terima kasih telah berlangganan newsletter kami!");
+                form.reset();
+              });
+            }}
+          >
+            <input 
+              type="email" 
+              placeholder="Alamat Email Anda" 
+              required 
+              className="bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground px-4 py-3 min-w-[250px] placeholder:text-primary-foreground/40 focus:outline-none focus:border-accent" 
+            />
+            <button type="submit" className="bg-accent text-accent-foreground px-6 py-3 font-semibold uppercase tracking-wider text-sm hover:brightness-110 transition">
+              Daftar
+            </button>
+          </form>
+        </div>
+      </div>
       <div className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-2 lg:grid-cols-4 gap-10">
         <div>
           <div className="flex items-center gap-2 mb-5">
