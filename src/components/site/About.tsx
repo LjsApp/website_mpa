@@ -33,20 +33,20 @@ export function About({ company }: { company?: CompanyRow | null }) {
           <h2 className="font-display text-4xl md:text-5xl uppercase leading-tight">
             Engineering Yang<br /><span className="text-gradient-orange">Dapat Diandalkan</span>
           </h2>
-          {about && <p className="text-muted-foreground mt-5 leading-relaxed whitespace-pre-line">{about}</p>}
+          {about && <p className="text-muted-foreground mt-5 leading-relaxed whitespace-pre-line text-justify">{about}</p>}
 
           {(company?.vision || company?.mission) && (
             <div className="grid sm:grid-cols-2 gap-4 mt-8" data-animate-stagger>
               {company?.vision && (
                 <div className="border border-border p-5">
                   <div className="text-xs uppercase tracking-widest text-primary mb-1">Visi</div>
-                  <p className="text-sm text-muted-foreground whitespace-pre-line">{company.vision}</p>
+                  <p className="text-sm text-muted-foreground whitespace-pre-line text-justify">{company.vision}</p>
                 </div>
               )}
               {company?.mission && (
                 <div className="border border-border p-5">
                   <div className="text-xs uppercase tracking-widest text-primary mb-1">Misi</div>
-                  <p className="text-sm text-muted-foreground whitespace-pre-line">{company.mission}</p>
+                  <p className="text-sm text-muted-foreground whitespace-pre-line text-justify">{company.mission}</p>
                 </div>
               )}
             </div>
