@@ -226,23 +226,6 @@ function BlogPage() {
               </div>
             </div>
 
-            <div className="border border-primary/40 bg-background p-5">
-              <div className="text-xs uppercase tracking-[0.25em] text-primary mb-2">Newsletter</div>
-              <p className="text-sm text-muted-foreground mb-4">
-                Dapatkan wawasan industri & tips procurement langsung di inbox Anda.
-              </p>
-              <form onSubmit={(e) => e.preventDefault()} className="flex flex-col gap-2">
-                <input
-                  type="email"
-                  required
-                  placeholder="email@perusahaan.com"
-                  className="bg-card border border-border px-3 py-2 text-sm focus:outline-none focus:border-primary"
-                />
-                <button className="bg-primary text-primary-foreground py-2 text-xs uppercase tracking-widest font-semibold hover:brightness-110 transition">
-                  Berlangganan
-                </button>
-              </form>
-            </div>
           </aside>
         </section>
       </main>
