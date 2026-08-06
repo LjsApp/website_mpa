@@ -106,14 +106,14 @@ function CatalogPage() {
       <main className="pt-24">
         <section className="border-b border-border bg-card/30 py-12">
           <div className="max-w-7xl mx-auto px-6">
-            <div className="flex items-start justify-between gap-4 mb-4">
+            <div className="flex flex-col-reverse md:flex-row md:items-start justify-between gap-4 md:gap-6 mb-6">
               <div>
                 <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">Katalog Produk</div>
-                <h1 className="font-display text-4xl md:text-5xl uppercase leading-tight">
-                  Jelajahi Seluruh <span className="text-gradient-orange">Produk Industri</span>
+                <h1 className="font-display text-3xl md:text-5xl uppercase leading-tight">
+                  Jelajahi Seluruh <br className="hidden md:block" /><span className="text-gradient-orange">Produk Industri</span>
                 </h1>
               </div>
-              <nav className="text-xs uppercase tracking-widest text-muted-foreground shrink-0 mt-1">
+              <nav className="text-[10px] md:text-xs uppercase tracking-widest text-muted-foreground self-start md:self-auto mt-1 md:mt-0">
                 <Link to="/" className="hover:text-primary">Beranda</Link>
                 <span className="mx-2">/</span>
                 <span className="text-foreground">Katalog</span>

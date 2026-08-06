@@ -148,12 +148,12 @@ function ProductDetail() {
 
       <main className="pt-24">
         <section className="border-b border-border bg-card/30 py-6">
-          <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+          <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-3">
               <span className="bg-primary text-primary-foreground text-[10px] uppercase tracking-[0.2em] px-2 py-1 font-semibold">{product.category_label}</span>
-              <span className="text-xs uppercase tracking-widest text-muted-foreground">{product.brand}</span>
+              <span className="text-[10px] md:text-xs uppercase tracking-widest text-muted-foreground">{product.brand}</span>
             </div>
-            <nav className="text-xs uppercase tracking-widest text-muted-foreground">
+            <nav className="text-[10px] md:text-xs uppercase tracking-widest text-muted-foreground">
               <Link to="/" className="hover:text-primary">Beranda</Link>
               <span className="mx-2">/</span>
               <Link to="/catalog" className="hover:text-primary">Katalog</Link>

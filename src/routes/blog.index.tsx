@@ -84,14 +84,14 @@ function BlogPage() {
           <div className="max-w-7xl mx-auto px-6 py-10">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
               <div>
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-col-reverse md:flex-row md:items-start justify-between gap-3">
                   <div>
                     <div className="text-xs uppercase tracking-[0.3em] text-primary mb-2">Pusat Wawasan</div>
-                    <h1 className="font-display text-4xl md:text-5xl uppercase leading-none">
+                    <h1 className="font-display text-3xl md:text-5xl uppercase leading-tight">
                       Blog & <span className="text-gradient-orange">Artikel</span>
                     </h1>
                   </div>
-                  <nav className="text-xs uppercase tracking-widest text-muted-foreground shrink-0 mt-1 md:hidden">
+                  <nav className="text-[10px] uppercase tracking-widest text-muted-foreground self-start md:hidden mb-1">
                     <Link to="/" className="hover:text-primary">Beranda</Link>
                     <span className="mx-2">/</span>
                     <span className="text-foreground">Blog</span>

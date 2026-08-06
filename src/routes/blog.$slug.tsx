@@ -102,9 +102,11 @@ function ArticleDetail() {
       <main className="pt-24">
         {/* Breadcrumb bar */}
         <div className="border-b border-border bg-card/30">
-          <div className="max-w-4xl mx-auto px-6 py-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-            <span className="bg-primary text-primary-foreground text-[10px] uppercase tracking-[0.2em] px-2 py-1 font-semibold">{article.category}</span>
-            <nav className="text-xs uppercase tracking-widest text-muted-foreground">
+          <div className="max-w-4xl mx-auto px-6 py-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-3">
+              <span className="bg-primary text-primary-foreground text-[10px] uppercase tracking-[0.2em] px-2 py-1 font-semibold">{article.category}</span>
+            </div>
+            <nav className="text-[10px] md:text-xs uppercase tracking-widest text-muted-foreground">
               <Link to="/" className="hover:text-primary">Beranda</Link>
               <span className="mx-2">/</span>
               <Link to="/blog" className="hover:text-primary">Blog</Link>

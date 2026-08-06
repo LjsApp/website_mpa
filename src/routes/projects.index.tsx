@@ -65,12 +65,12 @@ function ProjectsPage() {
       <main className="pt-32 pb-24">
         <div className="max-w-7xl mx-auto px-6">
           <div className="mb-12">
-            <div className="flex items-start justify-between gap-4 mb-2">
+            <div className="flex flex-col-reverse md:flex-row md:items-start justify-between gap-4 md:gap-6 mb-4">
               <div>
                 <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">Portofolio</div>
-                <h1 className="font-display text-4xl md:text-5xl uppercase">Semua Proyek Kami</h1>
+                <h1 className="font-display text-3xl md:text-5xl uppercase leading-tight">Semua Proyek Kami</h1>
               </div>
-              <nav className="text-xs uppercase tracking-widest text-muted-foreground shrink-0 mt-1">
+              <nav className="text-[10px] md:text-xs uppercase tracking-widest text-muted-foreground self-start md:self-auto mt-1 md:mt-0">
                 <Link to="/" className="hover:text-primary">Beranda</Link>
                 <span className="mx-2">/</span>
                 <span className="text-foreground">Proyek</span>
