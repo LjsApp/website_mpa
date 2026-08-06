@@ -274,11 +274,12 @@ export const trackPageView = createServerFn({ method: "POST" })
     z.object({ path: z.string(), user_agent: z.string().optional() }).parse(d)
   )
   .handler(async ({ data }) => {
-    // Fire and forget - jangan throw agar tidak memblok navigasi
-    await supabaseAdmin
+    // Fire and forget - log error tapi jangan throw agar tidak memblok navigasi
+    const { error } = await supabaseAdmin
       .from("page_views")
-      .insert({ path: data.path, user_agent: data.user_agent ?? null })
-      .then(() => {})
-      .catch(() => {});
-    return { success: true };
+      .insert({ path: data.path, user_agent: data.user_agent ?? null });
+    if (error) {
+      console.error("[PageView] Insert error:", error.message, "| code:", error.code);
+    }
+    return { success: !error };
   });

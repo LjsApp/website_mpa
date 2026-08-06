@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { z } from "zod";
 import { invalidateAll } from "@/lib/server-cache";
 
@@ -179,7 +180,8 @@ export const getAnalyticsData = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     await assertAdmin(context);
-    const sb = context.supabase as any;
+    // Gunakan supabaseAdmin (service role) agar bypass RLS dan pasti bisa baca page_views
+    const sb = supabaseAdmin as any;
     
     // Hitung tanggal 30 hari yang lalu
     const date30DaysAgo = new Date();
@@ -192,7 +194,14 @@ export const getAnalyticsData = createServerFn({ method: "GET" })
       .gte("created_at", isoDate)
       .order("created_at", { ascending: true });
       
-    if (error) throw new Error(error.message);
+    if (error) {
+      console.error("[Analytics] Error fetching page_views:", error.message);
+      // Kembalikan array kosong jika tabel belum ada, agar tidak crash dashboard
+      if (error.message?.includes("does not exist") || error.code === "42P01") {
+        return [];
+      }
+      throw new Error(error.message);
+    }
     
     // Group by date
     const viewsByDate: Record<string, number> = {};
