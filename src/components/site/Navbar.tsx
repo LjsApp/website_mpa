@@ -121,7 +121,7 @@ export function Navbar() {
           ) : initials ? (
             <div className="w-9 h-9 bg-primary-foreground flex items-center justify-center font-display text-xl text-primary transition-transform duration-300 group-hover:rotate-3">{initials}</div>
           ) : null}
-          <span className="font-display text-[13px] sm:text-sm md:text-lg tracking-wide text-primary-foreground uppercase whitespace-nowrap">{name}<span className="text-accent">.</span></span>
+          <span className="font-display text-[15px] sm:text-base md:text-lg tracking-wide text-primary-foreground uppercase whitespace-nowrap">{name}<span className="text-accent">.</span></span>
             </>
           )}
         </Link>
