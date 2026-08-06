@@ -258,22 +258,24 @@ export const setupSuperAdmin = createServerFn({ method: "POST" })
 /* ============================ ANALYTICS & NEWSLETTER ============================ */
 
 export const subscribeNewsletter = createServerFn({ method: "POST" })
-  .inputValidator((d: { email: string }) =>
+  .validator((d: { email: string }) =>
     z.object({ email: z.string().email("Email tidak valid") }).parse(d)
   )
   .handler(async ({ data }) => {
     // Upsert email directly
-    const { error } = await supabaseAdmin.from("newsletter_subscribers").upsert({ email: data.email, status: 'active' }, { onConflict: "email" });
+    const sb = supabaseAdmin as any;
+    const { error } = await sb.from("newsletter_subscribers").upsert({ email: data.email, status: 'active' }, { onConflict: "email" });
     if (error) throw new Error(error.message);
     return { success: true };
   });
 
 export const trackPageView = createServerFn({ method: "POST" })
-  .inputValidator((d: { path: string; user_agent?: string }) =>
+  .validator((d: { path: string; user_agent?: string }) =>
     z.object({ path: z.string(), user_agent: z.string().optional() }).parse(d)
   )
   .handler(async ({ data }) => {
     // Fire and forget, don't wait or throw on error to prevent blocking navigation
-    await supabaseAdmin.from("page_views").insert({ path: data.path, user_agent: data.user_agent }).catch(() => {});
+    const sb = supabaseAdmin as any;
+    await sb.from("page_views").insert({ path: data.path, user_agent: data.user_agent }).catch(() => {});
     return { success: true };
   });

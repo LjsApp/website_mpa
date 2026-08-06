@@ -44,7 +44,7 @@ export function Footer({ company: initial }: { company?: CompanyRow | null }) {
             </div>
           ) : (
             <form 
-              className="flex w-full md:w-auto gap-2" 
+              className="flex flex-col sm:flex-row w-full md:w-auto gap-2" 
               onSubmit={async (e) => { 
                 e.preventDefault(); 
                 const form = e.target as HTMLFormElement;
@@ -67,9 +67,9 @@ export function Footer({ company: initial }: { company?: CompanyRow | null }) {
                 placeholder="Alamat Email Anda" 
                 required 
                 disabled={isSubmitting}
-                className="bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground px-4 py-3 min-w-[250px] placeholder:text-primary-foreground/40 focus:outline-none focus:border-accent disabled:opacity-50" 
+                className="w-full sm:w-auto bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground px-4 py-3 min-w-[250px] placeholder:text-primary-foreground/40 focus:outline-none focus:border-accent disabled:opacity-50" 
               />
-              <button type="submit" disabled={isSubmitting} className="bg-accent text-accent-foreground px-6 py-3 font-semibold uppercase tracking-wider text-sm hover:brightness-110 transition disabled:opacity-50">
+              <button type="submit" disabled={isSubmitting} className="w-full sm:w-auto bg-accent text-accent-foreground px-6 py-3 font-semibold uppercase tracking-wider text-sm hover:brightness-110 transition disabled:opacity-50 shrink-0">
                 {isSubmitting ? "..." : "Daftar"}
               </button>
             </form>
