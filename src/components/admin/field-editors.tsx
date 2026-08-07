@@ -409,9 +409,11 @@ export function ImageListEditor({
 
     // Estimate existing total (just new file sizes + rough existing count)
     const newFiles = Array.from(files);
-    const invalidType = newFiles.find((f) => !f.type.startsWith("image/"));
+    
+    // Validasi format - hanya .webp
+    const invalidType = newFiles.find((f) => f.type !== "image/webp" || !f.name.toLowerCase().endsWith(".webp"));
     if (invalidType) {
-      toast.error("Semua file harus berupa gambar");
+      toast.error(`File "${invalidType.name}" bukan format .webp. Hanya file .webp yang diperbolehkan untuk galeri.`);
       return;
     }
 
@@ -445,7 +447,7 @@ export function ImageListEditor({
     const uploaded: string[] = [];
     try {
       for (const file of newFiles) {
-        const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+        const ext = (file.name.split(".").pop() || "webp").toLowerCase();
         const path = `${crypto.randomUUID()}.${ext}`;
         const { error } = await supabase.storage.from("media").upload(path, file, {
           cacheControl: "3600",
@@ -510,7 +512,7 @@ export function ImageListEditor({
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept="image/webp"
         multiple
         className="hidden"
         onChange={(e) => {
@@ -564,7 +566,7 @@ export function ImageListEditor({
             <span className="text-sm font-medium">
               {items.length > 0 ? "Seret foto ke sini atau klik untuk tambah" : "Seret foto ke sini atau klik untuk pilih"}
             </span>
-            <span className="text-xs">Bisa pilih beberapa foto sekaligus</span>
+            <span className="text-xs">Bisa pilih beberapa foto sekaligus · Hanya format <strong>.webp</strong></span>
           </div>
         )}
       </div>

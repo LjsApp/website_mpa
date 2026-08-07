@@ -70,6 +70,10 @@ export interface FieldDef {
   manageFields?: ManageField[];
   manageDefaults?: Record<string, unknown>;
   manageTitle?: string;
+  /** If true, image upload only accepts .webp files */
+  webpOnly?: boolean;
+  /** Max file size in KB for image upload */
+  maxSizeKB?: number;
 }
 
 export interface CrudConfig {
@@ -260,6 +264,8 @@ export function CrudManager({ config }: { config: CrudConfig }) {
                       onChange={(url) => set(url)} 
                       folder={config.table === "brands" ? "brand" : config.table === "clients" ? "klien" : undefined}
                       fileName={editing?.name ? editing.name.toLowerCase().replace(/[^a-z0-9]/g, "-") : undefined}
+                      webpOnly={f.webpOnly}
+                      maxSizeKB={f.maxSizeKB}
                     />
                   ) : f.type === "list" ? (
                     <StringListEditor value={val} placeholder={f.placeholder} onChange={(v) => set(v)} />

@@ -430,7 +430,7 @@ const articlesConfig: CrudConfig = {
       manageFields: [{ key: "name", label: "Nama Kategori", placeholder: "cth: Teknologi" }],
     },
     { name: "published_at", label: "Tanggal Terbit", type: "date" },
-    { name: "image_url", label: "Gambar Cover", type: "image" },
+    { name: "image_url", label: "Gambar Cover", type: "image", webpOnly: true, maxSizeKB: 500 },
     { name: "excerpt", label: "Ringkasan", type: "textarea" },
     { name: "content", label: "Isi Artikel", type: "html", placeholder: "Tulis isi artikel di sini..." },
     { name: "tags", label: "Tags", type: "tags", placeholder: "Pisahkan dengan koma, cth: Maintenance, Industri" },
@@ -448,7 +448,7 @@ const brandsConfig: CrudConfig = {
   defaults: { sort_order: 0 },
   fields: [
     { name: "name", label: "Nama Brand", required: true },
-    { name: "logo_url", label: "Logo", type: "image" },
+    { name: "logo_url", label: "Logo", type: "image", webpOnly: true, maxSizeKB: 500 },
   ],
 };
 
@@ -463,7 +463,7 @@ const clientsConfig: CrudConfig = {
   defaults: { sort_order: 0 },
   fields: [
     { name: "name", label: "Nama Klien", required: true },
-    { name: "logo_url", label: "Logo", type: "image" },
+    { name: "logo_url", label: "Logo", type: "image", webpOnly: true, maxSizeKB: 500 },
   ],
 };
 

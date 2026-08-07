@@ -9,6 +9,8 @@ export function ImageUpload({
   onChange,
   label,
   maxSizeMB,
+  maxSizeKB,
+  webpOnly,
   onBeforeUpload,
   folder,
   fileName,
@@ -17,6 +19,10 @@ export function ImageUpload({
   onChange: (url: string) => void;
   label?: string;
   maxSizeMB?: number;
+  /** Batas ukuran dalam KB (lebih prioritas dari maxSizeMB jika keduanya diset) */
+  maxSizeKB?: number;
+  /** Jika true, hanya menerima file .webp */
+  webpOnly?: boolean;
   onBeforeUpload?: (file: File) => Promise<boolean>;
   folder?: string;
   fileName?: string;
@@ -26,24 +32,39 @@ export function ImageUpload({
   const uploadMediaFn = useServerFn(adminUploadMedia);
 
   const handleFile = async (file: File) => {
-    if (!file.type.startsWith("image/")) {
+    // Validasi format .webp
+    if (webpOnly) {
+      const ext = file.name.split(".").pop()?.toLowerCase();
+      if (ext !== "webp" || file.type !== "image/webp") {
+        toast.error("Hanya file .webp yang diperbolehkan. Silakan konversi gambar Anda ke format WebP terlebih dahulu.");
+        return;
+      }
+    } else if (!file.type.startsWith("image/")) {
       toast.error("File harus berupa gambar");
       return;
     }
-    const limitMB = maxSizeMB || 5;
-    if (file.size > limitMB * 1024 * 1024) {
-      toast.error(`Ukuran gambar maksimal ${limitMB}MB`);
+
+    // Validasi ukuran file
+    const limitBytes = maxSizeKB
+      ? maxSizeKB * 1024
+      : (maxSizeMB || 5) * 1024 * 1024;
+    const limitLabel = maxSizeKB
+      ? `${maxSizeKB}KB`
+      : `${maxSizeMB || 5}MB`;
+
+    if (file.size > limitBytes) {
+      toast.error(`Ukuran gambar maksimal ${limitLabel}. File Anda: ${(file.size / 1024).toFixed(0)}KB`);
       return;
     }
-    
+
     if (onBeforeUpload) {
       const allowed = await onBeforeUpload(file);
       if (!allowed) return;
     }
-    
+
     setUploading(true);
     try {
-      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+      const ext = (file.name.split(".").pop() || "webp").toLowerCase();
       let path = `${crypto.randomUUID()}.${ext}`;
       if (folder && fileName) {
         path = `${folder}/${fileName}.${ext}`;
@@ -66,9 +87,18 @@ export function ImageUpload({
     }
   };
 
+  // Tentukan accept attribute berdasarkan webpOnly
+  const acceptAttr = webpOnly ? "image/webp" : "image/*";
+
   return (
     <div className="space-y-2">
       {label && <div className="text-sm font-medium">{label}</div>}
+      {webpOnly && (
+        <p className="text-xs text-muted-foreground">
+          ⚠️ Hanya menerima format <strong>.webp</strong>
+          {maxSizeKB ? ` · Maks. ${maxSizeKB}KB` : maxSizeMB ? ` · Maks. ${maxSizeMB}MB` : ""}
+        </p>
+      )}
       <div className="flex items-center gap-4">
         {value ? (
           <div className="relative w-36 h-24 border border-border overflow-hidden bg-muted/30 shrink-0">
@@ -83,7 +113,7 @@ export function ImageUpload({
           <input
             ref={inputRef}
             type="file"
-            accept="image/*"
+            accept={acceptAttr}
             className="hidden"
             onChange={(e) => {
               const f = e.target.files?.[0];
