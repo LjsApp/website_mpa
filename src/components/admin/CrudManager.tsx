@@ -86,7 +86,8 @@ export interface CrudConfig {
     | "testimonials"
     | "product_categories"
     | "project_categories"
-    | "article_categories";
+    | "article_categories"
+    | "newsletter_subscribers";
   title: string;
   primaryField: string; // column shown as main label in list
   columns: { name: string; label: string }[];
