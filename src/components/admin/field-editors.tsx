@@ -147,6 +147,10 @@ export interface ManageField {
   key: string;
   label: string;
   placeholder?: string;
+  /** If 'image', renders an ImageUpload instead of a text Input */
+  type?: "text" | "image";
+  webpOnly?: boolean;
+  maxSizeKB?: number;
 }
 
 /**
@@ -216,7 +220,8 @@ export function ManagedDbSelect({
 
   const onSave = () => {
     for (const f of manageFields) {
-      if (!String(draft[f.key] ?? "").trim()) {
+      // Hanya validasi required untuk field text, bukan image
+      if (f.type !== "image" && !String(draft[f.key] ?? "").trim()) {
         toast.error(`${f.label} wajib diisi`);
         return;
       }
@@ -262,11 +267,22 @@ export function ManagedDbSelect({
             {manageFields.map((f) => (
               <div key={f.key} className="space-y-1">
                 <Label className="text-xs">{f.label}</Label>
-                <Input
-                  value={draft[f.key] ?? ""}
-                  placeholder={f.placeholder}
-                  onChange={(e) => setDraft({ ...draft, [f.key]: e.target.value })}
-                />
+                {f.type === "image" ? (
+                  <ImageUpload
+                    value={draft[f.key] ?? ""}
+                    onChange={(url) => setDraft({ ...draft, [f.key]: url })}
+                    webpOnly={f.webpOnly}
+                    maxSizeKB={f.maxSizeKB}
+                    folder="brand"
+                    fileName={draft["name"] ? String(draft["name"]).toLowerCase().replace(/[^a-z0-9]/g, "-") : undefined}
+                  />
+                ) : (
+                  <Input
+                    value={draft[f.key] ?? ""}
+                    placeholder={f.placeholder}
+                    onChange={(e) => setDraft({ ...draft, [f.key]: e.target.value })}
+                  />
+                )}
               </div>
             ))}
             <div className="flex gap-2">
@@ -290,7 +306,17 @@ export function ManagedDbSelect({
                 key={r.id}
                 className="flex items-center justify-between gap-2 border border-border px-3 py-2 text-sm"
               >
-                <span className="truncate">{String(r[optionLabel])}</span>
+                <div className="flex items-center gap-2 min-w-0">
+                  {/* Tampilkan thumbnail jika ada logo_url */}
+                  {r.logo_url && (
+                    <img
+                      src={r.logo_url}
+                      alt={String(r[optionLabel])}
+                      className="w-8 h-8 object-contain shrink-0 bg-white border border-border rounded"
+                    />
+                  )}
+                  <span className="truncate">{String(r[optionLabel])}</span>
+                </div>
                 <div className="flex gap-1.5 shrink-0">
                   <Button
                     type="button"

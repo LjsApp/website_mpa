@@ -391,7 +391,10 @@ const productsConfig: CrudConfig = {
       manage: true,
       manageTitle: "Kelola Brand",
       manageDefaults: { sort_order: 0 },
-      manageFields: [{ key: "name", label: "Nama Brand", placeholder: "cth: SKF" }],
+      manageFields: [
+        { key: "name", label: "Nama Brand", placeholder: "cth: SKF" },
+        { key: "logo_url", label: "Logo Brand", type: "image", webpOnly: true, maxSizeKB: 500 }
+      ],
     },
     { name: "stock", label: "Status Stok", type: "select", options: ["Ready", "Indent", "Pre-Order"] },
     { name: "gallery", label: "Galeri Gambar", type: "image-list" },
