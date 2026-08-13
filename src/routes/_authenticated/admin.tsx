@@ -261,22 +261,38 @@ function CompanyForm() {
           {field("youtube_url", "YouTube (YT)")}
         </div>
         <div className="grid md:grid-cols-2 gap-4">
-          {field("address", "Alamat", "textarea")}
           <div className="space-y-4">
-            {field("phone", "Telepon")}
+            {field("address", "Alamat HO", "textarea")}
+            {field("address_ro", "Alamat RO", "textarea")}
+          </div>
+          <div className="space-y-4">
             {field("email", "Email")}
-            {field("whatsapp", "WhatsApp")}
+            {field("whatsapp", "WhatsApp 1 (Utama)")}
+            {field("whatsapp_2", "WhatsApp 2")}
+            {field("whatsapp_3", "WhatsApp 3")}
           </div>
         </div>
-        <div className="space-y-1">
-          <Label>Google Maps Embed</Label>
-          <Textarea
-            rows={3}
-            value={form.maps_embed ?? ""}
-            placeholder='Tempel kode <iframe src="https://www.google.com/maps/embed?..."> dari Google Maps → Bagikan → Sematkan peta'
-            onChange={(e) => setForm({ ...form, maps_embed: e.target.value })}
-          />
-          <p className="text-xs text-muted-foreground">Peta akan tampil di section Kontak halaman beranda.</p>
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="space-y-1">
+            <Label>Google Maps Embed HO</Label>
+            <Textarea
+              rows={3}
+              value={form.maps_embed ?? ""}
+              placeholder='Tempel kode <iframe src="..."> dari Google Maps'
+              onChange={(e) => setForm({ ...form, maps_embed: e.target.value })}
+            />
+            <p className="text-xs text-muted-foreground">Peta akan tampil di section Kontak (Kanan).</p>
+          </div>
+          <div className="space-y-1">
+            <Label>Google Maps Embed RO</Label>
+            <Textarea
+              rows={3}
+              value={form.maps_embed_ro ?? ""}
+              placeholder='Tempel kode <iframe src="..."> dari Google Maps'
+              onChange={(e) => setForm({ ...form, maps_embed_ro: e.target.value })}
+            />
+            <p className="text-xs text-muted-foreground">Peta akan tampil di section Kontak (Kiri).</p>
+          </div>
         </div>
         <div className="space-y-1">
           <Label>Jam Operasional</Label>

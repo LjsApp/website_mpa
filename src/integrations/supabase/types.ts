@@ -141,6 +141,7 @@ export type Database = {
         Row: {
           about: string | null
           address: string | null
+          address_ro: string | null
           email: string | null
           facebook_url: string | null
           id: string
@@ -149,21 +150,24 @@ export type Database = {
           linkedin_url: string | null
           logo_url: string | null
           maps_embed: string | null
+          maps_embed_ro: string | null
           mission: string | null
           name: string
           operating_hours: string | null
-          phone: string | null
           stats: Json
           tagline: string | null
           timeline: Json
           updated_at: string
           vision: string | null
           whatsapp: string | null
+          whatsapp_2: string | null
+          whatsapp_3: string | null
           youtube_url: string | null
         }
         Insert: {
           about?: string | null
           address?: string | null
+          address_ro?: string | null
           email?: string | null
           facebook_url?: string | null
           id?: string
@@ -172,21 +176,24 @@ export type Database = {
           linkedin_url?: string | null
           logo_url?: string | null
           maps_embed?: string | null
+          maps_embed_ro?: string | null
           mission?: string | null
           name?: string
           operating_hours?: string | null
-          phone?: string | null
           stats?: Json
           tagline?: string | null
           timeline?: Json
           updated_at?: string
           vision?: string | null
           whatsapp?: string | null
+          whatsapp_2?: string | null
+          whatsapp_3?: string | null
           youtube_url?: string | null
         }
         Update: {
           about?: string | null
           address?: string | null
+          address_ro?: string | null
           email?: string | null
           facebook_url?: string | null
           id?: string
@@ -195,16 +202,18 @@ export type Database = {
           linkedin_url?: string | null
           logo_url?: string | null
           maps_embed?: string | null
+          maps_embed_ro?: string | null
           mission?: string | null
           name?: string
           operating_hours?: string | null
-          phone?: string | null
           stats?: Json
           tagline?: string | null
           timeline?: Json
           updated_at?: string
           vision?: string | null
           whatsapp?: string | null
+          whatsapp_2?: string | null
+          whatsapp_3?: string | null
           youtube_url?: string | null
         }
         Relationships: []

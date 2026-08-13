@@ -15,9 +15,11 @@ export function Footer({ company: initial }: { company?: CompanyRow | null }) {
   const subscribeFn = useServerFn(subscribeNewsletter);
 
   const email = company?.email ?? "";
-  const phone = company?.phone ?? "";
   const address = company?.address ?? "";
+  const address_ro = company?.address_ro ?? "";
   const wa = (company?.whatsapp ?? "").replace(/[^0-9]/g, "");
+  const wa2 = (company?.whatsapp_2 ?? "").replace(/[^0-9]/g, "");
+  const wa3 = (company?.whatsapp_3 ?? "").replace(/[^0-9]/g, "");
   const name = company?.name ?? "";
   const logo = company?.logo_url ?? null;
   const iso = isoImages(company?.iso_images);
@@ -142,10 +144,16 @@ export function Footer({ company: initial }: { company?: CompanyRow | null }) {
         <div>
           <div className="text-xs uppercase tracking-widest text-accent mb-4">Kontak</div>
           <ul className="space-y-2 text-sm text-primary-foreground/70">
-            {address && <li className="whitespace-pre-line">{address}</li>}
-            {phone && <li><a href={`tel:${phone.replace(/[^0-9+]/g, "")}`} className="hover:text-primary-foreground transition">{phone}</a></li>}
-            {email && <li><a href={`mailto:${email}`} className="hover:text-primary-foreground transition">{email}</a></li>}
-            {wa && <li><a href={`https://wa.me/${wa}`} className="text-accent hover:underline">WhatsApp →</a></li>}
+            {address && <li className="whitespace-pre-line"><span className="text-primary-foreground/90 font-medium">HO:</span><br/>{address}</li>}
+            {address_ro && <li className="whitespace-pre-line"><span className="text-primary-foreground/90 font-medium">RO:</span><br/>{address_ro}</li>}
+            {email && <li className="pt-2"><a href={`mailto:${email}`} className="hover:text-primary-foreground transition">{email}</a></li>}
+            {(wa || wa2 || wa3) && (
+              <li className="flex flex-col gap-1 pt-1">
+                {wa && <a href={`https://wa.me/${wa}`} className="text-accent hover:underline">WhatsApp 1 →</a>}
+                {wa2 && <a href={`https://wa.me/${wa2}`} className="text-accent hover:underline">WhatsApp 2 →</a>}
+                {wa3 && <a href={`https://wa.me/${wa3}`} className="text-accent hover:underline">WhatsApp 3 →</a>}
+              </li>
+            )}
           </ul>
         </div>
       </div>
