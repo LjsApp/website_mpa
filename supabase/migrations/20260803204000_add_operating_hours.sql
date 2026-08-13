@@ -1,1 +1,0 @@
-ALTER TABLE company_info ADD COLUMN operating_hours text;
