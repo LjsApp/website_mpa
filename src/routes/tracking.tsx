@@ -104,18 +104,13 @@ function TrackingResult({
     >
       {/* ── Top banner */}
       <div
-        style={{
-          background: isDelivered
-            ? "#EFFAF4"
-            : "#EEF3F0",
-          padding: "28px 28px 20px",
-          borderBottom: "1px solid var(--color-border)",
-        }}
+        className="p-5 sm:p-7 border-b border-border"
+        style={{ background: isDelivered ? "#EFFAF4" : "#EEF3F0" }}
       >
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px" }}>
+        <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-              <span style={{ fontFamily: "monospace", fontSize: "22px", fontWeight: 700, color: "var(--color-primary)", letterSpacing: "2px" }}>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-mono text-xl sm:text-2xl font-bold text-primary tracking-widest">
                 {tracking.id}
               </span>
               <span
@@ -123,80 +118,66 @@ function TrackingResult({
                   background: color.bg,
                   border: `1px solid ${color.border}`,
                   color: color.text,
-                  fontSize: "12px",
-                  fontWeight: 600,
-                  padding: "3px 10px",
-                  borderRadius: "999px",
                 }}
+                className="text-[11px] sm:text-xs font-semibold px-2.5 py-0.5 rounded-full"
               >
                 {statusIcon(tracking.status)} {tracking.status}
               </span>
             </div>
-            <div style={{ color: "var(--color-foreground)", fontSize: "18px", fontWeight: 600, marginTop: "6px" }}>
+            <div className="text-foreground text-base sm:text-lg font-semibold mt-1.5">
               {tracking.item_name}
             </div>
           </div>
-          <div style={{ textAlign: "right" }}>
-            <div style={{ color: "var(--color-muted-foreground)", fontSize: "11px", textTransform: "uppercase", letterSpacing: "1px" }}>Customer</div>
-            <div style={{ color: "var(--color-foreground)", fontWeight: 500 }}>{tracking.customer}</div>
-            <div style={{ color: "var(--color-muted-foreground)", fontSize: "11px", marginTop: "4px" }}>PO: <span style={{ color: "var(--color-foreground)" }}>{tracking.po_number}</span></div>
+          <div className="text-left sm:text-right w-full sm:w-auto bg-white/40 sm:bg-transparent p-3 sm:p-0 rounded-lg">
+            <div className="text-muted-foreground text-[10px] sm:text-[11px] uppercase tracking-wider">Customer</div>
+            <div className="text-foreground font-medium text-sm sm:text-base">{tracking.customer}</div>
+            <div className="text-muted-foreground text-[10px] sm:text-[11px] mt-1">PO: <span className="text-foreground">{tracking.po_number}</span></div>
           </div>
         </div>
       </div>
 
       {/* ── Progress Steps */}
-      <div style={{ padding: "24px 28px", borderBottom: "1px solid var(--color-border)" }}>
-        <div style={{ display: "flex", alignItems: "flex-start", gap: "0" }}>
+      <div className="px-4 py-6 sm:px-7 border-b border-border overflow-x-auto no-scrollbar">
+        <div className="flex items-start min-w-[300px]">
           {STATUS_STEPS.map((s, i) => {
             const done   = i <= currentIdx;
             const active = i === currentIdx;
             const c      = statusColor(s);
             return (
-              <div key={s} style={{ display: "flex", alignItems: "flex-start", flex: 1 }}>
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flex: "none", width: "48px" }}>
+              <div key={s} className="flex items-start flex-1">
+                <div className="flex flex-col items-center flex-none w-10 sm:w-12">
                   {/* Circle */}
                   <div
+                    className="flex items-center justify-center font-bold rounded-full z-10 transition-all duration-300 w-8 h-8 sm:w-9 sm:h-9"
                     style={{
-                      width: "36px",
-                      height: "36px",
-                      borderRadius: "50%",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: active ? "16px" : "13px",
-                      fontWeight: 700,
+                      fontSize: active ? "14px" : "12px",
                       background: done ? c.solid : "var(--color-muted)",
                       border: `2px solid ${done ? c.solid : "var(--color-border)"}`,
                       color: done ? "#fff" : "var(--color-muted-foreground)",
                       boxShadow: active ? `0 0 16px ${c.solid}40` : "none",
-                      transition: "all 0.3s ease",
-                      zIndex: 1,
                     }}
                   >
                     {active ? statusIcon(s) : done ? "✓" : i + 1}
                   </div>
                   {/* Label */}
-                  <div style={{
-                    textAlign: "center",
-                    fontSize: "9px",
-                    lineHeight: "1.3",
-                    marginTop: "6px",
-                    color: done ? c.text : "var(--color-muted-foreground)",
-                    fontWeight: done ? 600 : 400,
-                    maxWidth: "52px",
-                  }}>
+                  <div 
+                    className="text-center mt-1.5 leading-tight text-[8px] sm:text-[9px] max-w-[48px] sm:max-w-[52px]"
+                    style={{
+                      color: done ? c.text : "var(--color-muted-foreground)",
+                      fontWeight: done ? 600 : 400,
+                    }}
+                  >
                     {s}
                   </div>
                 </div>
                 {/* Connector line */}
                 {i < STATUS_STEPS.length - 1 && (
-                  <div style={{
-                    flex: 1,
-                    height: "2px",
-                    marginTop: "17px",
-                    background: i < currentIdx ? c.solid : "var(--color-border)",
-                    transition: "background 0.3s ease",
-                  }} />
+                  <div 
+                    className="flex-1 h-[2px] mt-[15px] sm:mt-[17px] transition-colors duration-300"
+                    style={{
+                      background: i < currentIdx ? c.solid : "var(--color-border)",
+                    }} 
+                  />
                 )}
               </div>
             );
@@ -205,61 +186,59 @@ function TrackingResult({
       </div>
 
       {/* ── Timeline */}
-      <div style={{ padding: "24px 28px" }}>
-        <div style={{ color: "#64748b", fontSize: "11px", textTransform: "uppercase", letterSpacing: "1.5px", marginBottom: "20px" }}>
+      <div className="p-5 sm:p-7">
+        <div className="text-slate-500 text-[10px] sm:text-[11px] uppercase tracking-widest mb-4 sm:mb-5">
           Riwayat Perjalanan Barang
         </div>
 
         {updates.length === 0 ? (
-          <div style={{ color: "#4b5563", textAlign: "center", padding: "24px 0" }}>
+          <div className="text-muted-foreground text-center py-6 text-sm">
             Belum ada update perjalanan.
           </div>
         ) : (
-          <div style={{ position: "relative" }}>
+          <div className="relative">
             {[...updates].sort((a, b) => new Date(b.event_date ?? b.created_at).getTime() - new Date(a.event_date ?? a.created_at).getTime()).map((u, i, arr) => {
               const c     = statusColor(u.status);
               const isFirst = i === 0;
               return (
                 <div
                   key={u.id}
-                  style={{
-                    display: "flex",
-                    gap: "16px",
-                    animation: `fadeSlideUp 0.4s ease ${i * 0.08}s both`,
-                  }}
+                  className="flex gap-3 sm:gap-4"
+                  style={{ animation: `fadeSlideUp 0.4s ease ${i * 0.08}s both` }}
                 >
                   {/* Left: dot + line */}
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "20px", flexShrink: 0 }}>
+                  <div className="flex flex-col items-center w-5 shrink-0">
                     <div
+                      className="rounded-full shrink-0 mt-1"
                       style={{
                         width: isFirst ? "14px" : "10px",
                         height: isFirst ? "14px" : "10px",
-                        borderRadius: "50%",
                         background: c.solid,
-                        flexShrink: 0,
-                        marginTop: "4px",
                         boxShadow: isFirst ? `0 0 10px ${c.solid}` : "none",
                       }}
                     />
                     {i < arr.length - 1 && (
-                      <div style={{ flex: 1, width: "1px", background: "var(--color-border)", minHeight: "32px" }} />
+                      <div className="flex-1 w-[1px] bg-border min-h-[24px] sm:min-h-[32px]" />
                     )}
                   </div>
 
                   {/* Right: content */}
-                  <div style={{ flex: 1, paddingBottom: i < arr.length - 1 ? "20px" : 0 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "8px", flexWrap: "wrap" }}>
+                  <div className={`flex-1 ${i < arr.length - 1 ? 'pb-4 sm:pb-5' : ''}`}>
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-2">
                       <div>
-                        <div style={{ fontWeight: 600, color: isFirst ? c.text : "var(--color-foreground)", fontSize: "14px" }}>
+                        <div 
+                          className="font-semibold text-sm sm:text-[15px]" 
+                          style={{ color: isFirst ? c.text : "var(--color-foreground)" }}
+                        >
                           {statusIcon(u.status)} {u.status}
                         </div>
                         {u.note && (
-                          <div style={{ color: "var(--color-muted-foreground)", fontSize: "13px", marginTop: "3px" }}>
+                          <div className="text-muted-foreground text-xs sm:text-[13px] mt-0.5 sm:mt-1">
                             {u.note}
                           </div>
                         )}
                       </div>
-                      <div style={{ color: "var(--color-muted-foreground)", fontSize: "12px", flexShrink: 0, textAlign: "right" }}>
+                      <div className="text-muted-foreground text-[10px] sm:text-xs shrink-0">
                         {formatDateShort(u.event_date ?? u.created_at)}
                       </div>
                     </div>
@@ -367,55 +346,26 @@ function TrackingPage() {
           {/* ── Content area */}
           <div style={{ maxWidth: "800px", margin: "40px auto 80px", padding: "0 24px" }} className="flex flex-col gap-8 w-full">
             {/* Search box */}
-            <div
-              style={{
-                background: "var(--color-card)",
-                border: "1px solid var(--color-border)",
-                borderRadius: "14px",
-                padding: "6px 6px 6px 20px",
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-              }}
-            >
-              <span style={{ fontSize: "20px", flexShrink: 0 }}>🔍</span>
-              <input
-                ref={inputRef}
-                className="tracking-input"
-                type="text"
-                placeholder="Masukkan Tracking ID (Contoh: MPA-A3K9F2)"
-                value={inputId}
-                onChange={(e) => handleInputChange(e.target.value)}
-                onKeyDown={handleKeyDown}
-                maxLength={10}
-                id="tracking-id-input"
-                style={{
-                  flex: 1,
-                  background: "transparent",
-                  border: "none",
-                  color: "var(--color-foreground)",
-                  fontSize: "18px",
-                  fontFamily: "monospace",
-                  letterSpacing: "2px",
-                  padding: "8px 0",
-                }}
-              />
+            <div className="bg-card border border-border rounded-xl p-2 sm:pl-5 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+              <div className="flex items-center gap-2 flex-1 px-2 py-1 sm:p-0">
+                <span className="text-xl shrink-0">🔍</span>
+                <input
+                  ref={inputRef}
+                  className="tracking-input w-full bg-transparent border-none text-foreground text-sm sm:text-lg font-mono tracking-wider focus:outline-none placeholder:text-muted-foreground"
+                  type="text"
+                  placeholder="Masukkan Tracking ID (Contoh: MPA-A3K9F2)"
+                  value={inputId}
+                  onChange={(e) => handleInputChange(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  maxLength={10}
+                  id="tracking-id-input"
+                />
+              </div>
               <button
-                className="track-btn"
+                className="track-btn bg-primary text-primary-foreground font-bold text-sm px-6 py-3 rounded-lg w-full sm:w-auto shrink-0 transition-transform disabled:opacity-60 disabled:cursor-not-allowed hover:-translate-y-px"
                 onClick={() => handleSearch()}
                 disabled={loading || !inputId.trim()}
                 id="btn-cek-tracking"
-                style={{
-                  background: "var(--primary)",
-                  border: "none",
-                  borderRadius: "10px",
-                  color: "var(--primary-foreground)",
-                  fontWeight: 700,
-                  fontSize: "14px",
-                  padding: "12px 24px",
-                  cursor: "pointer",
-                  flexShrink: 0,
-                }}
               >
                 {loading ? "Mencari..." : "Cek Sekarang"}
               </button>
