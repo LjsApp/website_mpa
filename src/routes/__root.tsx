@@ -120,6 +120,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 import { BackToTop } from "@/components/ui/back-to-top";
 
+
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="id">

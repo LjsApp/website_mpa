@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as CatalogRouteImport } from './routes/catalog'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as SetupRouteImport } from './routes/setup'
+import { Route as TrackingRouteImport } from './routes/tracking'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
@@ -46,6 +47,11 @@ const LoginRoute = LoginRouteImport.update({
 const SetupRoute = SetupRouteImport.update({
   id: '/setup',
   path: '/setup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrackingRoute = TrackingRouteImport.update({
+  id: '/tracking',
+  path: '/tracking',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
@@ -99,6 +105,7 @@ export interface FileRoutesByFullPath {
   '/catalog': typeof CatalogRoute
   '/login': typeof LoginRoute
   '/setup': typeof SetupRoute
+  '/tracking': typeof TrackingRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/products/$slug': typeof ProductsSlugRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByTo {
   '/catalog': typeof CatalogRoute
   '/login': typeof LoginRoute
   '/setup': typeof SetupRoute
+  '/tracking': typeof TrackingRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/products/$slug': typeof ProductsSlugRoute
@@ -131,6 +139,7 @@ export interface FileRoutesById {
   '/catalog': typeof CatalogRoute
   '/login': typeof LoginRoute
   '/setup': typeof SetupRoute
+  '/tracking': typeof TrackingRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/products/$slug': typeof ProductsSlugRoute
@@ -148,6 +157,7 @@ export interface FileRouteTypes {
     | '/catalog'
     | '/login'
     | '/setup'
+    | '/tracking'
     | '/admin'
     | '/blog/$slug'
     | '/products/$slug'
@@ -163,6 +173,7 @@ export interface FileRouteTypes {
     | '/catalog'
     | '/login'
     | '/setup'
+    | '/tracking'
     | '/admin'
     | '/blog/$slug'
     | '/products/$slug'
@@ -179,6 +190,7 @@ export interface FileRouteTypes {
     | '/catalog'
     | '/login'
     | '/setup'
+    | '/tracking'
     | '/_authenticated/admin'
     | '/blog/$slug'
     | '/products/$slug'
@@ -196,6 +208,7 @@ export interface RootRouteChildren {
   CatalogRoute: typeof CatalogRoute
   LoginRoute: typeof LoginRoute
   SetupRoute: typeof SetupRoute
+  TrackingRoute: typeof TrackingRoute
   BlogSlugRoute: typeof BlogSlugRoute
   ProductsSlugRoute: typeof ProductsSlugRoute
   ProjectsSlugRoute: typeof ProjectsSlugRoute
@@ -241,6 +254,13 @@ declare module '@tanstack/react-router' {
       path: '/setup'
       fullPath: '/setup'
       preLoaderRoute: typeof SetupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tracking': {
+      id: '/tracking'
+      path: '/tracking'
+      fullPath: '/tracking'
+      preLoaderRoute: typeof TrackingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -327,6 +347,7 @@ const rootRouteChildren: RootRouteChildren = {
   CatalogRoute: CatalogRoute,
   LoginRoute: LoginRoute,
   SetupRoute: SetupRoute,
+  TrackingRoute: TrackingRoute,
   BlogSlugRoute: BlogSlugRoute,
   ProductsSlugRoute: ProductsSlugRoute,
   ProjectsSlugRoute: ProjectsSlugRoute,

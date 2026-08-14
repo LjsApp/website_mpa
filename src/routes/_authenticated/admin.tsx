@@ -20,6 +20,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { getAnalyticsData } from "@/lib/admin.functions";
+import { TrackingManager } from "@/components/admin/TrackingManager";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "Admin Panel" }] }),
@@ -40,6 +41,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
 
 type Tab =
   | "dashboard"
+  | "tracking"
   | "projects"
   | "products"
   | "articles"
@@ -51,6 +53,7 @@ type Tab =
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "dashboard", label: "Dashboard" },
+  { id: "tracking", label: "Tracking" },
   { id: "projects", label: "Proyek" },
   { id: "products", label: "Produk" },
   { id: "articles", label: "Blog" },
@@ -114,6 +117,7 @@ function AdminPage() {
         </aside>
         <main className="flex-1 p-4 md:p-10 max-w-6xl min-w-0 w-full">
           {tab === "dashboard" && <Dashboard />}
+          {tab === "tracking" && <TrackingManager />}
           {tab === "projects" && <CrudManager config={projectsConfig} />}
           {tab === "products" && <CrudManager config={productsConfig} />}
           {tab === "articles" && <CrudManager config={articlesConfig} />}

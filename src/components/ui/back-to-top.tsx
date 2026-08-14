@@ -1,58 +1,117 @@
 import { useEffect, useState } from "react";
-
+import { Link, useRouterState } from "@tanstack/react-router";
 import { useCompanyState } from "@/hooks/use-company";
 
 export function BackToTop() {
+  const [isMounted, setIsMounted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isWaOpen, setIsWaOpen] = useState(false);
   const { company } = useCompanyState();
   const wa = (company?.whatsapp ?? "").replace(/[^0-9]/g, "");
   const wa2 = (company?.whatsapp_2 ?? "").replace(/[^0-9]/g, "");
   const wa3 = (company?.whatsapp_3 ?? "").replace(/[^0-9]/g, "");
-  
+
   const hasWa = !!(wa || wa2 || wa3);
 
-  useEffect(() => {
-    const toggleVisibility = () => {
-      if (window.scrollY > 500) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
-    };
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isPublicPage =
+    !pathname.startsWith("/admin") &&
+    !pathname.startsWith("/login") &&
+    pathname !== "/tracking";
 
+  useEffect(() => {
+    setIsMounted(true);
+    const toggleVisibility = () => {
+      setIsVisible(window.scrollY > 500);
+    };
     window.addEventListener("scroll", toggleVisibility);
     return () => window.removeEventListener("scroll", toggleVisibility);
   }, []);
 
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-
+  // Don't render on server to avoid hydration mismatch
+  if (!isMounted) return null;
 
   return (
     <div className="fixed bottom-6 right-6 z-50 pointer-events-none flex flex-col items-end">
+      {/* Tracking Button */}
+      {isPublicPage && (
+        <div
+          className={`absolute right-0 flex flex-col items-end pointer-events-auto transition-all duration-300 ${
+            isVisible ? "bottom-32" : "bottom-16"
+          }`}
+        >
+          <Link
+            to="/tracking"
+            aria-label="Cek Status Pengiriman"
+            title="Lacak Pesanan"
+            className="w-12 h-12 rounded-sm bg-[#E85D04] text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300"
+          >
+            {/* Package/tracking icon */}
+            <svg
+              className="w-5 h-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14" />
+              <path d="m7.5 4.27 9 5.15" />
+              <polyline points="3.29 7 12 12 20.71 7" />
+              <line x1="12" y1="22" x2="12" y2="12" />
+              <circle cx="18.5" cy="15.5" r="2.5" />
+              <path d="M20.27 17.27 22 19" />
+            </svg>
+          </Link>
+        </div>
+      )}
+
       {hasWa && (
-        <div className={`absolute right-0 flex flex-col items-end pointer-events-auto transition-all duration-300 ${isVisible ? "bottom-16" : "bottom-0"}`}>
+        <div
+          className={`absolute right-0 flex flex-col items-end pointer-events-auto transition-all duration-300 ${
+            isVisible ? "bottom-16" : "bottom-0"
+          }`}
+        >
           {isWaOpen && (
             <div className="bg-card border border-border shadow-xl rounded-sm p-2 flex flex-col mb-3 w-40 text-sm animate-in fade-in slide-in-from-bottom-2">
-              <div className="font-semibold px-3 py-2 border-b border-border/50 text-foreground mb-1 text-xs uppercase tracking-wider text-primary">Hubungi Admin</div>
+              <div className="font-semibold px-3 py-2 border-b border-border/50 text-foreground mb-1 text-xs uppercase tracking-wider text-primary">
+                Hubungi Admin
+              </div>
               {wa && (
-                <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer" onClick={() => setIsWaOpen(false)} className="px-3 py-2 hover:bg-primary/10 rounded-sm flex items-center gap-2 transition-colors text-foreground text-sm">
+                <a
+                  href={`https://wa.me/${wa}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setIsWaOpen(false)}
+                  className="px-3 py-2 hover:bg-primary/10 rounded-sm flex items-center gap-2 transition-colors text-foreground text-sm"
+                >
                   Admin 1
                 </a>
               )}
               {wa2 && (
-                <a href={`https://wa.me/${wa2}`} target="_blank" rel="noopener noreferrer" onClick={() => setIsWaOpen(false)} className="px-3 py-2 hover:bg-primary/10 rounded-sm flex items-center gap-2 transition-colors text-foreground text-sm">
+                <a
+                  href={`https://wa.me/${wa2}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setIsWaOpen(false)}
+                  className="px-3 py-2 hover:bg-primary/10 rounded-sm flex items-center gap-2 transition-colors text-foreground text-sm"
+                >
                   Admin 2
                 </a>
               )}
               {wa3 && (
-                <a href={`https://wa.me/${wa3}`} target="_blank" rel="noopener noreferrer" onClick={() => setIsWaOpen(false)} className="px-3 py-2 hover:bg-primary/10 rounded-sm flex items-center gap-2 transition-colors text-foreground text-sm">
+                <a
+                  href={`https://wa.me/${wa3}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setIsWaOpen(false)}
+                  className="px-3 py-2 hover:bg-primary/10 rounded-sm flex items-center gap-2 transition-colors text-foreground text-sm"
+                >
                   Admin 3
                 </a>
               )}
@@ -73,7 +132,9 @@ export function BackToTop() {
       <button
         onClick={scrollToTop}
         className={`w-12 h-12 bg-primary text-primary-foreground shadow-lg transition-all duration-300 rounded-sm hover:brightness-110 flex items-center justify-center pointer-events-auto absolute right-0 bottom-0 ${
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"
+          isVisible
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 translate-y-10 pointer-events-none"
         }`}
         aria-label="Kembali ke atas"
       >
