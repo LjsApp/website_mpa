@@ -618,8 +618,8 @@ function TrackingDetail({
                         {formatDate(u.event_date ?? u.created_at)}
                       </p>
                     </div>
-                    {/* Action buttons: visible on hover */}
-                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition shrink-0">
+                    {/* Action buttons */}
+                    <div className="flex gap-1 transition shrink-0">
                       <button
                         onClick={() => setEditingId(editingId === u.id ? null : u.id)}
                         className="text-xs text-muted-foreground hover:text-foreground px-1.5 py-0.5 rounded hover:bg-muted transition"
