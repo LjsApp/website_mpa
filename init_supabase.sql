@@ -260,13 +260,15 @@ CREATE POLICY "admin delete media" ON storage.objects FOR DELETE TO authenticate
 
 -- order_trackings (main order data)
 CREATE TABLE public.order_trackings (
-  id         TEXT PRIMARY KEY,
-  po_number  TEXT NOT NULL,
-  customer   TEXT NOT NULL,
-  item_name  TEXT NOT NULL,
-  status     TEXT NOT NULL DEFAULT 'PO Diterima',
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  id          TEXT PRIMARY KEY,
+  po_number   TEXT NOT NULL,
+  customer    TEXT NOT NULL,
+  item_name   TEXT NOT NULL,
+  status      TEXT NOT NULL DEFAULT 'PO Diterima',
+  courier     TEXT,
+  resi_number TEXT,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 ALTER TABLE public.order_trackings ENABLE ROW LEVEL SECURITY;
 CREATE TRIGGER set_order_trackings_updated
