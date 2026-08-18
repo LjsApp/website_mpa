@@ -64,7 +64,7 @@ export function Testimonials({ items = [] }: { items?: TestimonialRow[] }) {
           <div className="max-w-2xl">
             <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">Testimoni</div>
             <h2 className="font-display text-4xl md:text-5xl uppercase leading-tight">
-              Kata Klien Kami{companyName && (<><br /><span className="text-gradient-orange whitespace-nowrap">Tentang {companyName}</span></>)}
+              Kata Klien Kami{companyName && (<><br /><span className="text-gradient-orange md:whitespace-nowrap">Tentang {companyName}</span></>)}
             </h2>
           </div>
 

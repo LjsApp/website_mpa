@@ -50,7 +50,7 @@ export function Contact({ company }: { company?: CompanyRow | null }) {
           <h2 className="font-display text-4xl md:text-6xl uppercase leading-tight">
             Siap Mendukung<br /><span className="text-gradient-orange">Kebutuhan Industri Anda?</span>
           </h2>
-          <p className="text-muted-foreground mt-5 whitespace-nowrap">
+          <p className="text-muted-foreground mt-5 md:whitespace-nowrap">
             Diskusikan proyek Anda dengan kami. Tim engineering siap memberikan konsultasi dan penawaran terbaik.
           </p>
         </div>

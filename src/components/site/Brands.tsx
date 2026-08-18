@@ -53,7 +53,7 @@ export function Brands({ brands = [] }: { brands?: BrandRow[] }) {
           <h2 className="font-display text-4xl md:text-5xl uppercase leading-tight">
             Brand Industri Resmi & Terpercaya
           </h2>
-          <p className="text-muted-foreground mt-5 leading-relaxed whitespace-nowrap">
+          <p className="text-muted-foreground mt-5 leading-relaxed md:whitespace-nowrap">
             Kami menyediakan produk original dari brand global yang telah dipercaya oleh berbagai
             industri .
           </p>
@@ -92,7 +92,7 @@ export function Brands({ brands = [] }: { brands?: BrandRow[] }) {
           <h3 className="font-display text-2xl md:text-3xl uppercase">
             Tidak menemukan brand yang Anda cari?
           </h3>
-          <p className="text-muted-foreground mt-3 whitespace-nowrap">
+          <p className="text-muted-foreground mt-3 md:whitespace-nowrap">
             Tim kami siap membantu mencari solusi terbaik sesuai kebutuhan industri Anda.
           </p>
           <button

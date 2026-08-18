@@ -29,7 +29,7 @@ export function About({ company }: { company?: CompanyRow | null }) {
           )}
         </div>
         <div data-animate="fade-left">
-          <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3 whitespace-nowrap">Tentang {company?.name ?? "Kami"}</div>
+          <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3 md:whitespace-nowrap">Tentang {company?.name ?? "Kami"}</div>
           <h2 className="font-display text-4xl md:text-5xl uppercase leading-tight">
             Engineering Yang<br /><span className="text-gradient-orange">Dapat Diandalkan</span>
           </h2>
