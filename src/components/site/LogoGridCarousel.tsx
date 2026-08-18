@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { LazyImage } from "@/components/ui/lazy-image";
 
@@ -31,6 +31,7 @@ export function LogoGridCarousel({
   const cols = useColumns();
   const perPage = cols * rows;
   const [page, setPage] = useState(0);
+  const autoRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const pages = useMemo(() => {
     const out: LogoItem[][] = [];
@@ -38,9 +39,30 @@ export function LogoGridCarousel({
     return out.length ? out : [[]];
   }, [items, perPage]);
 
+  const startAuto = useCallback(() => {
+    if (autoRef.current) clearInterval(autoRef.current);
+    autoRef.current = setInterval(() => {
+      setPage((p) => (p + 1) % pages.length);
+    }, 3000);
+  }, [pages.length]);
+
   useEffect(() => {
     setPage((p) => Math.min(p, pages.length - 1));
   }, [pages.length]);
+
+  useEffect(() => {
+    if (pages.length > 1) {
+      startAuto();
+    }
+    return () => {
+      if (autoRef.current) clearInterval(autoRef.current);
+    };
+  }, [startAuto, pages.length]);
+
+  const setPageManual = (newVal: number | ((p: number) => number)) => {
+    setPage(newVal);
+    startAuto();
+  };
 
   const isDark = variant === "dark";
   const navClass = isDark
@@ -76,7 +98,7 @@ export function LogoGridCarousel({
                         src={b.logo_url}
                         alt={b.name}
                         wrapperClassName="h-14 w-full"
-                        className="max-h-14 w-full object-contain grayscale opacity-75 transition duration-300 group-hover:grayscale-0 group-hover:opacity-100"
+                        className="max-h-14 w-full object-contain md:grayscale md:opacity-75 grayscale-0 opacity-100 transition duration-300 group-hover:grayscale-0 group-hover:opacity-100"
                       />
                       <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground text-center leading-tight line-clamp-2">
                         {b.name}
@@ -99,7 +121,7 @@ export function LogoGridCarousel({
           <button
             type="button"
             aria-label="Sebelumnya"
-            onClick={() => setPage((p) => (p - 1 + pages.length) % pages.length)}
+            onClick={() => setPageManual((p) => (p - 1 + pages.length) % pages.length)}
             className={`h-10 w-10 rounded-full border flex items-center justify-center transition-all duration-300 hover:scale-105 ${navClass}`}
           >
             <ChevronLeft className="h-4 w-4" />
@@ -111,7 +133,7 @@ export function LogoGridCarousel({
                 key={i}
                 type="button"
                 aria-label={`Halaman ${i + 1}`}
-                onClick={() => setPage(i)}
+                onClick={() => setPageManual(i)}
                 className={`h-2 rounded-full transition-all duration-300 ${
                   i === page
                     ? `w-6 ${isDark ? "bg-accent" : "bg-primary"}`
@@ -124,7 +146,7 @@ export function LogoGridCarousel({
           <button
             type="button"
             aria-label="Berikutnya"
-            onClick={() => setPage((p) => (p + 1) % pages.length)}
+            onClick={() => setPageManual((p) => (p + 1) % pages.length)}
             className={`h-10 w-10 rounded-full border flex items-center justify-center transition-all duration-300 hover:scale-105 ${navClass}`}
           >
             <ChevronRight className="h-4 w-4" />
