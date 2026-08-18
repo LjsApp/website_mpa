@@ -51,17 +51,19 @@ export function LogoGridCarousel({
   }, [pages.length]);
 
   useEffect(() => {
-    if (pages.length > 1) {
+    if (pages.length > 1 && cols === 2) {
       startAuto();
+    } else {
+      if (autoRef.current) clearInterval(autoRef.current);
     }
     return () => {
       if (autoRef.current) clearInterval(autoRef.current);
     };
-  }, [startAuto, pages.length]);
+  }, [startAuto, pages.length, cols]);
 
   const setPageManual = (newVal: number | ((p: number) => number)) => {
     setPage(newVal);
-    startAuto();
+    if (cols === 2) startAuto();
   };
 
   const isDark = variant === "dark";
