@@ -15,7 +15,7 @@ const TABLES = [
   "product_categories",
   "project_categories",
   "article_categories",
-  "newsletter_subscribers",
+  "company_admins",
   "page_views",
 ] as const;
 type TableName = (typeof TABLES)[number];
@@ -69,8 +69,7 @@ export const adminList = createServerFn({ method: "POST" })
       q = q.order("published_at", { ascending: false });
     } else if (data.table === "company_info") {
       q = q.order("updated_at", { ascending: false });
-    } else if (data.table === "newsletter_subscribers") {
-      q = q.order("subscribed_at", { ascending: false });
+
     } else {
       q = q.order("created_at", { ascending: false });
     }

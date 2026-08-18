@@ -5,21 +5,15 @@ import { useCompanyState, isoImages, socialLinks } from "@/hooks/use-company";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { useQuery } from "@tanstack/react-query";
 import { listProductCategories } from "@/lib/public.functions";
-import { useServerFn } from "@tanstack/react-start";
-import { subscribeNewsletter } from "@/lib/public.functions";
+
 
 export function Footer({ company: initial }: { company?: CompanyRow | null }) {
   const { company, isLoading } = useCompanyState(initial);
-  const [isSubscribed, setIsSubscribed] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const subscribeFn = useServerFn(subscribeNewsletter);
 
   const email = company?.email ?? "";
   const address = company?.address ?? "";
   const address_ro = company?.address_ro ?? "";
-  const wa = (company?.whatsapp ?? "").replace(/[^0-9]/g, "");
-  const wa2 = (company?.whatsapp_2 ?? "").replace(/[^0-9]/g, "");
-  const wa3 = (company?.whatsapp_3 ?? "").replace(/[^0-9]/g, "");
+
   const name = company?.name ?? "";
   const logo = company?.logo_url ?? null;
   const iso = isoImages(company?.iso_images);
@@ -33,51 +27,7 @@ export function Footer({ company: initial }: { company?: CompanyRow | null }) {
 
   return (
     <footer className="bg-primary text-primary-foreground">
-      <div className="border-b border-primary-foreground/15">
-        <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="max-w-md">
-            <h3 className="font-display text-2xl mb-2">Berlangganan Newsletter</h3>
-            <p className="text-sm text-primary-foreground/70">Dapatkan informasi terbaru mengenai produk, penawaran khusus, dan wawasan industri langsung ke kotak masuk Anda.</p>
-          </div>
-          {isSubscribed ? (
-            <div className="flex items-center gap-3 bg-primary-foreground/10 text-primary-foreground px-6 py-4 animate-in fade-in zoom-in duration-300">
-              <svg className="w-6 h-6 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-              <span className="font-semibold tracking-wide">Terima kasih telah berlangganan!</span>
-            </div>
-          ) : (
-            <form
-              className="flex flex-col sm:flex-row w-full md:w-auto gap-2"
-              onSubmit={async (e) => {
-                e.preventDefault();
-                const form = e.target as HTMLFormElement;
-                const emailInput = form.querySelector("input[type=email]") as HTMLInputElement;
-                if (!emailInput.value) return;
 
-                try {
-                  setIsSubmitting(true);
-                  await subscribeFn({ data: { email: emailInput.value } });
-                  setIsSubscribed(true);
-                } catch (err: any) {
-                  import("sonner").then(({ toast }) => toast.error(err.message || "Terjadi kesalahan."));
-                } finally {
-                  setIsSubmitting(false);
-                }
-              }}
-            >
-              <input
-                type="email"
-                placeholder="Alamat Email Anda"
-                required
-                disabled={isSubmitting}
-                className="w-full sm:w-auto bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground px-4 py-3 min-w-[250px] placeholder:text-primary-foreground/40 focus:outline-none focus:border-accent disabled:opacity-50"
-              />
-              <button type="submit" disabled={isSubmitting} className="w-full sm:w-auto bg-accent text-accent-foreground px-6 py-3 font-semibold uppercase tracking-wider text-sm hover:brightness-110 transition disabled:opacity-50 shrink-0">
-                {isSubmitting ? "..." : "Daftar"}
-              </button>
-            </form>
-          )}
-        </div>
-      </div>
       <div className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-2 lg:grid-cols-4 gap-10">
         <div>
           <div className="flex items-center gap-2 mb-5">
@@ -147,13 +97,7 @@ export function Footer({ company: initial }: { company?: CompanyRow | null }) {
             {address && <li className="whitespace-pre-line"><span className="text-primary-foreground/90 font-medium">HO:</span><br/>{address}</li>}
             {address_ro && <li className="whitespace-pre-line"><span className="text-primary-foreground/90 font-medium">RO:</span><br/>{address_ro}</li>}
             {email && <li className="pt-2"><a href={`mailto:${email}`} className="hover:text-primary-foreground transition">{email}</a></li>}
-            {(wa || wa2 || wa3) && (
-              <li className="flex flex-col gap-1 pt-1">
-                {wa && <a href={`https://wa.me/${wa}`} className="text-accent hover:underline">WhatsApp 1 →</a>}
-                {wa2 && <a href={`https://wa.me/${wa2}`} className="text-accent hover:underline">WhatsApp 2 →</a>}
-                {wa3 && <a href={`https://wa.me/${wa3}`} className="text-accent hover:underline">WhatsApp 3 →</a>}
-              </li>
-            )}
+
           </ul>
         </div>
       </div>

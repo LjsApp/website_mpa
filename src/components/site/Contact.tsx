@@ -1,21 +1,48 @@
-import { useState, useRef, useEffect } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
 import type { CompanyRow } from "@/lib/site-types";
 import { mapsEmbedSrc } from "@/hooks/use-company";
+import { listCompanyAdmins } from "@/lib/public.functions";
+
+type AdminRow = {
+  id: string;
+  name: string;
+  phone: string;
+  instagram: string | null;
+  photo_url: string | null;
+};
+
+const WA_ICON = (
+  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.878-.788-1.472-1.761-1.645-2.06-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.82 9.82 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.81 11.81 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.88 11.88 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.82 11.82 0 0 0-3.48-8.413Z" />
+  </svg>
+);
+
+const IG_ICON = (
+  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+  </svg>
+);
 
 export function Contact({ company }: { company?: CompanyRow | null }) {
   const email = company?.email ?? "";
   const address = company?.address ?? "";
   const address_ro = company?.address_ro ?? "";
-  const wa = (company?.whatsapp ?? "").replace(/[^0-9]/g, "");
-  const wa2 = (company?.whatsapp_2 ?? "").replace(/[^0-9]/g, "");
-  const wa3 = (company?.whatsapp_3 ?? "").replace(/[^0-9]/g, "");
   const mapSrc = mapsEmbedSrc(company?.maps_embed);
   const mapSrcRO = mapsEmbedSrc(company?.maps_embed_ro);
+
+  const listAdminsFn = useServerFn(listCompanyAdmins);
+  const { data: admins = [] } = useQuery<AdminRow[]>({
+    queryKey: ["company-admins-public"],
+    queryFn: () => listAdminsFn(),
+    staleTime: 5 * 60_000,
+  });
 
   return (
     <section id="contact" className="py-28 bg-card/30 border-t border-border relative overflow-hidden">
       <div className="absolute inset-0 grid-bg opacity-20" />
       <div className="relative max-w-7xl mx-auto px-6">
+        {/* Heading */}
         <div className="text-center max-w-3xl mx-auto mb-14">
           <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">Hubungi Kami</div>
           <h2 className="font-display text-4xl md:text-6xl uppercase leading-tight">
@@ -24,53 +51,71 @@ export function Contact({ company }: { company?: CompanyRow | null }) {
           <p className="text-muted-foreground mt-5">
             Diskusikan proyek Anda dengan kami. Tim engineering siap memberikan konsultasi dan penawaran terbaik.
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <a href={`mailto:${email}`} className="bg-primary text-primary-foreground px-8 py-4 font-semibold uppercase tracking-wider text-sm hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/20 transition-all duration-300 glow-orange">
-              Hubungi Kami
-            </a>
-            {(wa || wa2 || wa3) && <WaDropdown wa={wa} wa2={wa2} wa3={wa3} />}
-          </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 mt-14">
-          <div className="industrial-card p-7">
-            <div className="w-12 h-12 bg-primary/10 border border-primary/30 flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            </div>
-            <div className="text-xs uppercase tracking-widest text-primary mb-1">Alamat</div>
-            <div className="text-sm text-muted-foreground flex flex-col gap-3 mt-3">
-              {address && <div><strong className="text-foreground">Head Office (HO):</strong><br/>{address}</div>}
-              {address_ro && <div><strong className="text-foreground">Representative Office (RO):</strong><br/>{address_ro}</div>}
+        {/* Admin / Staf Cards */}
+        {admins.length > 0 && (
+          <div className="mb-14">
+            <div className="text-xs uppercase tracking-[0.3em] text-primary text-center mb-6">Tim Kami</div>
+            <div className="flex flex-wrap justify-center gap-6">
+              {admins.map((admin) => {
+                const phone = admin.phone.replace(/[^0-9]/g, "");
+                const waNum = phone.startsWith("0") ? `62${phone.slice(1)}` : phone;
+                return (
+                  <div key={admin.id} className="industrial-card flex flex-col items-center p-7 w-56 gap-4">
+                    {/* Photo */}
+                    <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-primary/30 bg-primary/10 shrink-0">
+                      {admin.photo_url ? (
+                        <img src={admin.photo_url} alt={admin.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-primary text-3xl font-bold">
+                          {admin.name.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                    </div>
+                    {/* Name */}
+                    <div className="text-base font-semibold text-foreground text-center leading-tight">{admin.name}</div>
+                    {/* Action icons */}
+                    <div className="flex gap-3">
+                      {waNum && (
+                        <a
+                          href={`https://wa.me/${waNum}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={`WhatsApp ${admin.name}`}
+                          className="w-10 h-10 rounded-full bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/30 flex items-center justify-center hover:bg-[#25D366] hover:text-white transition-all duration-200"
+                        >
+                          {WA_ICON}
+                        </a>
+                      )}
+                      {admin.instagram && (
+                        <a
+                          href={`https://instagram.com/${admin.instagram.replace(/^@/, "")}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={`Instagram @${admin.instagram}`}
+                          className="w-10 h-10 rounded-full bg-[#E1306C]/10 text-[#E1306C] border border-[#E1306C]/30 flex items-center justify-center hover:bg-[#E1306C] hover:text-white transition-all duration-200"
+                        >
+                          {IG_ICON}
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
-          <div className="industrial-card p-7">
-            <div className="w-12 h-12 bg-primary/10 border border-primary/30 flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
-            </div>
-            <div className="text-xs uppercase tracking-widest text-primary mb-1">Kontak</div>
-            <div className="text-sm text-muted-foreground flex flex-col gap-1 mt-3">
-              {email && <div>{email}</div>}
-              {wa && <div>WA 1: {company?.whatsapp}</div>}
-              {wa2 && <div>WA 2: {company?.whatsapp_2}</div>}
-              {wa3 && <div>WA 3: {company?.whatsapp_3}</div>}
-            </div>
-          </div>
-          <div className="industrial-card p-7">
-            <div className="w-12 h-12 bg-primary/10 border border-primary/30 flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            </div>
-            <div className="text-xs uppercase tracking-widest text-primary mb-1">Jam Operasional</div>
-            <div className="text-sm text-muted-foreground whitespace-pre-line">
-              {company?.operating_hours ?? "Senin — Jumat · 08:00 – 17:00\nDukungan Darurat 24/7"}
-            </div>
-          </div>
-        </div>
+        )}
 
+        {/* Maps with addresses underneath */}
         {(mapSrc || mapSrcRO) && (
-          <div className="mt-14 grid md:grid-cols-2 gap-6">
+          <div className="mb-14 grid md:grid-cols-2 gap-6">
             {mapSrcRO && (
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-3">
                 <div className="text-sm font-semibold uppercase tracking-wider text-primary">Peta Alamat RO</div>
+                {address_ro && (
+                  <p className="text-sm text-muted-foreground leading-relaxed">{address_ro}</p>
+                )}
                 <div className="overflow-hidden rounded-2xl border border-border shadow-sm">
                   <iframe
                     src={mapSrcRO}
@@ -83,8 +128,11 @@ export function Contact({ company }: { company?: CompanyRow | null }) {
               </div>
             )}
             {mapSrc && (
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-3">
                 <div className="text-sm font-semibold uppercase tracking-wider text-primary">Peta Alamat HO</div>
+                {address && (
+                  <p className="text-sm text-muted-foreground leading-relaxed">{address}</p>
+                )}
                 <div className="overflow-hidden rounded-2xl border border-border shadow-sm">
                   <iframe
                     src={mapSrc}
@@ -98,65 +146,42 @@ export function Contact({ company }: { company?: CompanyRow | null }) {
             )}
           </div>
         )}
+
+        {/* Info Grid: Email & Jam Operasional */}
+        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          {email && (
+            <a
+              href={`mailto:${email}`}
+              className="industrial-card p-7 flex items-center gap-5 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 group cursor-pointer"
+            >
+              <div className="w-12 h-12 bg-primary/10 border border-primary/30 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                <svg className="w-6 h-6 text-primary group-hover:text-current transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+              </div>
+              <div>
+                <div className="text-xs uppercase tracking-widest text-primary mb-1">Email Perusahaan</div>
+                <div className="text-sm font-medium text-foreground">{email}</div>
+              </div>
+            </a>
+          )}
+
+          {company?.operating_hours && (
+            <div className="industrial-card p-7 flex items-center gap-5 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 group">
+              <div className="w-12 h-12 bg-primary/10 border border-primary/30 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                <svg className="w-6 h-6 text-primary group-hover:text-current transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
+              </div>
+              <div>
+                <div className="text-xs uppercase tracking-widest text-primary mb-1">Jam Operasional</div>
+                <div className="text-sm text-muted-foreground whitespace-pre-line">{company.operating_hours}</div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </section>
-  );
-}
-
-function WaDropdown({ wa, wa2, wa3 }: { wa: string; wa2: string; wa3: string }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
-
-  const admins = [
-    { label: "Admin 1", num: wa },
-    { label: "Admin 2", num: wa2 },
-    { label: "Admin 3", num: wa3 },
-  ].filter((a) => a.num);
-
-  return (
-    <div ref={ref} className="relative">
-      <button
-        onClick={() => setOpen(!open)}
-        className="border border-border px-8 py-4 font-semibold uppercase tracking-wider text-sm hover:-translate-y-1 hover:border-primary hover:text-primary hover:bg-card hover:shadow-lg transition-all duration-300 flex items-center gap-2"
-      >
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.607zm5.392-3.32c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.71.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/>
-        </svg>
-        WhatsApp
-        <svg className={`w-3 h-3 transition-transform duration-200 ${open ? "rotate-180" : ""}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-          <polyline points="6 9 12 15 18 9"/>
-        </svg>
-      </button>
-
-      {open && (
-        <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 bg-card border border-border shadow-xl rounded-sm w-48 animate-in fade-in slide-in-from-bottom-2 z-50">
-          <div className="px-4 py-2 text-xs uppercase tracking-wider text-primary border-b border-border font-semibold">Pilih Admin</div>
-          {admins.map((a) => (
-            <a
-              key={a.num}
-              href={`https://wa.me/${a.num}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-3 text-sm text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
-            >
-              <svg className="w-4 h-4 text-[#25D366] shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.607zm5.392-3.32c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.71.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/>
-              </svg>
-              {a.label}
-            </a>
-          ))}
-        </div>
-      )}
-    </div>
   );
 }

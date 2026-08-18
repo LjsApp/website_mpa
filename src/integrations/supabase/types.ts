@@ -159,9 +159,7 @@ export type Database = {
           timeline: Json
           updated_at: string
           vision: string | null
-          whatsapp: string | null
-          whatsapp_2: string | null
-          whatsapp_3: string | null
+
           youtube_url: string | null
         }
         Insert: {
@@ -185,9 +183,7 @@ export type Database = {
           timeline?: Json
           updated_at?: string
           vision?: string | null
-          whatsapp?: string | null
-          whatsapp_2?: string | null
-          whatsapp_3?: string | null
+
           youtube_url?: string | null
         }
         Update: {
@@ -211,10 +207,38 @@ export type Database = {
           timeline?: Json
           updated_at?: string
           vision?: string | null
-          whatsapp?: string | null
-          whatsapp_2?: string | null
-          whatsapp_3?: string | null
+
           youtube_url?: string | null
+        }
+        Relationships: []
+      }
+      company_admins: {
+        Row: {
+          id: string
+          name: string
+          phone: string
+          instagram: string | null
+          photo_url: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          phone: string
+          instagram?: string | null
+          photo_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          phone?: string
+          instagram?: string | null
+          photo_url?: string | null
+          created_at?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -391,6 +415,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          is_active: boolean
           name: string
           quote: string
           role: string | null
@@ -400,6 +425,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          is_active?: boolean
           name: string
           quote: string
           role?: string | null
@@ -409,6 +435,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          is_active?: boolean
           name?: string
           quote?: string
           role?: string | null
@@ -438,33 +465,7 @@ export type Database = {
         }
         Relationships: []
       }
-      newsletter_subscribers: {
-        Row: {
-          id: string
-          email: string
-          status: string
-          subscribed_at: string
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          email: string
-          status?: string
-          subscribed_at?: string
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          email?: string
-          status?: string
-          subscribed_at?: string
-          created_at?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
+
       page_views: {
         Row: {
           id: string

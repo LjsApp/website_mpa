@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { ImageUpload } from "./ImageUpload";
 import {
@@ -48,7 +49,8 @@ export type FieldType =
   | "html"
   | "image-list"
   | "doc-list"
-  | "db-select";
+  | "db-select"
+  | "boolean";
 export interface FieldDef {
   name: string;
   label: string;
@@ -87,7 +89,7 @@ export interface CrudConfig {
     | "product_categories"
     | "project_categories"
     | "article_categories"
-    | "newsletter_subscribers";
+    | "company_admins";
   title: string;
   primaryField: string; // column shown as main label in list
   columns: { name: string; label: string }[];
@@ -210,19 +212,32 @@ export function CrudManager({ config }: { config: CrudConfig }) {
             <tbody>
               {rows.map((row: any) => (
                 <tr key={row.id} className="border-t border-border hover:bg-muted/20">
-                  {config.columns.map((c) => (
-                    <td key={c.name} className="px-4 py-3 max-w-[300px] truncate">
-                      {/_url$/.test(c.name) ? (
-                        row[c.name] ? (
-                          <img src={row[c.name]} alt="" className="w-12 h-12 object-contain bg-muted/30 border border-border" />
+                  {config.columns.map((c) => {
+                    const fieldDef = config.fields.find(f => f.name === c.name);
+                    if (fieldDef?.type === "boolean") {
+                      return (
+                        <td key={c.name} className="px-4 py-3">
+                          <Switch
+                            checked={!!row[c.name]}
+                            onCheckedChange={(val) => upsert.mutate({ ...row, [c.name]: val })}
+                          />
+                        </td>
+                      );
+                    }
+                    return (
+                      <td key={c.name} className="px-4 py-3 max-w-[300px] truncate">
+                        {/_url$/.test(c.name) ? (
+                          row[c.name] ? (
+                            <img src={row[c.name]} alt="" className="w-12 h-12 object-contain bg-muted/30 border border-border" />
+                          ) : (
+                            <span className="text-muted-foreground text-xs">—</span>
+                          )
                         ) : (
-                          <span className="text-muted-foreground text-xs">—</span>
-                        )
-                      ) : (
-                        String(row[c.name] ?? "")
-                      )}
-                    </td>
-                  ))}
+                          String(row[c.name] ?? "")
+                        )}
+                      </td>
+                    );
+                  })}
                   <td className="px-4 py-3 text-right space-x-2 whitespace-nowrap">
                     <Button size="sm" variant="outline" onClick={() => openEdit(row)}>Edit</Button>
                     <Button size="sm" variant="destructive" onClick={() => {
@@ -321,6 +336,11 @@ export function CrudManager({ config }: { config: CrudConfig }) {
                       }}
                     />
                     )
+                  ) : f.type === "boolean" ? (
+                    <div className="flex items-center space-x-3 h-10">
+                      <Switch checked={!!val} onCheckedChange={(v) => set(v)} />
+                      <span className="text-sm text-muted-foreground">Aktifkan</span>
+                    </div>
                   ) : f.type === "html" ? (
                     <RichTextEditor value={val} placeholder={f.placeholder} onChange={(v) => set(v)} />
                   ) : f.type === "select" ? (

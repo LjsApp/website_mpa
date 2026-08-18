@@ -120,14 +120,14 @@ export const getHomeData = createServerFn({ method: "GET" }).handler(async () =>
     supabaseAdmin.from("company_info").select("*").order("updated_at", { ascending: false }).limit(1).maybeSingle(),
     supabaseAdmin.from("brands").select("*").order("sort_order", { ascending: true }),
     supabaseAdmin.from("clients").select("*").order("sort_order", { ascending: true }),
-    supabaseAdmin.from("testimonials").select("*").order("sort_order", { ascending: true }),
+    supabaseAdmin.from("testimonials").select("*").eq("is_active", true).order("sort_order", { ascending: true }),
     supabaseAdmin.from("products").select("*").order("sort_order", { ascending: true }),
     supabaseAdmin
       .from("projects")
       .select("*")
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: false })
-      .limit(3),
+      .limit(9),
   ]);
 
   return {
@@ -257,17 +257,6 @@ export const setupSuperAdmin = createServerFn({ method: "POST" })
 
 /* ============================ ANALYTICS & NEWSLETTER ============================ */
 
-export const subscribeNewsletter = createServerFn({ method: "POST" })
-  .validator((d: { email: string }) =>
-    z.object({ email: z.string().email("Email tidak valid") }).parse(d)
-  )
-  .handler(async ({ data }) => {
-    const { error } = await supabaseAdmin
-      .from("newsletter_subscribers")
-      .upsert({ email: data.email, status: "active" }, { onConflict: "email" });
-    if (error) throw new Error(error.message);
-    return { success: true };
-  });
 
 export const trackPageView = createServerFn({ method: "POST" })
   .validator((d: { path: string; user_agent?: string }) =>
@@ -282,4 +271,16 @@ export const trackPageView = createServerFn({ method: "POST" })
       console.error("[PageView] Insert error:", error.message, "| code:", error.code);
     }
     return { success: !error };
+  });
+
+/* ============================ COMPANY ADMINS ============================ */
+
+export const listCompanyAdmins = createServerFn({ method: "GET" })
+  .handler(async () => {
+    const { data, error } = await supabaseAdmin
+      .from("company_admins")
+      .select("id, name, phone, instagram, photo_url")
+      .order("created_at", { ascending: true });
+    if (error) throw new Error(error.message);
+    return data ?? [];
   });

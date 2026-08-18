@@ -48,8 +48,7 @@ type Tab =
   | "brands"
   | "clients"
   | "testimonials"
-  | "company"
-  | "subscribers";
+  | "company";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "dashboard", label: "Dashboard" },
@@ -60,7 +59,6 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "brands", label: "Brand" },
   { id: "clients", label: "Klien" },
   { id: "testimonials", label: "Testimoni" },
-  { id: "subscribers", label: "Pelanggan" },
   { id: "company", label: "Perusahaan" },
 ];
 
@@ -124,7 +122,6 @@ function AdminPage() {
           {tab === "brands" && <CrudManager config={brandsConfig} />}
           {tab === "clients" && <CrudManager config={clientsConfig} />}
           {tab === "testimonials" && <CrudManager config={testimonialsConfig} />}
-          {tab === "subscribers" && <CrudManager config={subscribersConfig} />}
           {tab === "company" && <CompanyForm />}
         </main>
       </div>
@@ -199,6 +196,24 @@ function Dashboard() {
   );
 }
 
+const companyAdminsConfig: CrudConfig = {
+  table: "company_admins",
+  title: "Manajemen Admin / Staf",
+  primaryField: "name",
+  columns: [
+    { name: "name", label: "Nama" },
+    { name: "phone", label: "No WA / HP" },
+    { name: "instagram", label: "Instagram" },
+  ],
+  defaults: {},
+  fields: [
+    { name: "name", label: "Nama", required: true },
+    { name: "phone", label: "No WA / HP", required: true, placeholder: "628123456789" },
+    { name: "instagram", label: "Username Instagram", placeholder: "nama_akun (tanpa @)" },
+    { name: "photo_url", label: "Foto", type: "image" },
+  ],
+};
+
 function CompanyForm() {
   const qc = useQueryClient();
   const listFn = useServerFn(adminList);
@@ -206,6 +221,7 @@ function CompanyForm() {
   const { data: rows = [], isLoading } = useQuery({ queryKey: ["admin", "company_info"], queryFn: () => listFn({ data: { table: "company_info" } }) });
   const row = (rows as any[])[0];
   const [form, setForm] = useState<Record<string, any>>({});
+  const [subTab, setSubTab] = useState<"info" | "admins">("info");
   useEffect(() => { if (row) setForm(row); }, [row]);
 
   const mut = useMutation({
@@ -247,86 +263,107 @@ function CompanyForm() {
 
   return (
     <div>
-      <h2 className="text-2xl font-display uppercase mb-6">Informasi Perusahaan</h2>
-      <form onSubmit={onSubmit} className="space-y-5 max-w-3xl">
-        {field("name", "Nama Perusahaan")}
-        <div className="space-y-1">
-          <Label>Logo Perusahaan</Label>
-          <ImageUpload value={form.logo_url ?? ""} onChange={(url) => setForm({ ...form, logo_url: url })} />
-          <p className="text-xs text-muted-foreground">Tampil di navbar dan footer website.</p>
-        </div>
-        {field("about", "Tentang", "textarea")}
-        {field("vision", "Visi", "textarea")}
-        {field("mission", "Misi", "textarea")}
-        <div className="grid md:grid-cols-2 gap-4">
-          {field("linkedin_url", "LinkedIn (LN)")}
-          {field("instagram_url", "Instagram (IG)")}
-          {field("facebook_url", "Facebook (FB)")}
-          {field("youtube_url", "YouTube (YT)")}
-        </div>
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="space-y-4">
-            {field("address", "Alamat HO", "textarea")}
-            {field("address_ro", "Alamat RO", "textarea")}
-          </div>
-          <div className="space-y-4">
-            {field("email", "Email")}
-            {field("whatsapp", "WhatsApp 1 (Utama)")}
-            {field("whatsapp_2", "WhatsApp 2")}
-            {field("whatsapp_3", "WhatsApp 3")}
-          </div>
-        </div>
-        <div className="grid md:grid-cols-2 gap-4">
+      <h2 className="text-2xl font-display uppercase mb-4">Perusahaan</h2>
+      {/* Sub-tabs */}
+      <div className="flex gap-0 border-b border-border mb-6">
+        {(["info", "admins"] as const).map((t) => (
+          <button
+            key={t}
+            type="button"
+            onClick={() => setSubTab(t)}
+            className={`px-5 py-2.5 text-sm font-semibold uppercase tracking-wider border-b-2 transition-colors ${
+              subTab === t
+                ? "border-primary text-primary"
+                : "border-transparent text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {t === "info" ? "Informasi Perusahaan" : "Admin / Staf"}
+          </button>
+        ))}
+      </div>
+
+      {subTab === "info" && (
+        <form onSubmit={onSubmit} className="space-y-5 max-w-3xl">
+          {field("name", "Nama Perusahaan")}
           <div className="space-y-1">
-            <Label>Google Maps Embed HO</Label>
-            <Textarea
-              rows={3}
-              value={form.maps_embed ?? ""}
-              placeholder='Tempel kode <iframe src="..."> dari Google Maps'
-              onChange={(e) => setForm({ ...form, maps_embed: e.target.value })}
-            />
-            <p className="text-xs text-muted-foreground">Peta akan tampil di section Kontak (Kanan).</p>
+            <Label>Logo Perusahaan</Label>
+            <ImageUpload value={form.logo_url ?? ""} onChange={(url) => setForm({ ...form, logo_url: url })} />
+            <p className="text-xs text-muted-foreground">Tampil di navbar dan footer website.</p>
+          </div>
+          {field("about", "Tentang", "textarea")}
+          {field("vision", "Visi", "textarea")}
+          {field("mission", "Misi", "textarea")}
+          <div className="grid md:grid-cols-2 gap-4">
+            {field("linkedin_url", "LinkedIn (LN)")}
+            {field("instagram_url", "Instagram (IG)")}
+            {field("facebook_url", "Facebook (FB)")}
+            {field("youtube_url", "YouTube (YT)")}
+          </div>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-4">
+              {field("address", "Alamat HO", "textarea")}
+              {field("address_ro", "Alamat RO", "textarea")}
+            </div>
+            <div className="space-y-4">
+              {field("email", "Email")}
+            </div>
+          </div>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <Label>Google Maps Embed HO</Label>
+              <Textarea
+                rows={3}
+                value={form.maps_embed ?? ""}
+                placeholder='Tempel kode <iframe src="..."> dari Google Maps'
+                onChange={(e) => setForm({ ...form, maps_embed: e.target.value })}
+              />
+              <p className="text-xs text-muted-foreground">Peta akan tampil di section Kontak (HO).</p>
+            </div>
+            <div className="space-y-1">
+              <Label>Google Maps Embed RO</Label>
+              <Textarea
+                rows={3}
+                value={form.maps_embed_ro ?? ""}
+                placeholder='Tempel kode <iframe src="..."> dari Google Maps'
+                onChange={(e) => setForm({ ...form, maps_embed_ro: e.target.value })}
+              />
+              <p className="text-xs text-muted-foreground">Peta akan tampil di section Kontak (RO).</p>
+            </div>
           </div>
           <div className="space-y-1">
-            <Label>Google Maps Embed RO</Label>
-            <Textarea
-              rows={3}
-              value={form.maps_embed_ro ?? ""}
-              placeholder='Tempel kode <iframe src="..."> dari Google Maps'
-              onChange={(e) => setForm({ ...form, maps_embed_ro: e.target.value })}
+            <Label>Jam Operasional</Label>
+            <Input
+              value={form.operating_hours ?? ""}
+              placeholder="Senin — Jumat : 08:00 – 17:00, Dukungan 24/7"
+              onChange={(e) => setForm({ ...form, operating_hours: e.target.value })}
             />
-            <p className="text-xs text-muted-foreground">Peta akan tampil di section Kontak (Kiri).</p>
+            <p className="text-xs text-muted-foreground">Tampil di halaman kontak.</p>
           </div>
-        </div>
-        <div className="space-y-1">
-          <Label>Jam Operasional</Label>
-          <Input
-            value={form.operating_hours ?? ""}
-            placeholder="Senin — Jumat : 08:00 – 17:00, Dukungan 24/7"
-            onChange={(e) => setForm({ ...form, operating_hours: e.target.value })}
-          />
-          <p className="text-xs text-muted-foreground">Tampil di halaman kontak.</p>
-        </div>
-        <div className="space-y-1">
-          <Label>Foto Sertifikat ISO</Label>
-          <ImageListEditor value={form.iso_images} onChange={(v) => setForm({ ...form, iso_images: v })} />
-          <p className="text-xs text-muted-foreground">Tampil pada bagian footer website.</p>
-        </div>
-        <div className="space-y-1">
-          <Label>Dokumen Perusahaan (Company Profile dll)</Label>
-          <DocumentListEditor value={form.documents} onChange={(v) => setForm({ ...form, documents: v })} maxSizeMB={5} />
-          <p className="text-xs text-muted-foreground">Batas total 5MB. Tampil di halaman beranda (Tentang).</p>
-        </div>
-        <div className="space-y-1">
-          <Label>Linimasa Perusahaan</Label>
-          <ObjectListEditor
-            value={form.timeline}
-            columns={[{ key: "year", label: "Tahun" }, { key: "title", label: "Judul" }, { key: "desc", label: "Deskripsi", multiline: true }]}
-            onChange={(v) => setForm({ ...form, timeline: v })}
-          />
-        </div>
-        <Button type="submit" disabled={mut.isPending}>{mut.isPending ? "Menyimpan..." : "Simpan Perubahan"}</Button>
-      </form>
+          <div className="space-y-1">
+            <Label>Foto Sertifikat ISO</Label>
+            <ImageListEditor value={form.iso_images} onChange={(v) => setForm({ ...form, iso_images: v })} />
+            <p className="text-xs text-muted-foreground">Tampil pada bagian footer website.</p>
+          </div>
+          <div className="space-y-1">
+            <Label>Dokumen Perusahaan (Company Profile dll)</Label>
+            <DocumentListEditor value={form.documents} onChange={(v) => setForm({ ...form, documents: v })} maxSizeMB={5} />
+            <p className="text-xs text-muted-foreground">Batas total 5MB. Tampil di halaman beranda (Tentang).</p>
+          </div>
+          <div className="space-y-1">
+            <Label>Linimasa Perusahaan</Label>
+            <ObjectListEditor
+              value={form.timeline}
+              columns={[{ key: "year", label: "Tahun" }, { key: "title", label: "Judul" }, { key: "desc", label: "Deskripsi", multiline: true }]}
+              onChange={(v) => setForm({ ...form, timeline: v })}
+            />
+          </div>
+          <Button type="submit" disabled={mut.isPending}>{mut.isPending ? "Menyimpan..." : "Simpan Perubahan"}</Button>
+        </form>
+      )}
+
+      {subTab === "admins" && (
+        <CrudManager config={companyAdminsConfig} />
+      )}
     </div>
   );
 }
@@ -498,29 +535,13 @@ const testimonialsConfig: CrudConfig = {
     { name: "name", label: "Nama" },
     { name: "role", label: "Jabatan" },
     { name: "quote", label: "Kutipan" },
+    { name: "is_active", label: "Aktif" },
   ],
-  defaults: { sort_order: 0 },
+  defaults: { sort_order: 0, is_active: true },
   fields: [
     { name: "name", label: "Nama", required: true },
     { name: "role", label: "Jabatan / Perusahaan" },
     { name: "quote", label: "Kutipan Testimoni", type: "textarea", required: true },
+    { name: "is_active", label: "Aktifkan Testimoni", type: "boolean" },
   ],
 };
-
-const subscribersConfig: CrudConfig = {
-  table: "newsletter_subscribers",
-  title: "Manajemen Pelanggan (Newsletter)",
-  primaryField: "email",
-  columns: [
-    { name: "email", label: "Email" },
-    { name: "status", label: "Status" },
-    { name: "subscribed_at", label: "Tanggal Daftar" },
-  ],
-  defaults: { status: "active" },
-  fields: [
-    { name: "email", label: "Alamat Email", required: true },
-    { name: "status", label: "Status", type: "select", options: ["active", "unsubscribed"] },
-  ],
-};
-
-

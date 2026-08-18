@@ -50,7 +50,7 @@ export function Hero({ company }: { company?: CompanyRow | null }) {
   return (
     <section id="home" className="relative min-h-screen flex items-center pt-24 pb-16 overflow-hidden" ref={containerRef as any}>
       <div className="absolute inset-0 grid-bg opacity-30" />
-      
+
       {/* Floating Ambient Particles */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {[...Array(6)].map((_, i) => {
@@ -74,7 +74,7 @@ export function Hero({ company }: { company?: CompanyRow | null }) {
       </div>
 
       <div className="absolute inset-0 bg-gradient-to-br from-background via-background/95 to-background/70" />
-      
+
       <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center w-full">
         <div data-animate="fade-up">
           <div className="inline-flex items-center gap-2 border border-border bg-card/60 backdrop-blur px-3 py-1.5 text-xs uppercase tracking-widest text-muted-foreground mb-6">
@@ -87,7 +87,7 @@ export function Hero({ company }: { company?: CompanyRow | null }) {
             <span className="min-w-[300px] inline-block">{typeText}<span className="animate-pulse">_</span></span>
           </h1>
           <p className="mt-6 text-lg text-muted-foreground max-w-xl leading-relaxed">
-            Menghadirkan solusi engineering, industrial supply, maintenance, reliability, serta teknologi digital untuk membantu industri bekerja lebih andal, efisien, dan berkelanjutan.
+            Menghadirkan solusi engineering, spare part supply, maintenance, reliability, serta teknologi digital untuk membantu industri bekerja lebih andal, efisien, dan berkelanjutan
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <button
@@ -124,7 +124,7 @@ export function Hero({ company }: { company?: CompanyRow | null }) {
           </div>
         </div>
       </div>
-      
+
       <div className="absolute bottom-0 left-0 right-0 border-t border-border bg-card/80 backdrop-blur">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4">
           {stats.map((s, i) => (

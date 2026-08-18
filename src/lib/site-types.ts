@@ -6,7 +6,7 @@ export type ArticleRow = Database["public"]["Tables"]["articles"]["Row"];
 export type BrandRow = Database["public"]["Tables"]["brands"]["Row"];
 export type ClientRow = Database["public"]["Tables"]["clients"]["Row"];
 export type TestimonialRow = Database["public"]["Tables"]["testimonials"]["Row"];
-export type CompanyRow = Database["public"]["Tables"]["company_info"]["Row"];
+export type CompanyRow = Omit<Database["public"]["Tables"]["company_info"]["Row"], "whatsapp" | "whatsapp_2" | "whatsapp_3">;
 
 export type SpecItem = { label: string; value: string };
 export type StatItem = { label: string; value: string };

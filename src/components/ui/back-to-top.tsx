@@ -1,17 +1,27 @@
 import { useEffect, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useCompanyState } from "@/hooks/use-company";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
+import { listCompanyAdmins } from "@/lib/public.functions";
+
+type AdminRow = { id: string; name: string; phone: string };
 
 export function BackToTop() {
   const [isMounted, setIsMounted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isWaOpen, setIsWaOpen] = useState(false);
   const { company } = useCompanyState();
-  const wa = (company?.whatsapp ?? "").replace(/[^0-9]/g, "");
-  const wa2 = (company?.whatsapp_2 ?? "").replace(/[^0-9]/g, "");
-  const wa3 = (company?.whatsapp_3 ?? "").replace(/[^0-9]/g, "");
 
-  const hasWa = !!(wa || wa2 || wa3);
+  const listAdminsFn = useServerFn(listCompanyAdmins);
+  const { data: admins = [] } = useQuery<AdminRow[]>({
+    queryKey: ["company-admins-public"],
+    queryFn: () => listAdminsFn(),
+    staleTime: 5 * 60_000,
+    enabled: isMounted,
+  });
+
+  const hasWa = admins.length > 0;
 
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isPublicPage =
@@ -50,7 +60,6 @@ export function BackToTop() {
             title="Lacak Pesanan"
             className="w-12 h-12 rounded-sm bg-[#E85D04] text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300"
           >
-            {/* Package/tracking icon */}
             <svg
               className="w-5 h-5"
               viewBox="0 0 24 24"
@@ -78,43 +87,26 @@ export function BackToTop() {
           }`}
         >
           {isWaOpen && (
-            <div className="bg-card border border-border shadow-xl rounded-sm p-2 flex flex-col mb-3 w-40 text-sm animate-in fade-in slide-in-from-bottom-2">
-              <div className="font-semibold px-3 py-2 border-b border-border/50 text-foreground mb-1 text-xs uppercase tracking-wider text-primary">
+            <div className="bg-card border border-border shadow-xl rounded-sm p-2 flex flex-col mb-3 w-44 text-sm animate-in fade-in slide-in-from-bottom-2">
+              <div className="font-semibold px-3 py-2 border-b border-border/50 mb-1 text-xs uppercase tracking-wider text-primary">
                 Hubungi Admin
               </div>
-              {wa && (
-                <a
-                  href={`https://wa.me/${wa}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setIsWaOpen(false)}
-                  className="px-3 py-2 hover:bg-primary/10 rounded-sm flex items-center gap-2 transition-colors text-foreground text-sm"
-                >
-                  Admin 1
-                </a>
-              )}
-              {wa2 && (
-                <a
-                  href={`https://wa.me/${wa2}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setIsWaOpen(false)}
-                  className="px-3 py-2 hover:bg-primary/10 rounded-sm flex items-center gap-2 transition-colors text-foreground text-sm"
-                >
-                  Admin 2
-                </a>
-              )}
-              {wa3 && (
-                <a
-                  href={`https://wa.me/${wa3}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setIsWaOpen(false)}
-                  className="px-3 py-2 hover:bg-primary/10 rounded-sm flex items-center gap-2 transition-colors text-foreground text-sm"
-                >
-                  Admin 3
-                </a>
-              )}
+              {admins.map((admin) => {
+                const phone = admin.phone.replace(/[^0-9]/g, "");
+                const waNum = phone.startsWith("0") ? `62${phone.slice(1)}` : phone;
+                return (
+                  <a
+                    key={admin.id}
+                    href={`https://wa.me/${waNum}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setIsWaOpen(false)}
+                    className="px-3 py-2 hover:bg-primary/10 rounded-sm flex items-center gap-2 transition-colors text-foreground text-sm"
+                  >
+                    {admin.name}
+                  </a>
+                );
+              })}
             </div>
           )}
           <button
