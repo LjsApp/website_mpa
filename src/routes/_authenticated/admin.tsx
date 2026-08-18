@@ -210,6 +210,7 @@ const companyAdminsConfig: CrudConfig = {
     { name: "name", label: "Nama", required: true },
     { name: "phone", label: "No WA / HP", required: true, placeholder: "628123456789" },
     { name: "instagram", label: "Username Instagram", placeholder: "nama_akun (tanpa @)" },
+    { name: "quote", label: "Quote / Motto", type: "textarea", placeholder: "Contoh: Selalu siap melayani dengan sepenuh hati." },
     { name: "photo_url", label: "Foto", type: "image" },
   ],
 };

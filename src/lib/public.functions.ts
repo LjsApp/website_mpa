@@ -279,7 +279,7 @@ export const listCompanyAdmins = createServerFn({ method: "GET" })
   .handler(async () => {
     const { data, error } = await supabaseAdmin
       .from("company_admins")
-      .select("id, name, phone, instagram, photo_url")
+      .select("id, name, phone, instagram, photo_url, quote")
       .order("created_at", { ascending: true });
     if (error) throw new Error(error.message);
     return data ?? [];

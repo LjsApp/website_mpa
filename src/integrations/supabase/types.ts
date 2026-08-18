@@ -219,6 +219,7 @@ export type Database = {
           phone: string
           instagram: string | null
           photo_url: string | null
+          quote: string | null
           created_at: string
           updated_at: string
         }
@@ -228,6 +229,7 @@ export type Database = {
           phone: string
           instagram?: string | null
           photo_url?: string | null
+          quote?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -237,6 +239,7 @@ export type Database = {
           phone?: string
           instagram?: string | null
           photo_url?: string | null
+          quote?: string | null
           created_at?: string
           updated_at?: string
         }

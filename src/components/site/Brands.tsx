@@ -43,24 +43,23 @@ export function Brands({ brands = [] }: { brands?: BrandRow[] }) {
   const stats = [
     { value: `${Math.max(brands.length, 80)}+`, label: "Brand Global" },
     { value: "100%", label: "Original Product" },
-    { value: "Resmi", label: "Distributor Resmi" },
   ];
 
   return (
     <section className="py-28 md:py-36 bg-white" ref={containerRef as any}>
       <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center max-w-2xl mx-auto mb-14" data-animate="fade-up">
+        <div className="text-center mx-auto mb-14" data-animate="fade-up">
           <div className="text-xs uppercase tracking-[0.3em] text-primary mb-4">Dukungan Brand</div>
           <h2 className="font-display text-4xl md:text-5xl uppercase leading-tight">
             Brand Industri Resmi & Terpercaya
           </h2>
-          <p className="text-muted-foreground mt-5 leading-relaxed">
+          <p className="text-muted-foreground mt-5 leading-relaxed whitespace-nowrap">
             Kami menyediakan produk original dari brand global yang telah dipercaya oleh berbagai
             industri .
           </p>
         </div>
 
-        <div className="grid grid-cols-3 gap-6 max-w-3xl mx-auto mb-14" data-animate-stagger>
+        <div className="flex justify-center gap-16 mb-14" data-animate-stagger>
           {stats.map((s) => (
             <div key={s.label} className="animate-child">
               <BrandStatItem rawValue={s.value} label={s.label} />
@@ -93,7 +92,7 @@ export function Brands({ brands = [] }: { brands?: BrandRow[] }) {
           <h3 className="font-display text-2xl md:text-3xl uppercase">
             Tidak menemukan brand yang Anda cari?
           </h3>
-          <p className="text-muted-foreground mt-3 max-w-xl mx-auto">
+          <p className="text-muted-foreground mt-3 whitespace-nowrap">
             Tim kami siap membantu mencari solusi terbaik sesuai kebutuhan industri Anda.
           </p>
           <button

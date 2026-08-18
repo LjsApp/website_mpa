@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { CompanyRow } from "@/lib/site-types";
 import { mapsEmbedSrc } from "@/hooks/use-company";
 import { listCompanyAdmins } from "@/lib/public.functions";
+import { TeamCarousel } from "@/components/site/TeamCarousel";
 
 type AdminRow = {
   id: string;
@@ -10,6 +11,7 @@ type AdminRow = {
   phone: string;
   instagram: string | null;
   photo_url: string | null;
+  quote?: string | null;
 };
 
 const WA_ICON = (
@@ -48,64 +50,12 @@ export function Contact({ company }: { company?: CompanyRow | null }) {
           <h2 className="font-display text-4xl md:text-6xl uppercase leading-tight">
             Siap Mendukung<br /><span className="text-gradient-orange">Kebutuhan Industri Anda?</span>
           </h2>
-          <p className="text-muted-foreground mt-5">
+          <p className="text-muted-foreground mt-5 whitespace-nowrap">
             Diskusikan proyek Anda dengan kami. Tim engineering siap memberikan konsultasi dan penawaran terbaik.
           </p>
         </div>
 
-        {/* Admin / Staf Cards */}
-        {admins.length > 0 && (
-          <div className="mb-14">
-            <div className="text-xs uppercase tracking-[0.3em] text-primary text-center mb-6">Tim Kami</div>
-            <div className="flex flex-wrap justify-center gap-6">
-              {admins.map((admin) => {
-                const phone = admin.phone.replace(/[^0-9]/g, "");
-                const waNum = phone.startsWith("0") ? `62${phone.slice(1)}` : phone;
-                return (
-                  <div key={admin.id} className="industrial-card flex flex-col items-center p-7 w-56 gap-4">
-                    {/* Photo */}
-                    <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-primary/30 bg-primary/10 shrink-0">
-                      {admin.photo_url ? (
-                        <img src={admin.photo_url} alt={admin.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-primary text-3xl font-bold">
-                          {admin.name.charAt(0).toUpperCase()}
-                        </div>
-                      )}
-                    </div>
-                    {/* Name */}
-                    <div className="text-base font-semibold text-foreground text-center leading-tight">{admin.name}</div>
-                    {/* Action icons */}
-                    <div className="flex gap-3">
-                      {waNum && (
-                        <a
-                          href={`https://wa.me/${waNum}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          title={`WhatsApp ${admin.name}`}
-                          className="w-10 h-10 rounded-full bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/30 flex items-center justify-center hover:bg-[#25D366] hover:text-white transition-all duration-200"
-                        >
-                          {WA_ICON}
-                        </a>
-                      )}
-                      {admin.instagram && (
-                        <a
-                          href={`https://instagram.com/${admin.instagram.replace(/^@/, "")}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          title={`Instagram @${admin.instagram}`}
-                          className="w-10 h-10 rounded-full bg-[#E1306C]/10 text-[#E1306C] border border-[#E1306C]/30 flex items-center justify-center hover:bg-[#E1306C] hover:text-white transition-all duration-200"
-                        >
-                          {IG_ICON}
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
+        {admins.length > 0 && <TeamCarousel admins={admins} />}
 
         {/* Maps with addresses underneath */}
         {(mapSrc || mapSrcRO) && (

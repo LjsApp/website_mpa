@@ -1,0 +1,135 @@
+"use client";
+import { useState, useEffect } from "react";
+
+type AdminRow = {
+  id: string;
+  name: string;
+  phone: string;
+  instagram: string | null;
+  photo_url: string | null;
+  quote?: string | null;
+};
+
+const WA_ICON = (
+  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.878-.788-1.472-1.761-1.645-2.06-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.82 9.82 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.81 11.81 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.88 11.88 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.82 11.82 0 0 0-3.48-8.413Z" />
+  </svg>
+);
+
+const IG_ICON = (
+  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+  </svg>
+);
+
+const PER_PAGE = 4;
+
+export function TeamCarousel({ admins }: { admins: AdminRow[] }) {
+  const [page, setPage] = useState(0);
+  const [mounted, setMounted] = useState(false);
+  const totalPages = Math.ceil(admins.length / PER_PAGE);
+
+  useEffect(() => { setMounted(true); }, []);
+
+  const goTo = (p: number) => setPage(Math.max(0, Math.min(p, totalPages - 1)));
+
+  const visible = admins.slice(page * PER_PAGE, page * PER_PAGE + PER_PAGE);
+
+  return (
+    <div className="mb-14">
+      <div className="text-xs uppercase tracking-[0.3em] text-primary text-center mb-6">Tim Kami</div>
+
+      <div className="flex gap-4 items-start">
+        {/* Cards grid — full width */}
+        <div className="flex-1 overflow-hidden">
+          <div
+            key={page}
+            className="grid grid-cols-2 md:grid-cols-4 gap-4"
+            style={{ animation: "fade-up 0.4s ease both" }}
+          >
+            {visible.map((admin) => {
+              const phone = admin.phone.replace(/[^0-9]/g, "");
+              const waNum = phone.startsWith("0") ? `62${phone.slice(1)}` : phone;
+              return (
+                <div
+                  key={admin.id}
+                  className="industrial-card flex flex-col items-center p-5 gap-3"
+                >
+                  {/* Photo */}
+                  <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-primary/30 bg-primary/10 shrink-0">
+                    {admin.photo_url ? (
+                      <img src={admin.photo_url} alt={admin.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-primary text-2xl font-bold">
+                        {admin.name.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                  {/* Name */}
+                  <div className="text-sm font-semibold text-foreground text-center leading-tight">{admin.name}</div>
+                  {/* Quote */}
+                  {admin.quote && (
+                    <p className="text-xs text-muted-foreground text-center italic leading-relaxed line-clamp-2">
+                      "{admin.quote}"
+                    </p>
+                  )}
+                  {/* Action icons */}
+                  <div className="flex gap-2 mt-auto">
+                    {waNum && (
+                      <a
+                        href={`https://wa.me/${waNum}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title={`WhatsApp ${admin.name}`}
+                        className="w-9 h-9 rounded-full bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/30 flex items-center justify-center hover:bg-[#25D366] hover:text-white transition-all duration-200"
+                      >
+                        {WA_ICON}
+                      </a>
+                    )}
+                    {admin.instagram && (
+                      <a
+                        href={`https://instagram.com/${admin.instagram.replace(/^@/, "")}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title={`Instagram @${admin.instagram}`}
+                        className="w-9 h-9 rounded-full bg-[#E1306C]/10 text-[#E1306C] border border-[#E1306C]/30 flex items-center justify-center hover:bg-[#E1306C] hover:text-white transition-all duration-200"
+                      >
+                        {IG_ICON}
+                      </a>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Nav buttons — right side, vertical */}
+        {mounted && totalPages > 1 && (
+          <div className="flex flex-col gap-2 pt-1 shrink-0">
+            <button
+              onClick={() => goTo(page - 1)}
+              disabled={page === 0}
+              className="w-9 h-9 border border-border flex items-center justify-center text-primary disabled:opacity-30 disabled:cursor-not-allowed hover:bg-card transition"
+              aria-label="Tim sebelumnya"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M18 15l-6-6-6 6" />
+              </svg>
+            </button>
+            <button
+              onClick={() => goTo(page + 1)}
+              disabled={page >= totalPages - 1}
+              className="w-9 h-9 border border-border flex items-center justify-center text-primary disabled:opacity-30 disabled:cursor-not-allowed hover:bg-card transition"
+              aria-label="Tim selanjutnya"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
