@@ -4,24 +4,31 @@ import type { TestimonialRow } from "@/lib/site-types";
 import { useCompanyState } from "@/hooks/use-company";
 import { useScrollAnimate } from "@/hooks/use-scroll-animate";
 
-const VISIBLE = 3;
-
 export function Testimonials({ items = [] }: { items?: TestimonialRow[] }) {
   const { company } = useCompanyState();
   const companyName = company?.name || "";
   const containerRef = useScrollAnimate();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(true);
   const touchStartX = useRef(0);
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const visibleCount = isMobile ? 1 : 3;
 
   // Only show active testimonials; hide entire section if none
   const activeItems = items.filter((t) => t.is_active !== false);
 
   if (activeItems.length === 0) return null;
 
-  const maxIndex = Math.max(0, activeItems.length - VISIBLE);
+  const maxIndex = Math.max(0, activeItems.length - visibleCount);
   const autoRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const startAuto = useCallback(() => {
@@ -61,7 +68,7 @@ export function Testimonials({ items = [] }: { items?: TestimonialRow[] }) {
             </h2>
           </div>
 
-          {mounted && activeItems.length > VISIBLE && (
+          {mounted && activeItems.length > visibleCount && (
             <div className="flex gap-2">
               <button
                 onClick={() => goTo(currentIndex - 1)}
@@ -91,7 +98,7 @@ export function Testimonials({ items = [] }: { items?: TestimonialRow[] }) {
         >
           <div
             className="flex transition-transform duration-500 ease-in-out"
-            style={mounted ? { transform: `translateX(-${currentIndex * (100 / VISIBLE)}%)` } : {}}
+            style={mounted ? { transform: `translateX(-${currentIndex * (100 / visibleCount)}%)` } : {}}
           >
             {activeItems.map((t) => (
               <div key={t.id} className="w-full md:w-1/3 shrink-0 px-3 first:pl-0 last:pr-0">

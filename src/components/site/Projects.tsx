@@ -4,18 +4,25 @@ import { LazyImage } from "@/components/ui/lazy-image";
 import { Link } from "@tanstack/react-router";
 import type { ProjectRow } from "@/lib/site-types";
 
-const VISIBLE = 3;
-
 export function Projects({ projects = [] }: { projects?: ProjectRow[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(true);
   const touchStartX = useRef(0);
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const visibleCount = isMobile ? 1 : 3;
 
   if (projects.length === 0) return null;
 
-  const maxIndex = Math.max(0, projects.length - VISIBLE);
+  const maxIndex = Math.max(0, projects.length - visibleCount);
   const autoRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const startAuto = useCallback(() => {
@@ -58,7 +65,7 @@ export function Projects({ projects = [] }: { projects?: ProjectRow[] }) {
             <Link to="/projects" className="text-sm uppercase tracking-widest text-primary link-slide">
               Lihat Semua Proyek <span className="arrow">→</span>
             </Link>
-            {mounted && projects.length > VISIBLE && (
+            {mounted && projects.length > visibleCount && (
               <div className="flex gap-2">
                 <button
                   onClick={() => goTo(currentIndex - 1)}
@@ -89,7 +96,7 @@ export function Projects({ projects = [] }: { projects?: ProjectRow[] }) {
         >
           <div
             className="flex transition-transform duration-500 ease-in-out"
-            style={mounted ? { transform: `translateX(-${currentIndex * (100 / VISIBLE)}%)` } : {}}
+            style={mounted ? { transform: `translateX(-${currentIndex * (100 / visibleCount)}%)` } : {}}
           >
             {projects.map((p) => (
               <div key={p.id} className="w-full md:w-1/3 shrink-0 px-3 first:pl-0 last:pr-0">

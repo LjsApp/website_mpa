@@ -5,15 +5,22 @@ import { Link } from "@tanstack/react-router";
 import { type ProductRow } from "@/lib/site-types";
 import { useScrollAnimate } from "@/hooks/use-scroll-animate";
 
-const VISIBLE = 3;
-
 export function Products({ products = [] }: { products?: ProductRow[] }) {
   const containerRef = useScrollAnimate();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(true); // default true for safe SSR/mobile first
   const touchStartX = useRef(0);
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const visibleCount = isMobile ? 1 : 3;
 
   // 1 item per kategori
   const seen = new Set<string>();
@@ -25,7 +32,7 @@ export function Products({ products = [] }: { products?: ProductRow[] }) {
 
   if (featured.length === 0) return null;
 
-  const maxIndex = Math.max(0, featured.length - VISIBLE);
+  const maxIndex = Math.max(0, featured.length - visibleCount);
   const autoRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const startAuto = useCallback(() => {
@@ -68,7 +75,7 @@ export function Products({ products = [] }: { products?: ProductRow[] }) {
             <Link to="/catalog" className="text-sm uppercase tracking-widest text-primary link-slide">
               Lihat Semua Katalog <span className="arrow">→</span>
             </Link>
-            {mounted && featured.length > VISIBLE && (
+            {mounted && featured.length > visibleCount && (
               <div className="flex gap-2">
                 <button
                   onClick={() => goTo(currentIndex - 1)}
@@ -99,7 +106,7 @@ export function Products({ products = [] }: { products?: ProductRow[] }) {
         >
           <div
             className="flex transition-transform duration-500 ease-in-out"
-            style={mounted ? { transform: `translateX(-${currentIndex * (100 / VISIBLE)}%)` } : {}}
+            style={mounted ? { transform: `translateX(-${currentIndex * (100 / visibleCount)}%)` } : {}}
           >
             {featured.map((p) => (
               <div key={p.id} className="w-full md:w-1/3 shrink-0 px-3 first:pl-0 last:pr-0">
