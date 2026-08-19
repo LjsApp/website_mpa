@@ -71,7 +71,7 @@ export const getProductBySlug = createServerFn({ method: "GET" })
         .limit(3),
       supabaseAdmin
         .from("company_info")
-        .select("name, phone, email, whatsapp")
+        .select("name, email, whatsapp")
         .order("updated_at", { ascending: false })
         .limit(1)
         .maybeSingle(),

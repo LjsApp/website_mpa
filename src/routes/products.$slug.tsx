@@ -259,8 +259,8 @@ function ProductDetail() {
               <div className="mt-8 industrial-card p-6">
                 <div className="text-xs uppercase tracking-widest text-primary mb-2">Butuh Konsultasi?</div>
                 <p className="text-sm text-muted-foreground mb-4">Tim engineer kami siap membantu pemilihan produk yang tepat untuk aplikasi Anda.</p>
-                {company?.phone && (() => {
-                  const rawPhone = company.phone.replace(/[^0-9]/g, "");
+                {company?.whatsapp && (() => {
+                  const rawPhone = company.whatsapp.replace(/[^0-9]/g, "");
                   const waNum = rawPhone.startsWith("0") ? `62${rawPhone.slice(1)}` : rawPhone;
                   const msg = encodeURIComponent(`Halo, saya ingin konsultasi mengenai produk: ${product.name}`);
                   return (

@@ -99,7 +99,7 @@ function SearchableSelect({
         className="sr-only"
         required={required}
         value={current}
-        onChange={() => {}}
+        onChange={() => { }}
         onFocus={() => setOpen(true)}
       />
     </Popover>
@@ -435,7 +435,7 @@ export function ImageListEditor({
 
     // Estimate existing total (just new file sizes + rough existing count)
     const newFiles = Array.from(files);
-    
+
     // Validasi format - hanya .webp
     const invalidType = newFiles.find((f) => f.type !== "image/webp" || !f.name.toLowerCase().endsWith(".webp"));
     if (invalidType) {
@@ -511,9 +511,8 @@ export function ImageListEditor({
                 else e.preventDefault();
               }}
               onDragEnd={() => setDraggedIdx(null)}
-              className={`relative w-24 h-24 border overflow-hidden cursor-move transition-all ${
-                draggedIdx === i ? "opacity-40 border-primary scale-95" : "border-border hover:border-primary/60"
-              }`}
+              className={`relative w-24 h-24 border overflow-hidden cursor-move transition-all ${draggedIdx === i ? "opacity-40 border-primary scale-95" : "border-border hover:border-primary/60"
+                }`}
             >
               <img src={item} alt={`foto ${i + 1}`} className="w-full h-full object-cover" />
               {i === 0 && (
@@ -587,7 +586,7 @@ export function ImageListEditor({
         ) : (
           <div className="flex flex-col items-center gap-2 text-muted-foreground">
             <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>
+              <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="m21 15-5-5L5 21" />
             </svg>
             <span className="text-sm font-medium">
               {items.length > 0 ? "Seret foto ke sini atau klik untuk tambah" : "Seret foto ke sini atau klik untuk pilih"}
@@ -698,6 +697,196 @@ export function ObjectListEditor({
       <Button type="button" variant="outline" size="sm" onClick={add}>
         + Tambah
       </Button>
+    </div>
+  );
+}
+
+export function DeliveryLocationEditor({
+  value,
+  onChange,
+}: {
+  value: unknown;
+  onChange: (v: any[]) => void;
+}) {
+  const items: any[] = Array.isArray(value) ? value : [];
+  const [geocoding, setGeocoding] = useState<number | null>(null);
+
+  const update = (i: number, key: string, v: any) => {
+    const next = [...items];
+    next[i] = { ...next[i], [key]: v };
+    onChange(next);
+  };
+  const remove = (i: number) => onChange(items.filter((_, idx) => idx !== i));
+  const add = () => {
+    onChange([...items, { name: "", address: "", lat: 0, lng: 0 }]);
+  };
+
+  const handleGeocode = async (i: number) => {
+    const item = items[i];
+    if (!item.address) {
+      toast.error("Alamat kosong");
+      return;
+    }
+
+    setGeocoding(i);
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(item.address)}`);
+      if (!res.ok) throw new Error("Gagal mengambil data lokasi");
+      const data = await res.json();
+
+      if (data && data.length > 0) {
+        const lat = parseFloat(data[0].lat);
+        const lng = parseFloat(data[0].lon);
+
+        const next = [...items];
+        next[i] = { ...next[i], lat, lng };
+        onChange(next);
+        toast.success(`Koordinat ditemukan: ${lat}, ${lng}`);
+      } else {
+        toast.error("Lokasi tidak ditemukan, pastikan alamat lengkap");
+      }
+    } catch (e: any) {
+      toast.error(e.message || "Error saat geocoding");
+    } finally {
+      setGeocoding(null);
+    }
+  };
+
+  return (
+    <div className="space-y-3">
+      {items.map((item, i) => (
+        <div key={i} className="flex flex-col gap-2 border border-border p-3 bg-muted/20">
+          <div className="flex gap-2 items-start">
+            <div className="flex-1 space-y-3">
+              <div className="space-y-1">
+                <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">Nama Perusahaan / Klien</Label>
+                <Input value={item.name ?? ""} onChange={(e) => update(i, "name", e.target.value)} placeholder="Contoh: PT ABC Jaya" />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">Alamat Lengkap</Label>
+                <div className="flex gap-2">
+                  <Textarea rows={2} value={item.address ?? ""} onChange={(e) => update(i, "address", e.target.value)} placeholder="Jl. Raya No. 1, Kota, Provinsi" className="flex-1" />
+                  <Button type="button" variant="secondary" onClick={() => handleGeocode(i)} disabled={geocoding === i} className="h-auto whitespace-nowrap">
+                    {geocoding === i ? "Mencari..." : "Set Koordinat"}
+                  </Button>
+                </div>
+              </div>
+              <div className="flex gap-4 text-xs text-muted-foreground">
+                <div>Lat: <strong>{item.lat || 0}</strong></div>
+                <div>Lng: <strong>{item.lng || 0}</strong></div>
+                {(!item.lat || !item.lng) && (
+                  <div className="text-destructive font-semibold">⚠️ Koordinat belum diset</div>
+                )}
+              </div>
+            </div>
+            <Button type="button" variant="outline" size="sm" onClick={() => remove(i)}>
+              ✕
+            </Button>
+          </div>
+        </div>
+      ))}
+      <Button type="button" variant="outline" size="sm" onClick={add}>
+        + Tambah Lokasi
+      </Button>
+    </div>
+  );
+}
+export function LocationGeocodeEditor({
+  address,
+  lat,
+  lng,
+  onChange,
+}: {
+  address: string;
+  lat: number | null;
+  lng: number | null;
+  onChange: (data: { address: string; lat: number | null; lng: number | null }) => void;
+}) {
+  return (
+    <div className="space-y-3">
+      <Textarea
+        rows={3}
+        value={address ?? ""}
+        onChange={(e) => onChange({ address: e.target.value, lat, lng })}
+        placeholder="Jl. Raya No. 1, Kota, Provinsi"
+      />
+      <div className="grid grid-cols-2 gap-4 border border-border p-3 bg-muted/20 rounded">
+        <div className="space-y-1">
+          <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">Latitude</Label>
+          <Input
+            type="number"
+            step="any"
+            value={lat ?? ""}
+            onChange={(e) => onChange({ address, lat: parseFloat(e.target.value) || 0, lng })}
+            placeholder="-7.2504"
+          />
+        </div>
+        <div className="space-y-1">
+          <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">Longitude</Label>
+          <Input
+            type="number"
+            step="any"
+            value={lng ?? ""}
+            onChange={(e) => onChange({ address, lat, lng: parseFloat(e.target.value) || 0 })}
+            placeholder="112.7688"
+          />
+        </div>
+        {(!lat || !lng) && (
+          <div className="col-span-2 text-destructive text-xs font-semibold">⚠️ Koordinat belum diset. Isi dari URL Google Maps.</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Icon Picker ─────────────────────────────────────────────────────────────
+
+export const PIN_ICONS = [
+  { key: "default",    label: "Pin Umum",     svg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>` },
+  { key: "zap",        label: "PLTU / Listrik", svg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>` },
+  { key: "building",   label: "Gedung / Kantor", svg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 22V12h6v10"/><path d="M9 7h1"/><path d="M14 7h1"/><path d="M9 12h1"/><path d="M14 12h1"/></svg>` },
+  { key: "factory",    label: "Pabrik",        svg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M17 18h1"/><path d="M12 18h1"/><path d="M7 18h1"/></svg>` },
+  { key: "flame",      label: "Kilang / Gas",  svg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>` },
+  { key: "ship",       label: "Pelabuhan",     svg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1 .6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76"/><path d="M19 13V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6"/><path d="M12 10v4"/><path d="M12 2v3"/></svg>` },
+  { key: "hard-hat",   label: "Konstruksi",    svg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v2z"/><path d="M10 10V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5"/><path d="M4 15v-3a8 8 0 0 1 16 0v3"/></svg>` },
+  { key: "pickaxe",    label: "Pertambangan",  svg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.531 12.469 6.619 20.38a1 1 0 1 1-3-3l7.912-7.912"/><path d="M15.686 4.314A12.5 12.5 0 0 0 5.461 2.958 1 1 0 0 0 5.58 4.71a22 22 0 0 1 6.318 3.393"/><path d="M17.7 3.7a1 1 0 0 0-1.4 0l-4.6 4.6a1 1 0 0 0 0 1.4l2.6 2.6a1 1 0 0 0 1.4 0l4.6-4.6a1 1 0 0 0 0-1.4z"/><path d="M19.686 8.314a12.501 12.501 0 0 1 1.356 10.225 1 1 0 0 1-1.751-.119 22 22 0 0 0-3.393-6.319"/></svg>` },
+  { key: "hospital",   label: "Rumah Sakit",   svg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6v4"/><path d="M14 14h-4"/><path d="M14 18h-4"/><path d="M14 8h-4"/><path d="M18 12h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h2"/><path d="M18 22V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v18"/></svg>` },
+  { key: "warehouse",  label: "Gudang",        svg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 8.35V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8.35A2 2 0 0 1 3.26 6.5l8-3.2a2 2 0 0 1 1.48 0l8 3.2A2 2 0 0 1 22 8.35Z"/><path d="M6 18h12"/><path d="M6 14h12"/><rect width="8" height="8" x="8" y="14"/></svg>` },
+  { key: "leaf",       label: "Perkebunan",    svg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>` },
+  { key: "anchor",     label: "Maritim",       svg: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"/><line x1="12" y1="22" x2="12" y2="8"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/></svg>` },
+] as const;
+
+export type PinIconKey = typeof PIN_ICONS[number]["key"];
+
+export function IconPickerField({
+  value,
+  onChange,
+}: {
+  value: string | null;
+  onChange: (v: string) => void;
+}) {
+  const current = value || "default";
+  return (
+    <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
+      {PIN_ICONS.map((icon) => (
+        <button
+          key={icon.key}
+          type="button"
+          onClick={() => onChange(icon.key)}
+          title={icon.label}
+          className={`flex flex-col items-center gap-1.5 p-2.5 rounded-lg border transition-all text-center ${
+            current === icon.key
+              ? "border-primary bg-primary/10 text-primary shadow-sm"
+              : "border-border bg-muted/20 text-muted-foreground hover:border-primary/50 hover:text-foreground"
+          }`}
+        >
+          <span
+            dangerouslySetInnerHTML={{ __html: icon.svg }}
+            className="w-5 h-5 flex-shrink-0"
+          />
+          <span className="text-[10px] leading-tight">{icon.label}</span>
+        </button>
+      ))}
     </div>
   );
 }

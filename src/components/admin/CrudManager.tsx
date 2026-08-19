@@ -19,6 +19,9 @@ import {
   ManagedDbSelect,
   type ObjectColumn,
   type ManageField,
+  LocationGeocodeEditor,
+  IconPickerField,
+  PIN_ICONS,
 } from "./field-editors";
 import { RichTextEditor } from "./RichTextEditor";
 import { DocumentListEditor } from "./DocumentUpload";
@@ -50,7 +53,9 @@ export type FieldType =
   | "image-list"
   | "doc-list"
   | "db-select"
-  | "boolean";
+  | "boolean"
+  | "location"
+  | "icon-picker";
 export interface FieldDef {
   name: string;
   label: string;
@@ -293,6 +298,22 @@ export function CrudManager({ config }: { config: CrudConfig }) {
                     <ImageListEditor value={val} onChange={(v) => set(v)} />
                   ) : f.type === "doc-list" ? (
                     <DocumentListEditor value={val} onChange={(v) => set(v)} />
+                  ) : f.type === "location" ? (
+                    <LocationGeocodeEditor
+                      address={val ?? ""}
+                      lat={editing?.lat}
+                      lng={editing?.lng}
+                      onChange={(data) => {
+                        setEditing((prev: any) => ({
+                          ...prev,
+                          address: data.address,
+                          lat: data.lat,
+                          lng: data.lng,
+                        }));
+                      }}
+                    />
+                  ) : f.type === "icon-picker" ? (
+                    <IconPickerField value={val ?? null} onChange={(v) => set(v)} />
                   ) : f.type === "tags" ? (
                     <TagsInput value={val} placeholder={f.placeholder} onChange={(v) => set(v)} />
                   ) : f.type === "db-select" ? (

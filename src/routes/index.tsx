@@ -68,7 +68,7 @@ function Index() {
       <main>
         <Hero company={data.company} />
         <About company={data.company} />
-        <WhyUs />
+        <WhyUs clients={data.clients} />
         <Products products={data.products} />
         <Workflow />
         <Brands brands={data.brands} company={data.company} />

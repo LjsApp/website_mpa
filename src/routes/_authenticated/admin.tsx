@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { adminList, adminUpsert } from "@/lib/admin.functions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ImageUpload } from "@/components/admin/ImageUpload";
-import { ObjectListEditor, ImageListEditor } from "@/components/admin/field-editors";
+import { ObjectListEditor, ImageListEditor, DeliveryLocationEditor } from "@/components/admin/field-editors";
 import { DocumentListEditor } from "@/components/admin/DocumentUpload";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
@@ -560,6 +560,8 @@ const clientsConfig: CrudConfig = {
   fields: [
     { name: "name", label: "Nama Klien", required: true },
     { name: "logo_url", label: "Logo", type: "image", webpOnly: true, maxSizeKB: 500 },
+    { name: "address", label: "Alamat Pengiriman / Lokasi", type: "location", placeholder: "Jl. Raya Surabaya, Jawa Timur", required: true },
+    { name: "pin_icon", label: "Ikon Pin Peta", type: "icon-picker" },
   ],
 };
 
