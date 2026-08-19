@@ -8,7 +8,7 @@ import { useTypewriter } from "@/hooks/use-typewriter";
 
 const badges = ["Mitra Terpercaya", "Pengadaan Cepat", "Layanan Nasional", "Dukungan Teknis"];
 
-function StatItem({ rawValue, label }: { rawValue: string; label: string }) {
+function StatItem({ rawValue, label, link }: { rawValue: string; label: string; link?: string | null }) {
   const [trigger, setTrigger] = useState(false);
   const containerRef = useScrollAnimate();
 
@@ -27,9 +27,23 @@ function StatItem({ rawValue, label }: { rawValue: string; label: string }) {
   const displayValue = parsed.value > 0 ? `${count}${parsed.suffix}` : rawValue;
 
   return (
-    <div ref={containerRef as any}>
+    <div ref={containerRef as any} className="relative">
       <div className="font-display text-3xl md:text-4xl text-primary">{displayValue}</div>
-      <div className="text-xs uppercase tracking-widest text-muted-foreground mt-1">{label}</div>
+      <div className="text-xs uppercase tracking-widest text-muted-foreground mt-1 flex flex-wrap items-center gap-2">
+        <span>{label}</span>
+      </div>
+      {link && (
+        <a 
+          href={link} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          title="Kunjungi profil LinkedIn kami"
+          className="mt-3 inline-flex items-center gap-2 text-[10px] uppercase tracking-widest font-semibold text-primary hover:text-primary/80 transition-colors"
+        >
+          Lihat Profil 
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </a>
+      )}
     </div>
   );
 }
@@ -122,7 +136,7 @@ export function Hero({ company }: { company?: CompanyRow | null }) {
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4">
           {stats.map((s, i) => (
             <div key={s.label} className={`py-6 px-4 ${i < 3 ? "md:border-r border-border" : ""} ${i < 2 ? "border-r md:border-r" : ""} ${i < 2 ? "border-b md:border-b-0" : ""}`}>
-              <StatItem rawValue={s.value} label={s.label} />
+              <StatItem rawValue={s.value} label={s.label} link={s.value.includes("10") ? company?.linkedin_url : undefined} />
             </div>
           ))}
         </div>
