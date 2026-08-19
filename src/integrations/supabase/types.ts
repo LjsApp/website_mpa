@@ -50,6 +50,8 @@ export type Database = {
           published_at: string
           read_minutes: number
           slug: string
+          source: string | null
+          original_url: string | null
           tags: Json
           title: string
           updated_at: string
@@ -65,6 +67,8 @@ export type Database = {
           published_at?: string
           read_minutes?: number
           slug: string
+          source?: string | null
+          original_url?: string | null
           tags?: Json
           title: string
           updated_at?: string
@@ -80,6 +84,8 @@ export type Database = {
           published_at?: string
           read_minutes?: number
           slug?: string
+          source?: string | null
+          original_url?: string | null
           tags?: Json
           title?: string
           updated_at?: string

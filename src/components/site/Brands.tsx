@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import type { BrandRow } from "@/lib/site-types";
+import type { BrandRow, CompanyRow } from "@/lib/site-types";
+import { asCompanyStats } from "@/lib/site-types";
 import { LogoGridCarousel } from "@/components/site/LogoGridCarousel";
 import { useScrollAnimate } from "@/hooks/use-scroll-animate";
 import { useCounter, parseStat } from "@/hooks/use-counter";
@@ -31,7 +32,7 @@ function BrandStatItem({ rawValue, label }: { rawValue: string; label: string })
   );
 }
 
-export function Brands({ brands = [] }: { brands?: BrandRow[] }) {
+export function Brands({ brands = [], company }: { brands?: BrandRow[], company?: CompanyRow | null }) {
   const [active, setActive] = useState("Semua");
   const containerRef = useScrollAnimate();
 
@@ -40,10 +41,7 @@ export function Brands({ brands = [] }: { brands?: BrandRow[] }) {
   const used = BRAND_CATEGORIES.filter((c) => brands.some((b) => b.category === c));
   const filtered = active === "Semua" ? brands : brands.filter((b) => b.category === active);
 
-  const stats = [
-    { value: `${Math.max(brands.length, 80)}+`, label: "Brand Global" },
-    { value: "100%", label: "Original Product" },
-  ];
+  const stats = asCompanyStats(company?.stats).brands;
 
   return (
     <section className="py-28 md:py-36 bg-white" ref={containerRef as any}>

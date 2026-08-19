@@ -222,7 +222,7 @@ function CompanyForm() {
   const { data: rows = [], isLoading } = useQuery({ queryKey: ["admin", "company_info"], queryFn: () => listFn({ data: { table: "company_info" } }) });
   const row = (rows as any[])[0];
   const [form, setForm] = useState<Record<string, any>>({});
-  const [subTab, setSubTab] = useState<"info" | "admins">("info");
+  const [subTab, setSubTab] = useState<"info" | "admins" | "stats">("info");
   useEffect(() => { if (row) setForm(row); }, [row]);
 
   const mut = useMutation({
@@ -265,9 +265,8 @@ function CompanyForm() {
   return (
     <div>
       <h2 className="text-2xl font-display uppercase mb-4">Perusahaan</h2>
-      {/* Sub-tabs */}
       <div className="flex gap-0 border-b border-border mb-6">
-        {(["info", "admins"] as const).map((t) => (
+        {(["info", "admins", "stats"] as const).map((t) => (
           <button
             key={t}
             type="button"
@@ -278,7 +277,7 @@ function CompanyForm() {
                 : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
-            {t === "info" ? "Informasi Perusahaan" : "Admin / Staf"}
+            {t === "info" ? "Informasi Perusahaan" : t === "admins" ? "Admin / Staf" : "Statistik Utama"}
           </button>
         ))}
       </div>
@@ -359,6 +358,42 @@ function CompanyForm() {
             />
           </div>
           <Button type="submit" disabled={mut.isPending}>{mut.isPending ? "Menyimpan..." : "Simpan Perubahan"}</Button>
+        </form>
+      )}
+
+      {subTab === "stats" && (
+        <form onSubmit={onSubmit} className="space-y-8 max-w-3xl">
+          <div>
+            <h3 className="font-display text-xl uppercase mb-2">Statistik Beranda (Hero)</h3>
+            <p className="text-sm text-muted-foreground mb-4">Tampil di halaman beranda bagian paling atas.</p>
+            <ObjectListEditor
+              value={form.stats?.hero ?? []}
+              columns={[{ key: "value", label: "Angka (cth: 10+)" }, { key: "label", label: "Label Singkat" }]}
+              onChange={(v) => setForm({ ...form, stats: { ...form.stats, hero: v } })}
+            />
+          </div>
+
+          <div>
+            <h3 className="font-display text-xl uppercase mb-2">Statistik Brand Global</h3>
+            <p className="text-sm text-muted-foreground mb-4">Tampil di halaman beranda bagian Dukungan Brand.</p>
+            <ObjectListEditor
+              value={form.stats?.brands ?? []}
+              columns={[{ key: "value", label: "Angka (cth: 80+)" }, { key: "label", label: "Label Singkat" }]}
+              onChange={(v) => setForm({ ...form, stats: { ...form.stats, brands: v } })}
+            />
+          </div>
+
+          <div>
+            <h3 className="font-display text-xl uppercase mb-2">Statistik Klien</h3>
+            <p className="text-sm text-muted-foreground mb-4">Tampil di halaman beranda bagian Klien Kami.</p>
+            <ObjectListEditor
+              value={form.stats?.clients ?? []}
+              columns={[{ key: "value", label: "Angka (cth: 50+)" }, { key: "label", label: "Label Singkat" }]}
+              onChange={(v) => setForm({ ...form, stats: { ...form.stats, clients: v } })}
+            />
+          </div>
+
+          <Button type="submit" disabled={mut.isPending}>{mut.isPending ? "Menyimpan..." : "Simpan Statistik"}</Button>
         </form>
       )}
 

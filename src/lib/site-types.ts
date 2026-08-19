@@ -12,6 +12,12 @@ export type SpecItem = { label: string; value: string };
 export type StatItem = { label: string; value: string };
 export type TimelineItem = { year: string; title: string; desc: string };
 
+export interface CompanyStats {
+  hero: StatItem[];
+  brands: StatItem[];
+  clients: StatItem[];
+}
+
 export function asStringList(v: unknown): string[] {
   if (Array.isArray(v)) return v.filter((x): x is string => typeof x === "string");
   return [];
@@ -41,6 +47,38 @@ export function asSpecs(v: unknown): SpecItem[] {
 
 export function asStats(v: unknown): StatItem[] {
   return asSpecs(v);
+}
+
+export function asCompanyStats(v: unknown): CompanyStats {
+  if (v && typeof v === 'object' && !Array.isArray(v)) {
+    const obj = v as any;
+    // Check if the object has the expected properties to avoid overriding with defaults if it's just empty
+    if (obj.hero || obj.brands || obj.clients) {
+      return {
+        hero: asStats(obj.hero),
+        brands: asStats(obj.brands),
+        clients: asStats(obj.clients),
+      };
+    }
+  }
+  // Default values if missing
+  return {
+    hero: [
+      { value: "10+", label: "TAHUN PENGALAMAN" },
+      { value: "150+", label: "PROYEK SELESAI" },
+      { value: "80+", label: "KLIEN AKTIF" },
+      { value: "24/7", label: "DUKUNGAN" }
+    ],
+    brands: [
+      { value: "80+", label: "Brand Global" },
+      { value: "100%", label: "Original Product" }
+    ],
+    clients: [
+      { value: "50+", label: "PERUSAHAAN" },
+      { value: "25+", label: "INDUSTRI" },
+      { value: "10+", label: "TAHUN PENGALAMAN" }
+    ]
+  };
 }
 
 export function asTimeline(v: unknown): TimelineItem[] {

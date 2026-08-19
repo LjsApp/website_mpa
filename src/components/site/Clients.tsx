@@ -1,14 +1,11 @@
-import type { ClientRow } from "@/lib/site-types";
+import type { ClientRow, CompanyRow } from "@/lib/site-types";
+import { asCompanyStats } from "@/lib/site-types";
 import { LogoGridCarousel } from "@/components/site/LogoGridCarousel";
 
-export function Clients({ clients = [] }: { clients?: ClientRow[] }) {
+export function Clients({ clients = [], company }: { clients?: ClientRow[], company?: CompanyRow | null }) {
   if (clients.length === 0) return null;
 
-  const stats = [
-    { value: "50+", label: "Perusahaan" },
-    { value: "25+", label: "Industri" },
-    { value: "10+", label: "Tahun Pengalaman" },
-  ];
+  const stats = asCompanyStats(company?.stats).clients;
 
   return (
     <section id="clients" className="py-28 md:py-36 bg-primary text-primary-foreground">

@@ -49,7 +49,6 @@ function Index() {
     "url": siteUrl || undefined,
     "logo": c?.logo_url ?? undefined,
     "email": c?.email ?? undefined,
-    "telephone": c?.phone ?? undefined,
     "address": c?.address ? {
       "@type": "PostalAddress",
       "streetAddress": c.address,
@@ -72,9 +71,9 @@ function Index() {
         <WhyUs />
         <Products products={data.products} />
         <Workflow />
-        <Brands brands={data.brands} />
+        <Brands brands={data.brands} company={data.company} />
         <Projects projects={data.projects} />
-        <Clients clients={data.clients} />
+        <Clients clients={data.clients} company={data.company} />
         <Testimonials items={data.testimonials} />
         <Contact company={data.company} />
         <Footer company={data.company} />

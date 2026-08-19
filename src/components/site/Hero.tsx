@@ -1,18 +1,12 @@
 import { useState, useEffect } from "react";
 import heroImg from "@/assets/hero-industrial.jpg";
-import { asStats, type CompanyRow } from "@/lib/site-types";
+import { asCompanyStats, type CompanyRow } from "@/lib/site-types";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { useScrollAnimate } from "@/hooks/use-scroll-animate";
 import { useCounter, parseStat } from "@/hooks/use-counter";
 import { useTypewriter } from "@/hooks/use-typewriter";
 
 const badges = ["Mitra Terpercaya", "Pengadaan Cepat", "Layanan Nasional", "Dukungan Teknis"];
-const fallbackStats = [
-  { value: "10+", label: "Tahun Pengalaman" },
-  { value: "150+", label: "Proyek Selesai" },
-  { value: "80+", label: "Klien Aktif" },
-  { value: "24/7", label: "Dukungan" },
-];
 
 function StatItem({ rawValue, label }: { rawValue: string; label: string }) {
   const [trigger, setTrigger] = useState(false);
@@ -41,8 +35,7 @@ function StatItem({ rawValue, label }: { rawValue: string; label: string }) {
 }
 
 export function Hero({ company }: { company?: CompanyRow | null }) {
-  const dbStats = asStats(company?.stats);
-  const stats = dbStats.length > 0 ? dbStats.slice(0, 4) : fallbackStats;
+  const stats = asCompanyStats(company?.stats).hero;
   const containerRef = useScrollAnimate();
 
   const typeText = useTypewriter(["Terintegrasi", "Terbaik", "Inovatif", "Profesional"], 120, 2500);
