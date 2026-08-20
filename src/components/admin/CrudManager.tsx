@@ -115,6 +115,12 @@ export function CrudManager({ config }: { config: CrudConfig }) {
 
   const [editing, setEditing] = useState<Record<string, any> | null>(null);
   const [open, setOpen] = useState(false);
+  const [pageSize, setPageSize] = useState(10);
+  const [page, setPage] = useState(1);
+
+  const totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const paginatedRows = rows.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   const upsert = useMutation({
     mutationFn: (row: Record<string, any>) => upsertFn({ data: { table: config.table, row } }),
@@ -200,7 +206,25 @@ export function CrudManager({ config }: { config: CrudConfig }) {
           <h2 className="text-2xl font-display uppercase">{config.title}</h2>
           <p className="text-sm text-muted-foreground">{rows.length} entri</p>
         </div>
-        <Button onClick={openNew}>+ Tambah Baru</Button>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <label className="text-sm text-muted-foreground whitespace-nowrap">Tampilkan:</label>
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(Number(e.target.value));
+                setPage(1);
+              }}
+              className="rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              <option value={10}>10 Baris</option>
+              <option value={20}>20 Baris</option>
+              <option value={50}>50 Baris</option>
+              <option value={100}>100 Baris</option>
+            </select>
+          </div>
+          <Button onClick={openNew}>+ Tambah Baru</Button>
+        </div>
       </div>
 
       {isLoading ? (
@@ -215,7 +239,7 @@ export function CrudManager({ config }: { config: CrudConfig }) {
               </tr>
             </thead>
             <tbody>
-              {rows.map((row: any) => (
+              {paginatedRows.map((row: any) => (
                 <tr key={row.id} className="border-t border-border hover:bg-muted/20">
                   {config.columns.map((c) => {
                     const fieldDef = config.fields.find(f => f.name === c.name);
@@ -256,6 +280,37 @@ export function CrudManager({ config }: { config: CrudConfig }) {
               )}
             </tbody>
           </table>
+          {rows.length > 0 && (
+            <div className="px-4 py-3 bg-muted/10 flex flex-col sm:flex-row justify-between items-center gap-4">
+              <div className="text-xs text-muted-foreground">
+                Menampilkan {Math.min((currentPage - 1) * pageSize + 1, rows.length)} - {Math.min(currentPage * pageSize, rows.length)} dari {rows.length} data
+              </div>
+              
+              <div className="flex items-center gap-1.5">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="h-8 px-2.5 text-xs"
+                  disabled={currentPage === 1}
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                >
+                  ← Prev
+                </Button>
+                <div className="text-xs font-medium px-2">
+                  Hal {currentPage} / {totalPages}
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="h-8 px-2.5 text-xs" 
+                  disabled={currentPage === totalPages}
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                >
+                  Next →
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -300,13 +355,11 @@ export function CrudManager({ config }: { config: CrudConfig }) {
                     <DocumentListEditor value={val} onChange={(v) => set(v)} />
                   ) : f.type === "location" ? (
                     <LocationGeocodeEditor
-                      address={val ?? ""}
                       lat={editing?.lat}
                       lng={editing?.lng}
                       onChange={(data) => {
                         setEditing((prev: any) => ({
                           ...prev,
-                          address: data.address,
                           lat: data.lat,
                           lng: data.lng,
                         }));

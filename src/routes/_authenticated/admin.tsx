@@ -560,7 +560,7 @@ const clientsConfig: CrudConfig = {
   fields: [
     { name: "name", label: "Nama Klien", required: true },
     { name: "logo_url", label: "Logo", type: "image", webpOnly: true, maxSizeKB: 500 },
-    { name: "address", label: "Alamat Pengiriman / Lokasi", type: "location", placeholder: "Jl. Raya Surabaya, Jawa Timur", required: true },
+    { name: "location", label: "Koordinat Lokasi", type: "location", required: true },
     { name: "pin_icon", label: "Ikon Pin Peta", type: "icon-picker" },
   ],
 };

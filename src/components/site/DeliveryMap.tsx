@@ -77,6 +77,33 @@ function MapUpdater({ center }: { center: [number, number] }) {
   return null;
 }
 
+export function EmbeddedDeliveryMap({
+  locations,
+}: {
+  locations: DeliveryLocation[];
+}) {
+  const center: [number, number] = [-2.5489, 118.0149];
+  const zoom = 5;
+
+  return (
+    <div className="w-full h-[400px] md:h-[500px] rounded-2xl overflow-hidden border border-border shadow-xl relative z-10 bg-muted/20">
+      <MapContainer center={center} zoom={zoom} scrollWheelZoom={false} className="w-full h-full z-0">
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        {locations.filter(loc => loc.lat && loc.lng).map((loc, idx) => (
+          <Marker
+            key={idx}
+            position={[loc.lat, loc.lng]}
+            icon={createLabelIcon(loc.name, loc.pinIcon)}
+          />
+        ))}
+      </MapContainer>
+    </div>
+  );
+}
+
 export function DeliveryMap({
   isOpen,
   onClose,

@@ -59,6 +59,8 @@ CREATE TABLE public.articles (
   content TEXT NOT NULL,
   category TEXT NOT NULL DEFAULT 'Berita',
   author TEXT NOT NULL DEFAULT 'Tim Indotek',
+  source TEXT DEFAULT 'admin',
+  original_url TEXT,
   image_url TEXT,
   published_at DATE NOT NULL DEFAULT CURRENT_DATE,
   read_minutes INT NOT NULL DEFAULT 5,
@@ -90,6 +92,10 @@ CREATE TABLE public.clients (
   name TEXT NOT NULL,
   logo_url TEXT,
   sort_order INT NOT NULL DEFAULT 0,
+  address TEXT,
+  lat DOUBLE PRECISION,
+  lng DOUBLE PRECISION,
+  pin_icon TEXT DEFAULT 'default',
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 ALTER TABLE public.clients ENABLE ROW LEVEL SECURITY;
@@ -107,9 +113,6 @@ CREATE TABLE public.company_info (
   address TEXT,
   address_ro TEXT,
   email TEXT,
-  whatsapp TEXT,
-  whatsapp_2 TEXT,
-  whatsapp_3 TEXT,
   facebook_url TEXT,
   instagram_url TEXT,
   linkedin_url TEXT,
@@ -127,6 +130,22 @@ ALTER TABLE public.company_info ENABLE ROW LEVEL SECURITY;
 CREATE TRIGGER set_company_updated BEFORE UPDATE ON public.company_info FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 CREATE POLICY "public read company" ON public.company_info FOR SELECT USING (true);
 CREATE POLICY "admin write company" ON public.company_info FOR ALL TO authenticated USING (public.has_role(auth.uid(),'admin')) WITH CHECK (public.has_role(auth.uid(),'admin'));
+
+-- company_admins
+CREATE TABLE public.company_admins (
+    id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+    name text NOT NULL,
+    phone text NOT NULL,
+    instagram text,
+    photo_url text,
+    quote text,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL
+);
+ALTER TABLE public.company_admins ENABLE ROW LEVEL SECURITY;
+CREATE TRIGGER set_company_admins_updated BEFORE UPDATE ON public.company_admins FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+CREATE POLICY "company_admins_read_public" ON public.company_admins FOR SELECT TO public USING (true);
+CREATE POLICY "company_admins_write_admin" ON public.company_admins FOR ALL TO authenticated USING (auth.jwt() ->> 'role' = 'admin');
 
 -- product_categories
 CREATE TABLE public.product_categories (
@@ -211,6 +230,7 @@ CREATE TABLE public.testimonials (
   quote TEXT NOT NULL,
   name TEXT NOT NULL,
   role TEXT,
+  is_active BOOLEAN NOT NULL DEFAULT true,
   sort_order INT NOT NULL DEFAULT 0,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
@@ -220,21 +240,7 @@ CREATE TRIGGER set_testimonials_updated BEFORE UPDATE ON public.testimonials FOR
 CREATE POLICY "public read testimonials" ON public.testimonials FOR SELECT USING (true);
 CREATE POLICY "admin write testimonials" ON public.testimonials FOR ALL TO authenticated USING (public.has_role(auth.uid(),'admin')) WITH CHECK (public.has_role(auth.uid(),'admin'));
 
--- newsletter_subscribers
-CREATE TABLE public.newsletter_subscribers (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  email TEXT NOT NULL UNIQUE,
-  status TEXT NOT NULL DEFAULT 'active',
-  subscribed_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-ALTER TABLE public.newsletter_subscribers ENABLE ROW LEVEL SECURITY;
-CREATE TRIGGER set_subscribers_updated BEFORE UPDATE ON public.newsletter_subscribers FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
-CREATE POLICY "admin read subscribers" ON public.newsletter_subscribers FOR SELECT TO authenticated USING (public.has_role(auth.uid(),'admin'));
-CREATE POLICY "admin write subscribers" ON public.newsletter_subscribers FOR ALL TO authenticated USING (public.has_role(auth.uid(),'admin')) WITH CHECK (public.has_role(auth.uid(),'admin'));
--- Allow anon insert for newsletter
-CREATE POLICY "anon insert subscribers" ON public.newsletter_subscribers FOR INSERT TO anon, authenticated WITH CHECK (true);
+-- (newsletter_subscribers has been removed)
 
 -- page_views
 CREATE TABLE public.page_views (
@@ -263,10 +269,6 @@ CREATE TABLE public.order_trackings (
   id          TEXT PRIMARY KEY,
   po_number   TEXT NOT NULL,
   customer    TEXT NOT NULL,
-  item_name   TEXT NOT NULL,
-  status      TEXT NOT NULL DEFAULT 'PO Diterima',
-  courier     TEXT,
-  resi_number TEXT,
   created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -278,16 +280,17 @@ CREATE POLICY "public read order_trackings" ON public.order_trackings FOR SELECT
 CREATE POLICY "admin write order_trackings" ON public.order_trackings FOR ALL TO authenticated
   USING (public.has_role(auth.uid(),'admin')) WITH CHECK (public.has_role(auth.uid(),'admin'));
 
--- tracking_updates (timeline/history per order)
-CREATE TABLE public.tracking_updates (
+-- order_resi (resi details per PO)
+CREATE TABLE public.order_resi (
   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   tracking_id TEXT NOT NULL REFERENCES public.order_trackings(id) ON DELETE CASCADE,
-  status      TEXT NOT NULL,
-  note        TEXT,
-  created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
-  event_date  TIMESTAMPTZ NOT NULL DEFAULT now()
+  resi_number TEXT NOT NULL,
+  courier     TEXT NOT NULL,
+  item_name   TEXT NOT NULL,
+  sort_order  INT  NOT NULL DEFAULT 0,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
-ALTER TABLE public.tracking_updates ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "public read tracking_updates" ON public.tracking_updates FOR SELECT USING (true);
-CREATE POLICY "admin write tracking_updates" ON public.tracking_updates FOR ALL TO authenticated
+ALTER TABLE public.order_resi ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "public read order_resi" ON public.order_resi FOR SELECT USING (true);
+CREATE POLICY "admin write order_resi" ON public.order_resi FOR ALL TO authenticated
   USING (public.has_role(auth.uid(),'admin')) WITH CHECK (public.has_role(auth.uid(),'admin'));

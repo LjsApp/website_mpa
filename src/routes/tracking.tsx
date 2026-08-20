@@ -13,7 +13,7 @@ export const Route = createFileRoute("/tracking")({
       { title: "Cek Status Pengiriman" },
       {
         name: "description",
-        content: "Lacak status pengiriman barang pesanan Anda secara real-time dengan memasukkan Tracking ID.",
+        content: "Lacak status pengiriman barang pesanan Anda secara real-time dengan memasukkan No. PO atau Tracking ID.",
       },
     ],
   }),
@@ -57,7 +57,7 @@ function Skeleton({ className = "", style }: { className?: string; style?: React
   );
 }
 
-function CourierResult({ result }: { result: CourierTrackResult }) {
+function CourierResult({ result, itemName }: { result: CourierTrackResult, itemName?: string }) {
   const color = courierStatusColor(result.status);
   const isDelivered = result.status === "DELIVERED";
   return (
@@ -78,7 +78,8 @@ function CourierResult({ result }: { result: CourierTrackResult }) {
               <span style={{ background: color.bg, border: `1px solid ${color.border}`, color: color.text }} className="text-[11px] sm:text-xs font-semibold px-2.5 py-0.5 rounded-full">{result.status_label}</span>
             </div>
             <div className="font-mono text-xl sm:text-2xl font-bold text-primary tracking-widest">{result.awb}</div>
-            {result.desc && <div className="text-sm text-foreground mt-1.5 max-w-sm">{result.desc}</div>}
+            {itemName && <div className="text-foreground font-semibold mt-1.5">{itemName}</div>}
+            {result.desc && <div className="text-sm text-foreground mt-1 max-w-sm">{result.desc}</div>}
           </div>
           {(result.receiver || result.date) && (
             <div className="text-left sm:text-right w-full sm:w-auto bg-white/40 sm:bg-transparent p-3 sm:p-0 rounded-lg">
@@ -135,19 +136,19 @@ function TrackingResult({ tracking }: { tracking: OrderTracking }) {
       <div className="p-5 sm:p-7" style={{ background: "#EEF3F0" }}>
         <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
           <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-mono text-xl sm:text-2xl font-bold text-primary tracking-widest">{tracking.id}</span>
+            <div className="flex items-center gap-2 flex-wrap mb-1">
+              <span className="text-xs text-muted-foreground uppercase tracking-widest">Informasi Pesanan</span>
             </div>
-            <div className="text-foreground text-base sm:text-lg font-semibold mt-1.5">{tracking.item_name}</div>
+            <div className="font-mono text-xl sm:text-2xl font-bold text-primary tracking-widest">{tracking.po_number}</div>
+            <div className="text-foreground text-sm mt-1.5 font-mono">ID: {tracking.id}</div>
           </div>
           <div className="text-left sm:text-right w-full sm:w-auto bg-white/40 sm:bg-transparent p-3 sm:p-0 rounded-lg">
             <div className="text-muted-foreground text-[10px] sm:text-[11px] uppercase tracking-wider">Customer</div>
             <div className="text-foreground font-medium text-sm sm:text-base">{tracking.customer}</div>
-            <div className="text-muted-foreground text-[10px] sm:text-[11px] mt-1">PO: <span className="text-foreground">{tracking.po_number}</span></div>
+            <div className="text-muted-foreground text-[10px] sm:text-[11px] mt-1">{tracking.resi?.length || 0} Pengiriman</div>
           </div>
         </div>
       </div>
-
     </div>
   );
 }
@@ -168,9 +169,8 @@ function TrackingPage() {
   const [error, setError]                       = useState<string | null>(null);
 
   // Data ekspedisi
-  const [courierResult, setCourierResult]   = useState<CourierTrackResult | null>(null);
+  const [courierResults, setCourierResults] = useState<{ id: string; result: CourierTrackResult | null; error: string | null }[]>([]);
   const [courierLoading, setCourierLoading] = useState(false);
-  const [courierError, setCourierError]     = useState<string | null>(null);
 
   useEffect(() => {
     if (searchId) {
@@ -186,8 +186,7 @@ function TrackingPage() {
     setNotFound(false);
     setError(null);
     setInternalTracking(null);
-    setCourierResult(null);
-    setCourierError(null);
+    setCourierResults([]);
     
     try {
       const data = await getTracking({ data: { id: query } });
@@ -198,16 +197,25 @@ function TrackingPage() {
         navigate({ to: "/tracking", search: { id: query }, replace: true });
         
         // Auto-fetch courier if resi exists
-        if (data.tracking.courier && data.tracking.resi_number) {
+        if (data.tracking.resi && data.tracking.resi.length > 0) {
           setCourierLoading(true);
-          try {
-            const cRes = await trackCourierFn({ data: { courier: data.tracking.courier, awb: data.tracking.resi_number } });
-            setCourierResult(cRes);
-          } catch (e: any) {
-            setCourierError(e.message ?? "Gagal mengambil data ekspedisi.");
-          } finally {
-            setCourierLoading(false);
-          }
+          
+          const results = await Promise.all(
+            data.tracking.resi.map(async (r) => {
+              try {
+                if (!r.courier || !r.resi_number) {
+                   return { id: r.id, result: null, error: "Data resi tidak lengkap" };
+                }
+                const cRes = await trackCourierFn({ data: { courier: r.courier, awb: r.resi_number } });
+                return { id: r.id, result: cRes, error: null };
+              } catch (e: any) {
+                return { id: r.id, result: null, error: e.message ?? "Gagal mengambil data ekspedisi." };
+              }
+            })
+          );
+          
+          setCourierResults(results);
+          setCourierLoading(false);
         }
       }
     } catch (e: any) {
@@ -279,7 +287,7 @@ function TrackingPage() {
                     Lacak <span className="text-gradient-orange">Pesanan Anda</span>
                   </h1>
                   <p className="text-muted-foreground text-sm mt-2">
-                    Masukkan Tracking ID untuk melihat detail pesanan dan posisi pengiriman.
+                    Masukkan No. PO atau Tracking ID untuk melihat detail pesanan dan posisi pengiriman.
                   </p>
                 </div>
               </div>
@@ -290,7 +298,7 @@ function TrackingPage() {
             <div className="flex flex-col gap-5">
               <div style={{ background: "linear-gradient(135deg, #f59e0b10, #e85d0410)", border: "1px solid #f59e0b30", borderRadius: "10px", padding: "12px 16px", fontSize: "13px", color: "var(--color-muted-foreground)" }}>
                 {"📋"} <strong style={{ color: "var(--color-foreground)" }}>Mulai Pelacakan</strong>
-                {" — masukkan Tracking ID yang diberikan tim kami (format: "}
+                {" — masukkan No. PO atau Tracking ID yang diberikan tim kami (format: "}
                 <span style={{ fontFamily: "monospace", color: "var(--color-primary)" }}>MPA-XXXXXX</span>{")"}
               </div>
 
@@ -301,7 +309,7 @@ function TrackingPage() {
                     ref={inputRef}
                     className="tracking-input w-full bg-transparent border-none text-foreground text-sm sm:text-lg font-mono tracking-wider focus:outline-none placeholder:text-muted-foreground"
                     type="text"
-                    placeholder="Masukkan Tracking ID (Contoh: MPA-A3K9F2)"
+                    placeholder="Masukkan No. PO (Contoh: PO-2026-001)"
                     value={inputId}
                     onChange={(e) => handleInputChange(e.target.value)}
                     onKeyDown={(e) => { if (e.key === "Enter") handleSearch(); }}
@@ -325,10 +333,10 @@ function TrackingPage() {
                 <div style={{ textAlign: "center", padding: "60px 24px", animation: "fadeSlideUp 0.4s ease both" }}>
                   <div style={{ fontSize: "64px", marginBottom: "16px" }}>{"🔎"}</div>
                   <div style={{ color: "var(--color-foreground)", fontSize: "20px", fontWeight: 600, marginBottom: "8px" }}>
-                    Tracking ID tidak ditemukan
+                    No. PO atau Tracking ID tidak ditemukan
                   </div>
                   <div style={{ color: "var(--color-muted-foreground)", fontSize: "14px" }}>
-                    {"Pastikan ID yang Anda masukkan sudah benar. Contoh: "}<span style={{ fontFamily: "monospace" }}>MPA-A3K9F2</span>
+                    {"Pastikan ID yang Anda masukkan sudah benar. Contoh: "}<span style={{ fontFamily: "monospace" }}>PO-2026-001</span>
                   </div>
                 </div>
               )}
@@ -345,26 +353,48 @@ function TrackingPage() {
               )}
               
               {/* Courier Status Loading / Result */}
-              {!loading && internalTracking?.courier && internalTracking?.resi_number && (
+              {!loading && internalTracking?.resi && internalTracking.resi.length > 0 && (
                 <>
-                  <div className="flex items-center gap-3 my-2">
+                  <div className="flex items-center gap-3 mt-6 mb-4">
                     <div className="flex-1 h-px bg-border"></div>
                     <div className="text-xs text-muted-foreground uppercase tracking-widest font-semibold flex items-center gap-2">
-                      {"📦"} Informasi Ekspedisi
+                      {"📦"} Daftar Pengiriman ({internalTracking.resi.length})
                     </div>
                     <div className="flex-1 h-px bg-border"></div>
                   </div>
                   
-                  {courierLoading && <LoadingSkeleton />}
-                  
-                  {!courierLoading && courierError && (
-                    <div style={{ background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: "12px", padding: "20px 24px", color: "#b91c1c", fontSize: "14px", animation: "fadeSlideUp 0.4s ease both" }}>
-                      {"❌"} {courierError}
+                  {courierLoading && (
+                    <div className="space-y-4">
+                      {internalTracking.resi.map((_, i) => <LoadingSkeleton key={i} />)}
                     </div>
                   )}
-
-                  {!courierLoading && courierResult && (
-                    <CourierResult result={courierResult} />
+                  
+                  {!courierLoading && (
+                    <div className="space-y-6">
+                      {internalTracking.resi.map((r, i) => {
+                        const res = courierResults.find(cr => cr.id === r.id);
+                        return (
+                          <div key={r.id} className="relative">
+                            <div className="absolute -left-3 -top-3 w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold text-sm shadow-md z-10 border-2 border-background">
+                              {i + 1}
+                            </div>
+                            {res?.error ? (
+                               <div style={{ background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: "16px", padding: "24px 28px", color: "#b91c1c", fontSize: "14px", animation: "fadeSlideUp 0.4s ease both" }}>
+                                 <div className="font-semibold mb-1 text-base">{r.item_name}</div>
+                                 {"❌"} {res.error} (Resi: {r.resi_number})
+                               </div>
+                            ) : res?.result ? (
+                               <CourierResult result={res.result} itemName={r.item_name} />
+                            ) : (
+                               <div style={{ background: "var(--color-card)", border: "1px solid var(--color-border)", borderRadius: "16px", padding: "24px 28px", color: "var(--color-muted-foreground)", fontSize: "14px" }}>
+                                 <div className="font-semibold mb-1 text-base text-foreground">{r.item_name}</div>
+                                 Tidak ada data tracking untuk {r.courier} - {r.resi_number}
+                               </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
                   )}
                 </>
               )}

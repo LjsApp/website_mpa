@@ -792,24 +792,16 @@ export function DeliveryLocationEditor({
   );
 }
 export function LocationGeocodeEditor({
-  address,
   lat,
   lng,
   onChange,
 }: {
-  address: string;
   lat: number | null;
   lng: number | null;
-  onChange: (data: { address: string; lat: number | null; lng: number | null }) => void;
+  onChange: (data: { lat: number | null; lng: number | null }) => void;
 }) {
   return (
     <div className="space-y-3">
-      <Textarea
-        rows={3}
-        value={address ?? ""}
-        onChange={(e) => onChange({ address: e.target.value, lat, lng })}
-        placeholder="Jl. Raya No. 1, Kota, Provinsi"
-      />
       <div className="grid grid-cols-2 gap-4 border border-border p-3 bg-muted/20 rounded">
         <div className="space-y-1">
           <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">Latitude</Label>
@@ -817,7 +809,7 @@ export function LocationGeocodeEditor({
             type="number"
             step="any"
             value={lat ?? ""}
-            onChange={(e) => onChange({ address, lat: parseFloat(e.target.value) || 0, lng })}
+            onChange={(e) => onChange({ lat: parseFloat(e.target.value) || 0, lng })}
             placeholder="-7.2504"
           />
         </div>
@@ -827,7 +819,7 @@ export function LocationGeocodeEditor({
             type="number"
             step="any"
             value={lng ?? ""}
-            onChange={(e) => onChange({ address, lat, lng: parseFloat(e.target.value) || 0 })}
+            onChange={(e) => onChange({ lat, lng: parseFloat(e.target.value) || 0 })}
             placeholder="112.7688"
           />
         </div>
