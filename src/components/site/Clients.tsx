@@ -21,16 +21,16 @@ export function Clients({ clients = [], company }: { clients?: ClientRow[], comp
     <section id="clients" className="py-28 md:py-36 bg-primary text-primary-foreground relative overflow-hidden">
       <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent"></div>
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-8">
           <div className="text-xs font-bold uppercase tracking-[0.3em] text-accent mb-4">Klien Kami</div>
           <h2 className="font-display text-4xl md:text-5xl uppercase leading-tight mb-6">
             Dipercaya Oleh Industri
           </h2>
-          <p className="text-primary-foreground/70 mt-5 mb-10 leading-relaxed text-lg">
+          <p className="text-primary-foreground/70 mt-5 mb-6 leading-relaxed text-lg">
             Lebih dari 50+ perusahaan dari berbagai sektor industri telah mempercayakan kebutuhan
             mereka kepada kami.
           </p>
-          <div className="flex flex-wrap justify-center gap-8 md:gap-16 mb-8 text-center">
+          <div className="flex flex-wrap justify-center gap-8 md:gap-16 mb-4 text-center">
             {stats.map((s) => (
               <div key={s.label}>
                 <div className="font-display text-3xl md:text-4xl text-accent">{s.value}</div>

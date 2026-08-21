@@ -123,7 +123,7 @@ export const updateTracking = createServerFn({ method: "POST" })
     const { data: existingResi } = await sb.from("order_resi").select("id").eq("tracking_id", data.id);
     const existingIds = new Set((existingResi || []).map((r: any) => r.id));
     
-    const incomingIds = new Set(data.resi.map(r => r.id).filter(Boolean));
+    const incomingIds = new Set(data.resi.map(r => r.id).filter((id): id is string => !!id));
     
     // Delete removed resi
     const toDelete = [...existingIds].filter(id => !incomingIds.has(id));

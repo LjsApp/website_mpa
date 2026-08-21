@@ -64,7 +64,7 @@ export function TrackingManager() {
   const invalidate = () => qc.invalidateQueries({ queryKey: ["admin-trackings"] });
 
   const mutCreate = useMutation({
-    mutationFn: (d: { po_number: string; customer: string; item_name: string; courier?: string; resi_number?: string }) =>
+    mutationFn: (d: { po_number: string; customer: string; resi: { resi_number: string; courier: string; item_name: string }[] }) =>
       createFn({ data: d }),
     onSuccess: (row) => {
       toast.success(`Tracking ${row?.id} berhasil dibuat!`);
@@ -75,7 +75,7 @@ export function TrackingManager() {
   });
 
   const mutUpdate = useMutation({
-    mutationFn: (d: { id: string; po_number: string; customer: string; item_name: string; courier?: string; resi_number?: string }) =>
+    mutationFn: (d: { id: string; po_number: string; customer: string; resi: { id?: string; resi_number: string; courier: string; item_name: string }[] }) =>
       updateFn({ data: d }),
     onSuccess: () => {
       toast.success("Tracking diperbarui.");
@@ -290,9 +290,9 @@ export function TrackingManager() {
           initial={editItem}
           onSubmit={(d) => {
             if (editItem) {
-              mutUpdate.mutate({ id: editItem.id, ...d });
+              mutUpdate.mutate({ id: editItem.id, po_number: d.po_number, customer: d.customer, resi: d.resi });
             } else {
-              mutCreate.mutate(d);
+              mutCreate.mutate({ po_number: d.po_number, customer: d.customer, resi: d.resi });
             }
           }}
           onClose={closeModal}
@@ -408,7 +408,7 @@ function TrackingModal({
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="tf-customer">Customer <span className="text-destructive">*</span></Label>
-                <Input id="tf-customer" list="client-list" value={cust} onChange={(e) => setCust(e.target.value)} placeholder="Pilih atau ketik Customer" required autocomplete="off" />
+                <Input id="tf-customer" list="client-list" value={cust} onChange={(e) => setCust(e.target.value)} placeholder="Pilih atau ketik Customer" required autoComplete="off" />
                 <datalist id="client-list">
                   {clients.map(c => <option key={c} value={c} />)}
                 </datalist>
