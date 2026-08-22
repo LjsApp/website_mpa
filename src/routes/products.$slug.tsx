@@ -161,7 +161,7 @@ function ProductDetail() {
 
         <section className="py-12 lg:py-16">
           <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-10">
-            <div>
+            <div className="flex flex-col">
               <div className="aspect-square overflow-hidden border border-border bg-card relative">
                 {activeImage && <LazyImage src={activeImage} alt={product.name} eager width={1024} height={1024} className="w-full h-full object-cover" />}
                 <div className="absolute top-4 left-4 bg-background/85 backdrop-blur border border-border px-3 py-1.5 text-xs uppercase tracking-widest">
@@ -175,13 +175,17 @@ function ProductDetail() {
                     <div
                       key={i}
                       onClick={() => setActiveImage(img)}
-                      className={`shrink-0 w-16 h-16 border overflow-hidden cursor-pointer ${
-                        activeImage === img ? "border-primary opacity-100" : "border-border opacity-60 hover:opacity-100 hover:border-primary/60"
-                      }`}
+                      className={`shrink-0 w-16 h-16 border overflow-hidden cursor-pointer ${activeImage === img ? "border-primary opacity-100" : "border-border opacity-60 hover:opacity-100 hover:border-primary/60"
+                        }`}
                     >
                       <LazyImage src={img} alt={`${product.name} thumbnail ${i + 1}`} className="w-full h-full object-cover" />
                     </div>
                   ))}
+                </div>
+              )}
+              {((product as any).documents?.length > 0) && (
+                <div className="mt-4">
+                  <DocumentDownloads value={(product as any).documents} title="Dokumen Produk" />
                 </div>
               )}
             </div>
@@ -202,7 +206,7 @@ function ProductDetail() {
                   <ul className="space-y-2">
                     {features.map((f) => (
                       <li key={f} className="flex items-start gap-2 text-sm break-words">
-                        <svg className="w-4 h-4 text-primary mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                        <svg className="w-4 h-4 text-primary mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg>
                         <span className="text-muted-foreground break-words min-w-0 flex-1">{f}</span>
                       </li>
                     ))}
@@ -241,9 +245,7 @@ function ProductDetail() {
                   </tbody>
                 </table>
               </div>
-              <div className="mt-8">
-                <DocumentDownloads value={(product as any).documents} title="Dokumen Produk" />
-              </div>
+
             </div>
             <div className="min-w-0">
               <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">Aplikasi</div>
@@ -270,7 +272,7 @@ function ProductDetail() {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 text-sm uppercase tracking-widest text-primary hover:underline"
                     >
-                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.988 1.993C6.443 1.993 1.933 6.503 1.933 12.048c0 1.853.502 3.586 1.373 5.073L1.5 22.5l5.521-1.78a10.066 10.066 0 0 0 4.967 1.321c5.544 0 10.055-4.51 10.055-10.055S17.532 1.993 11.988 1.993zm0 18.367a8.305 8.305 0 0 1-4.23-1.155l-.303-.18-3.278 1.059 1.084-3.169-.198-.316a8.317 8.317 0 0 1-1.282-4.451c0-4.602 3.745-8.347 8.347-8.347s8.347 3.745 8.347 8.347-3.745 8.212-8.487 8.212z"/></svg>
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" /><path d="M11.988 1.993C6.443 1.993 1.933 6.503 1.933 12.048c0 1.853.502 3.586 1.373 5.073L1.5 22.5l5.521-1.78a10.066 10.066 0 0 0 4.967 1.321c5.544 0 10.055-4.51 10.055-10.055S17.532 1.993 11.988 1.993zm0 18.367a8.305 8.305 0 0 1-4.23-1.155l-.303-.18-3.278 1.059 1.084-3.169-.198-.316a8.317 8.317 0 0 1-1.282-4.451c0-4.602 3.745-8.347 8.347-8.347s8.347 3.745 8.347 8.347-3.745 8.212-8.487 8.212z" /></svg>
                       Hubungi via WhatsApp →
                     </a>
                   );
