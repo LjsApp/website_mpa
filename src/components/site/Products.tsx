@@ -146,7 +146,7 @@ export function Products({ products = [] }: { products?: ProductRow[] }) {
           </div>
         ) : (
           <div
-            className="overflow-hidden w-full relative"
+            className="overflow-hidden p-4 -m-4 w-full relative"
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >

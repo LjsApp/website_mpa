@@ -66,6 +66,8 @@ function CatalogPage() {
   const [brand, setBrand] = useState<string>("all");
   const [stock, setStock] = useState<string>("all");
   const [sort, setSort] = useState<SortKey>("name");
+  const [page, setPage] = useState<number>(1);
+  const [perPage, setPerPage] = useState<number>(9);
 
   const allBrands = useMemo(
     () => (brands as { name: string }[]).map((b) => b.name),
@@ -77,6 +79,10 @@ function CatalogPage() {
       setCat(searchParams.category);
     }
   }, [searchParams.category]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [search, cat, brand, stock, sort, perPage]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -96,8 +102,13 @@ function CatalogPage() {
     return list;
   }, [products, search, cat, brand, stock, sort]);
 
+  const totalPages = Math.ceil(filtered.length / perPage);
+  const paginated = useMemo(() => {
+    return filtered.slice((page - 1) * perPage, page * perPage);
+  }, [filtered, page, perPage]);
+
   const reset = () => {
-    setSearch(""); setCat("all"); setBrand("all"); setStock("all"); setSort("name");
+    setSearch(""); setCat("all"); setBrand("all"); setStock("all"); setSort("name"); setPage(1); setPerPage(9);
   };
 
   return (
@@ -194,15 +205,26 @@ function CatalogPage() {
             <div>
               <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-border">
                 <div className="text-sm text-muted-foreground">
-                  Menampilkan <span className="text-foreground font-semibold">{filtered.length}</span> dari {products.length} produk
+                  Menampilkan <span className="text-foreground font-semibold">{paginated.length > 0 ? (page - 1) * perPage + 1 : 0}-{Math.min(page * perPage, filtered.length)}</span> dari {filtered.length} produk
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs uppercase tracking-widest text-muted-foreground">Urutkan:</span>
-                  <select value={sort} onChange={(e) => setSort(e.target.value as SortKey)} className="bg-card border border-border px-3 py-1.5 text-sm focus:outline-none focus:border-primary">
-                    <option value="name">Nama</option>
-                    <option value="brand">Brand</option>
-                    <option value="category">Kategori</option>
-                  </select>
+                <div className="flex flex-wrap items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs uppercase tracking-widest text-muted-foreground">Tampilkan:</span>
+                    <select value={perPage} onChange={(e) => setPerPage(Number(e.target.value))} className="bg-card border border-border px-3 py-1.5 text-sm focus:outline-none focus:border-primary">
+                      <option value={9}>9</option>
+                      <option value={18}>18</option>
+                      <option value={36}>36</option>
+                      <option value={99999}>Semua</option>
+                    </select>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs uppercase tracking-widest text-muted-foreground">Urutkan:</span>
+                    <select value={sort} onChange={(e) => setSort(e.target.value as SortKey)} className="bg-card border border-border px-3 py-1.5 text-sm focus:outline-none focus:border-primary">
+                      <option value="name">Nama</option>
+                      <option value="brand">Brand</option>
+                      <option value="category">Kategori</option>
+                    </select>
+                  </div>
                 </div>
               </div>
 
@@ -213,30 +235,60 @@ function CatalogPage() {
                   <button onClick={reset} className="bg-primary text-primary-foreground px-6 py-3 text-sm uppercase tracking-widest font-semibold">Reset Filter</button>
                 </div>
               ) : (
-                <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
-                  {filtered.map((p) => (
-                    <Link
-                      key={p.id}
-                      to="/products/$slug"
-                      params={{ slug: p.slug }}
-                      className="industrial-card overflow-hidden group flex flex-col"
-                    >
-                      <div className="aspect-[4/3] overflow-hidden bg-background relative">
-                        {Array.isArray((p as any).gallery) && (p as any).gallery[0] && <LazyImage src={(p as any).gallery[0]} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-700" />}
-                        <div className="absolute top-3 left-3 bg-background/85 backdrop-blur border border-border px-2 py-1 text-[10px] uppercase tracking-widest">
-                          {p.stock}
+                <>
+                  <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                    {paginated.map((p) => (
+                      <Link
+                        key={p.id}
+                        to="/products/$slug"
+                        params={{ slug: p.slug }}
+                        className="industrial-card overflow-hidden group flex flex-col"
+                      >
+                        <div className="aspect-[4/3] overflow-hidden bg-background relative">
+                          {Array.isArray((p as any).gallery) && (p as any).gallery[0] && <LazyImage src={(p as any).gallery[0]} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-700" />}
+                          <div className="absolute top-3 left-3 bg-background/85 backdrop-blur border border-border px-2 py-1 text-[10px] uppercase tracking-widest">
+                            {p.stock}
+                          </div>
                         </div>
-                      </div>
-                      <div className="p-6 flex flex-col flex-1">
-                        <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-primary mb-3">
-                          <span>{p.category_label}</span><span className="text-muted-foreground">·</span><span className="text-muted-foreground">{p.brand}</span>
+                        <div className="p-6 flex flex-col flex-1">
+                          <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-primary mb-3">
+                            <span>{p.category_label}</span><span className="text-muted-foreground">·</span><span className="text-muted-foreground">{p.brand}</span>
+                          </div>
+                          <h3 className="font-display text-xl uppercase mb-2 group-hover:text-primary transition">{p.name}</h3>
+                          <p className="text-sm text-muted-foreground line-clamp-2">{p.description}</p>
                         </div>
-                        <h3 className="font-display text-xl uppercase mb-2 group-hover:text-primary transition">{p.name}</h3>
-                        <p className="text-sm text-muted-foreground line-clamp-2">{p.description}</p>
+                      </Link>
+                    ))}
+                  </div>
+
+                  {totalPages > 1 && (
+                    <div className="mt-12 flex justify-center gap-3">
+                      <button 
+                        onClick={() => {
+                          setPage(p => Math.max(1, p - 1));
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        disabled={page === 1}
+                        className="px-5 py-2 border border-border bg-card text-sm font-semibold uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed hover:border-primary hover:text-primary transition"
+                      >
+                        ← Sebelumnya
+                      </button>
+                      <div className="flex items-center px-4 text-sm font-semibold text-muted-foreground">
+                        Hal {page} / {totalPages}
                       </div>
-                    </Link>
-                  ))}
-                </div>
+                      <button 
+                        onClick={() => {
+                          setPage(p => Math.min(totalPages, p + 1));
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }}
+                        disabled={page === totalPages}
+                        className="px-5 py-2 border border-border bg-card text-sm font-semibold uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed hover:border-primary hover:text-primary transition"
+                      >
+                        Selanjutnya →
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>

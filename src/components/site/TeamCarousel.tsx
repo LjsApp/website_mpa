@@ -41,7 +41,7 @@ export function TeamCarousel({ admins }: { admins: AdminRow[] }) {
 
       <div className="flex gap-4 items-start">
         {/* Cards grid — full width */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden p-4 -m-4">
           <div
             key={page}
             className="grid grid-cols-2 md:grid-cols-4 gap-4"
