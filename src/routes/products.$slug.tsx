@@ -183,8 +183,9 @@ function ProductDetail() {
                   ))}
                 </div>
               )}
+              {/* Desktop only – shown in left column below photo */}
               {((product as any).documents?.length > 0) && (
-                <div className="mt-4">
+                <div className="hidden lg:block mt-4">
                   <DocumentDownloads value={(product as any).documents} title="Dokumen Produk" />
                 </div>
               )}
@@ -211,6 +212,13 @@ function ProductDetail() {
                       </li>
                     ))}
                   </ul>
+                </div>
+              )}
+
+              {/* Mobile only – shown after features */}
+              {((product as any).documents?.length > 0) && (
+                <div className="lg:hidden mt-4 mb-6">
+                  <DocumentDownloads value={(product as any).documents} title="Dokumen Produk" />
                 </div>
               )}
 
