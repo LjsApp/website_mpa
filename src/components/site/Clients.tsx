@@ -5,17 +5,18 @@ import { EmbeddedDeliveryMap } from "@/components/site/DeliveryMap";
 export function Clients({ clients = [], company }: { clients?: ClientRow[], company?: CompanyRow | null }) {
   if (clients.length === 0) return null;
 
-  const stats = asCompanyStats(company?.stats).clients;
+  const stats = asCompanyStats(company?.stats ?? null).clients;
 
   // Format clients for the map
   const locations = clients
-    .map((c: any) => ({
+    .filter((c) => c.lat != null && c.lng != null)
+    .map((c) => ({
       name: c.name,
-      lat: c.lat,
-      lng: c.lng,
-      pinIcon: c.pin_icon || "default"
-    }))
-    .filter((loc: any) => loc.lat && loc.lng);
+      address: c.address || "",
+      lat: c.lat as number,
+      lng: c.lng as number,
+      pinIcon: c.pin_icon || "default",
+    }));
 
   return (
     <section id="clients" className="py-28 md:py-36 bg-primary text-primary-foreground relative overflow-hidden">

@@ -309,6 +309,7 @@ export type Database = {
           gallery: Json | null
           id: string
           image_url: string | null
+          is_featured: boolean
           name: string
           sku: string | null
           slug: string
@@ -326,8 +327,10 @@ export type Database = {
           description?: string | null
           documents?: Json
           features?: Json
+          gallery?: Json | null
           id?: string
           image_url?: string | null
+          is_featured?: boolean
           name: string
           sku?: string | null
           slug: string
@@ -345,8 +348,10 @@ export type Database = {
           description?: string | null
           documents?: Json
           features?: Json
+          gallery?: Json | null
           id?: string
           image_url?: string | null
+          is_featured?: boolean
           name?: string
           sku?: string | null
           slug?: string

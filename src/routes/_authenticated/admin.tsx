@@ -452,8 +452,9 @@ const productsConfig: CrudConfig = {
     { name: "category_label", label: "Kategori" },
     { name: "brand", label: "Brand" },
     { name: "stock", label: "Stok" },
+    { name: "is_featured", label: "Unggulan" },
   ],
-  defaults: { stock: "Ready", specs: [], features: [], applications: [], documents: [], sort_order: 0 },
+  defaults: { stock: "Ready", specs: [], features: [], applications: [], documents: [], sort_order: 0, is_featured: false },
   fields: [
     { name: "name", label: "Nama Produk", required: true },
     { name: "sku", label: "SKU", placeholder: "Opsional, cth: DA83D6D0" },
@@ -490,6 +491,7 @@ const productsConfig: CrudConfig = {
       ],
     },
     { name: "stock", label: "Status Stok", type: "select", options: ["Ready", "Indent", "Pre-Order"] },
+    { name: "is_featured", label: "Tampilkan di Beranda (Unggulan)", type: "boolean" },
     { name: "gallery", label: "Galeri Gambar", type: "image-list" },
     { name: "description", label: "Deskripsi Produk", type: "textarea" },
     { name: "specs", label: "Spesifikasi", type: "object-list", columns: [{ key: "label", label: "Label" }, { key: "value", label: "Nilai" }] },

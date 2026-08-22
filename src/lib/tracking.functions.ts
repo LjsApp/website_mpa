@@ -126,7 +126,7 @@ export const updateTracking = createServerFn({ method: "POST" })
     const incomingIds = new Set(data.resi.map(r => r.id).filter((id): id is string => !!id));
     
     // Delete removed resi
-    const toDelete = [...existingIds].filter(id => !incomingIds.has(id));
+    const toDelete = [...existingIds].filter(id => !incomingIds.has(id as string)) as string[];
     if (toDelete.length > 0) {
       await sb.from("order_resi").delete().in("id", toDelete);
     }

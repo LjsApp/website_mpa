@@ -72,8 +72,8 @@ export function Brands({ brands = [], company }: { brands?: BrandRow[], company?
                 key={c}
                 onClick={() => setActive(c)}
                 className={`h-10 px-5 rounded-full text-sm transition-all duration-[250ms] ${active === c
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "bg-white border border-border text-muted-foreground hover:border-primary hover:text-primary"
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "bg-white border border-border text-muted-foreground hover:border-primary hover:text-primary"
                   }`}
               >
                 {c}
