@@ -16,6 +16,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { ObjectListEditor, ImageListEditor, DeliveryLocationEditor } from "@/components/admin/field-editors";
 import { DocumentListEditor } from "@/components/admin/DocumentUpload";
+import { WhyUsEditor } from "@/components/admin/WhyUsEditor";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
@@ -222,7 +223,7 @@ function CompanyForm() {
   const { data: rows = [], isLoading } = useQuery({ queryKey: ["admin", "company_info"], queryFn: () => listFn({ data: { table: "company_info" } }) });
   const row = (rows as any[])[0];
   const [form, setForm] = useState<Record<string, any>>({});
-  const [subTab, setSubTab] = useState<"info" | "admins" | "stats">("info");
+  const [subTab, setSubTab] = useState<"info" | "whyus" | "admins" | "stats">("info");
   useEffect(() => { if (row) setForm(row); }, [row]);
 
   const mut = useMutation({
@@ -266,7 +267,7 @@ function CompanyForm() {
     <div>
       <h2 className="text-2xl font-display uppercase mb-4">Perusahaan</h2>
       <div className="flex gap-0 border-b border-border mb-6">
-        {(["info", "admins", "stats"] as const).map((t) => (
+        {(["info", "whyus", "admins", "stats"] as const).map((t) => (
           <button
             key={t}
             type="button"
@@ -277,7 +278,7 @@ function CompanyForm() {
                 : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
-            {t === "info" ? "Informasi Perusahaan" : t === "admins" ? "Admin / Staf" : "Statistik Utama"}
+            {t === "info" ? "Informasi Perusahaan" : t === "whyus" ? "Mengapa Kami" : t === "admins" ? "Admin / Staf" : "Statistik Utama"}
           </button>
         ))}
       </div>
@@ -357,6 +358,13 @@ function CompanyForm() {
               onChange={(v) => setForm({ ...form, timeline: v })}
             />
           </div>
+          <Button type="submit" disabled={mut.isPending}>{mut.isPending ? "Menyimpan..." : "Simpan Perubahan"}</Button>
+        </form>
+      )}
+
+      {subTab === "whyus" && (
+        <form onSubmit={onSubmit} className="space-y-8 max-w-3xl">
+          <WhyUsEditor value={form.why_us} onChange={(v) => setForm({ ...form, why_us: v })} />
           <Button type="submit" disabled={mut.isPending}>{mut.isPending ? "Menyimpan..." : "Simpan Perubahan"}</Button>
         </form>
       )}

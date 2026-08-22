@@ -177,6 +177,7 @@ export type Database = {
           timeline: Json
           updated_at: string
           vision: string | null
+          why_us: Json
           youtube_url: string | null
           whatsapp: string | null
           whatsapp_2: string | null
@@ -203,6 +204,7 @@ export type Database = {
           timeline?: Json
           updated_at?: string
           vision?: string | null
+          why_us?: Json
           youtube_url?: string | null
           whatsapp?: string | null
           whatsapp_2?: string | null
@@ -229,6 +231,7 @@ export type Database = {
           timeline?: Json
           updated_at?: string
           vision?: string | null
+          why_us?: Json
           youtube_url?: string | null
           whatsapp?: string | null
           whatsapp_2?: string | null

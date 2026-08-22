@@ -12,6 +12,57 @@ export type SpecItem = { label: string; value: string };
 export type StatItem = { label: string; value: string };
 export type TimelineItem = { year: string; title: string; desc: string };
 
+export interface WhyUsItem {
+  i: string;
+  t: string;
+  d: string;
+  tagline?: string;
+  points?: string[];
+  cta_label?: string;
+  cta_target?: string;
+}
+
+export const DEFAULT_WHY_US: WhyUsItem[] = [
+  { 
+    i: "01", t: "Keahlian Teknis", d: "Tim engineering berpengalaman dengan pemahaman industri mendalam.",
+    tagline: "Konsultasi Teknis Tanpa Biaya Tambahan",
+    points: ["Konsultasi pemilihan produk sesuai spesifikasi mesin", "Analisis teknis permasalahan di lapangan", "Rekomendasi lintas brand berdasarkan kebutuhan", "Support via telepon, WhatsApp & kunjungan langsung"],
+    cta_label: "Konsultasikan Sekarang",
+    cta_target: "#contact"
+  },
+  { 
+    i: "02", t: "Pengadaan Cepat", d: "Sistem sourcing efisien dengan jaringan supplier yang kuat.",
+    tagline: "Konfirmasi Ketersediaan dalam 1×24 Jam",
+    points: ["Stok ready untuk item fast-moving", "Jaringan supplier global (Eropa, Asia, Amerika)", "Indent terpantau real-time"],
+    cta_label: "Cek Ketersediaan",
+    cta_target: "#contact"
+  },
+  { 
+    i: "03", t: "Produk Original", d: "Produk asli bersertifikat dari brand resmi terpercaya.",
+    tagline: "100% Asli, Bersertifikat, Bergaransi",
+    points: ["Certificate of Authenticity (COA) dari pabrik", "Authorized distributor brand internasional", "Garansi sesuai ketentuan pabrikan", "Tidak menjual produk KW / replika / grey market"],
+    cta_label: "Lihat Brand Kami",
+    cta_target: "#brands"
+  },
+  { 
+    i: "04", t: "Pengiriman Nasional", d: "Cakupan ke seluruh wilayah utama di Indonesia.",
+  },
+  { 
+    i: "05", t: "Dukungan After Sales", d: "Layanan maintenance teknis dan support berkelanjutan.",
+    tagline: "Kami Ada Setelah Penjualan, Bukan Hanya Saat Penjualan",
+    points: ["Penanganan garansi & klaim produk", "Technical support via WhatsApp & email", "Panduan instalasi & troubleshooting", "Kunjungan teknis ke lokasi (untuk order tertentu)"],
+    cta_label: "Hubungi Tim Support",
+    cta_target: "#contact"
+  },
+  { 
+    i: "06", t: "Harga Kompetitif", d: "Solusi biaya efisien tanpa mengorbankan kualitas.",
+    tagline: "Harga Terbaik Tanpa Mengorbankan Kualitas",
+    points: ["Pembelian langsung tanpa perantara berlebih", "Harga transparan, tidak ada biaya tersembunyi", "Diskon khusus untuk bulk order", "Harga kontrak untuk pelanggan reguler"],
+    cta_label: "Minta Penawaran Harga",
+    cta_target: "#contact"
+  },
+];
+
 export interface CompanyStats {
   hero: StatItem[];
   brands: StatItem[];
@@ -88,6 +139,21 @@ export function asTimeline(v: unknown): TimelineItem[] {
       .map((x: any) => ({ year: String(x.year ?? ""), title: String(x.title ?? ""), desc: String(x.desc ?? "") }));
   }
   return [];
+}
+
+export function asWhyUsItems(v: unknown): WhyUsItem[] {
+  if (Array.isArray(v) && v.length > 0) {
+    return v.map((x: any) => ({
+      i: String(x.i ?? ""),
+      t: String(x.t ?? ""),
+      d: String(x.d ?? ""),
+      tagline: x.tagline ? String(x.tagline) : undefined,
+      points: Array.isArray(x.points) ? x.points.map(String) : undefined,
+      cta_label: x.cta_label ? String(x.cta_label) : undefined,
+      cta_target: x.cta_target ? String(x.cta_target) : undefined,
+    }));
+  }
+  return DEFAULT_WHY_US;
 }
 
 export function formatDateID(iso: string) {
