@@ -92,7 +92,7 @@ export function Testimonials({ items = [] }: { items?: TestimonialRow[] }) {
 
         {/* Carousel Track */}
         <div
-          className="overflow-hidden p-4 -m-4"
+          className="overflow-hidden py-4 -my-4"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
