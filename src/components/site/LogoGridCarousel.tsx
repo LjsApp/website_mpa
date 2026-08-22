@@ -100,7 +100,7 @@ export function LogoGridCarousel({
                         src={b.logo_url}
                         alt={b.name}
                         wrapperClassName="h-14 w-full"
-                        className="max-h-14 w-full object-contain md:grayscale md:opacity-75 grayscale-0 opacity-100 transition duration-300 group-hover:grayscale-0 group-hover:opacity-100"
+                        className="max-h-14 w-full object-contain transition duration-300"
                       />
                       <div className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground text-center leading-tight line-clamp-2">
                         {b.name}
