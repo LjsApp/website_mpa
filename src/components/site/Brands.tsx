@@ -44,7 +44,7 @@ export function Brands({ brands = [], company }: { brands?: BrandRow[], company?
   const stats = asCompanyStats(company?.stats).brands;
 
   return (
-    <section className="py-28 md:py-36 bg-white" ref={containerRef as any}>
+    <section className="py-28 bg-white border-b border-border" ref={containerRef as any}>
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mx-auto mb-14" data-animate="fade-up">
           <div className="text-xs uppercase tracking-[0.3em] text-primary mb-4">Dukungan Brand</div>
@@ -57,13 +57,15 @@ export function Brands({ brands = [], company }: { brands?: BrandRow[], company?
           </p>
         </div>
 
-        <div className="flex justify-center gap-16 mb-14" data-animate-stagger>
-          {stats.map((s) => (
-            <div key={s.label} className="animate-child">
-              <BrandStatItem rawValue={s.value} label={s.label} />
-            </div>
-          ))}
-        </div>
+        {stats.length > 0 && (
+          <div className="flex justify-center gap-16 mb-14" data-animate-stagger>
+            {stats.map((s) => (
+              <div key={s.label} className="animate-child">
+                <BrandStatItem rawValue={s.value} label={s.label} />
+              </div>
+            ))}
+          </div>
+        )}
 
         {used.length > 0 && (
           <div className="flex flex-wrap justify-center gap-2 mb-12" data-animate="fade-up">
