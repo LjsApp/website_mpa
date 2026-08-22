@@ -58,7 +58,7 @@ export function Testimonials({ items = [] }: { items?: TestimonialRow[] }) {
   };
 
   return (
-    <section className="py-28 overflow-hidden" ref={containerRef as any}>
+    <section className="py-16 md:py-20 overflow-hidden" ref={containerRef as any}>
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-6" data-animate="fade-up">
           <div className="max-w-2xl">

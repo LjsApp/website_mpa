@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { useScrollAnimate } from "@/hooks/use-scroll-animate";
 import { asWhyUsItems, type ClientRow, type CompanyRow } from "@/lib/site-types";
 import { DeliveryMap, type DeliveryLocation } from "./DeliveryMap";
@@ -33,7 +33,7 @@ export function WhyUs({ clients, company }: { clients?: ClientRow[], company?: C
 
   return (
     <>
-      <section className="py-28 section-ember border-y border-border" ref={containerRef as any}>
+      <section className="py-16 md:py-20 section-ember border-y border-border" ref={containerRef as any}>
         <div className="max-w-7xl mx-auto px-6">
           <div className="max-w-2xl mb-14" data-animate="fade-up">
             <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">Mengapa Kami</div>

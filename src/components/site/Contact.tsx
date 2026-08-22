@@ -41,7 +41,7 @@ export function Contact({ company }: { company?: CompanyRow | null }) {
   });
 
   return (
-    <section id="contact" className="py-28 bg-card/30 border-t border-border relative overflow-hidden">
+    <section id="contact" className="py-16 md:py-20 bg-card/30 border-t border-border relative overflow-hidden">
       <div className="absolute inset-0 grid-bg opacity-20" />
       <div className="relative max-w-7xl mx-auto px-6">
         {/* Heading */}

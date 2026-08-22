@@ -9,7 +9,7 @@ export function Workflow() {
 
   return (
     <>
-      <section className="py-28 border-y border-border relative overflow-hidden" ref={containerRef as any}>
+      <section className="py-16 md:py-20 border-y border-border relative overflow-hidden" ref={containerRef as any}>
         <div className="max-w-7xl mx-auto px-6 relative">
           <div className="max-w-2xl mb-14" data-animate="fade-up">
             <div className="text-xs uppercase tracking-[0.3em] text-primary mb-3">Alur Kerja</div>

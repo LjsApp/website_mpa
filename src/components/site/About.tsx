@@ -53,7 +53,7 @@ export function About({ company }: { company?: CompanyRow | null }) {
   );
 
   return (
-    <section id="about" className="py-28" ref={containerRef as any}>
+    <section id="about" className="py-16 md:py-20" ref={containerRef as any}>
       <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-start">
         <div className="flex flex-col gap-12" data-animate="fade-right">
           {/* Anti Bribe Section (Desktop) */}

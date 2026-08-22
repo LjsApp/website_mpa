@@ -79,7 +79,7 @@ export function Products({ products = [] }: { products?: ProductRow[] }) {
   if (products.length === 0) return null;
 
   return (
-    <section id="products" className="py-28 overflow-hidden" ref={containerRef as any}>
+    <section id="products" className="py-16 md:py-20 overflow-hidden" ref={containerRef as any}>
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6" data-animate="fade-up">

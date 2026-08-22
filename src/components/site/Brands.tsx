@@ -44,7 +44,7 @@ export function Brands({ brands = [], company }: { brands?: BrandRow[], company?
   const stats = asCompanyStats(company?.stats).brands;
 
   return (
-    <section className="py-28 bg-white border-b border-border" ref={containerRef as any}>
+    <section className="py-16 md:py-20 bg-white border-b border-border" ref={containerRef as any}>
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mx-auto mb-14" data-animate="fade-up">
           <div className="text-xs uppercase tracking-[0.3em] text-primary mb-4">Dukungan Brand</div>

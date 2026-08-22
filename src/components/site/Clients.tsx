@@ -19,7 +19,7 @@ export function Clients({ clients = [], company }: { clients?: ClientRow[], comp
     }));
 
   return (
-    <section id="clients" className="py-28 bg-primary text-primary-foreground relative overflow-hidden">
+    <section id="clients" className="py-16 md:py-20 bg-primary text-primary-foreground relative overflow-hidden">
       <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent"></div>
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-8">

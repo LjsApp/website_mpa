@@ -79,7 +79,7 @@ export function LogoGridCarousel({
 
   return (
     <div>
-      <div className="overflow-hidden">
+      <div className="overflow-hidden p-4 -m-4">
         <div
           className="flex transition-transform duration-500 ease-out"
           style={{ transform: `translateX(-${page * 100}%)` }}
